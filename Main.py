@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Sun Feb 25 21:53:39 2018
+Last modified: 2/25/2018 10:25:51 PM
 """
 
 #defaut setting for scientific caculation
@@ -34,10 +34,11 @@ start = timer()
 ceruns.APA = sys.argv[1]
 test_runs = int(sys.argv[2],16)
 RTD_flg = (sys.argv[3] == "True")
+os_cs = sys.argv[4]
 
 ceruns.wib_version_id = 0x116
 ceruns.femb_ver_id = 0x323
-rawpath = set_path(os="mac")
+rawpath = set_path(os=os_cs)
 
 if (ceruns.APA == "APA40"):
     print ceruns.APA
