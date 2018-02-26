@@ -5,16 +5,8 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Tue Feb  6 21:05:53 2018
+Last modified: Sun Feb 25 22:17:25 2018
 """
-
-#defaut setting for scientific caculation
-#import numpy
-#import scipy
-#from numpy import *
-#import numpy as np
-#import scipy as sp
-#import pylab as pl
 
 import os
 import sys
