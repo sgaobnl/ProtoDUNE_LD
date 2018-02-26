@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Sun Feb 25 19:04:20 2018
+Last modified: Sun Feb 25 20:01:01 2018
 """
 import matplotlib
 matplotlib.use('Agg')
@@ -80,9 +80,9 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
         fig = plt.figure(figsize=(16,9))
         ax = plt
         total_chn = len(chn_np)
-        title = "%s plane: Pulse Waveform Overlap of %d after averaging with %d cycles"%( wiretype, total_chn, cycle)
+        title = "Pulse Waveform Overlap of %d after averaging with %d cycles"%( total_chn, cycle)
         ylabel = "ADC output /bin"
-        print "Pulse Waveform-->%s wires has %d channels in total"%(wiretype, total_chn)
+        print "Pulse Waveform--> %d channels in total"%(total_chn)
         for chn in chn_np:
             y_np = np.array(chn_avg_noped[chn])
             y_max = np.max(y_np)
@@ -109,9 +109,9 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
     
         total_chn = len(chn_np)
         print total_chn
-        title = "%s plane: Pulse Waveform Overlap of %d after averaging with %d cycles"%( wiretype, total_chn, cycle)
+        title = "Pulse Waveform Overlap of %d after averaging with %d cycles"%( total_chn, cycle)
         ylabel = "ADC output /bin"
-        print "Pulse Waveform-->%s wires has %d channels in total"%(wiretype, total_chn)
+        print "Pulse Waveform-->%d channels in total"%(total_chn)
         for chn in chn_np:
             y_np = np.array(chn_avg_data[chn])
             y_max = np.max(y_np)
@@ -140,10 +140,10 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
         chn_peakp_ped = np.array( chn_peakp_ped )
         patch = []
         label = []
-        title = "%s plane: Pedestal Measurement " % wiretype
+        title = "Pedestal Measurement "
         ylabel = "ADC output /bin"
         total_chn = len(chn_np)
-        print "Pedestal Measurement-->%s wires has %d channels in total"%(wiretype, total_chn)
+        print "Pedestal Measurement-->%d channels in total"%(total_chn)
         for i in range(1):
             if ( i == 0 ):
                 color = 'r'
@@ -159,11 +159,14 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
             patch.append( mpatches.Patch(color=color))
             label.append(ped_label)
             ax.legend(patch, label, loc=1, fontsize=12 )
+        for chn in range(0,128,16):
+            ax.plot((chn,chn), (0, 4100), color = 'm')
+            ax.text(chn+6, 300, "ASIC%d"%(chn//16))
         ax.tick_params(labelsize=8)
         ax.xlim([0,total_chn])
         ax.ylim([0,4100])
         ax.ylabel(ylabel, fontsize=12 )
-        ax.xlabel("%s Channel No."%wiretype, fontsize=12 )
+        ax.xlabel("Channel No.", fontsize=12 )
         ax.title(title , fontsize=12 )
         ax.grid()
         ax.tight_layout( rect=[0, 0.05, 1, 0.95])
@@ -177,28 +180,35 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
         sf_rms_np = np.array(sf_rms_np)
         patch = []
         label = []
-        title = "%s plane: Noise Measurement" %wiretype
-        ylabel = "%s plane: RMS noise / ADC bin"%wiretype
+        title = "Noise Measurement" 
+        ylabel = "RMS noise / ADC bin"
         total_chn = len(chn_np)
-        print "Noise Measurement-->%s wires has %d channels in total"%(wiretype, total_chn)
+        print "Noise Measurement-->%d channels in total"%(total_chn)
         for i in range(2):
             if ( i == 0 ):
                 color = 'r'
                 plabel = "RMS Noise / ADC bin"
                 y_np = rms_np
+                rmsmax = max(y_np)
             elif ( i == 1 ):
                 color = 'b'
                 plabel = "SF RMS Noise / ADC bin"
                 y_np = sf_rms_np
+                if max(y_np) > rmsmax :
+                    rmsmax = max(y_np)
             ax.scatter( chn_np, y_np, color = color)
             ax.plot( chn_np, y_np, color = color)
             patch.append( mpatches.Patch(color=color))
             label.append(plabel)
             ax.legend(patch, label, loc=1, fontsize=12 )
+        for chn in range(0,128,16):
+            ax.plot((chn,chn), (0, rmsmax *1.5), color = 'm')
+            ax.text(chn+6, rmsmax *1.3, "ASIC%d"%(chn//16))
         ax.tick_params(labelsize=8)
         ax.xlim([0,total_chn])
+        ax.ylim([0,rmsmax*1.5])
         ax.ylabel(ylabel, fontsize=12 )
-        ax.xlabel("APA %s Channel No."%wiretype, fontsize=12 )
+        ax.xlabel("APA Channel No.", fontsize=12 )
         ax.title(title , fontsize=12 )
         ax.grid()
         ax.tight_layout( rect=[0, 0.05, 1, 0.95])
@@ -208,38 +218,14 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
     if ( (plot_en&0x10) != 0 ):
         fig = plt.figure(figsize=(16,9))
         ax = plt
-        total_chn = len(chn_np)
-        title = "%s plane: Pulse Waveform Overlap of %d (without averaging) "%( wiretype, total_chn)
-        ylabel = "ADC output /bin"
-        print "Pulse Waveform-->%s wires has %d channels in total"%(wiretype, total_chn)
-        for chn in chn_np:
-            y_np = np.array(chn_wave[chn])
-            smps_np = np.arange(len(chn_wave[chn])) 
-            x_np = smps_np * 0.5
-            ax.scatter( x_np, y_np)
-            ax.plot( x_np, y_np)
-        ax.tick_params(labelsize=8)
-        ax.xlim([0,50])
-        ax.ylim([-2000,2000])
-        ax.ylabel(ylabel, fontsize=12 )
-        ax.xlabel("Time / us", fontsize=12 )
-        ax.title(title , fontsize=12 )
-        ax.grid()
-        ax.tight_layout( rect=[0, 0.05, 1, 0.95])
-        ax.savefig(pp, format='pdf')
-        ax.close()
-
-    if ( (plot_en&0x20) != 0 ):
-        fig = plt.figure(figsize=(16,9))
-        ax = plt
         chn_peakp_avg = np.array( chn_peakp_avg )
         chn_peakn_avg = np.array( chn_peakn_avg )
         patch = []
         label = []
-        title = "%s plane Pulse Amplitude " %wiretype
+        title = "Pulse Amplitude "
         ylabel = "ADC output /bin"
         total_chn = len(chn_np)
-        print "Pulse Amplitude-->%s wires has %d channels in total"%(wiretype, total_chn)
+        print "Pulse Amplitude--> %d channels in total"%(total_chn)
         for i in range(2):
             if ( i == 0 ):
                 color = 'r'
@@ -255,17 +241,45 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
             patch.append( mpatches.Patch(color=color))
             label.append(ped_label)
             ax.legend(patch, label, loc=1, fontsize=12 )
+        for chn in range(0,128,16):
+            ax.plot((chn,chn), (-2000, 3000), color = 'm')
+            ax.text(chn+6, -1800, "ASIC%d"%(chn//16))
         ax.tick_params(labelsize=8)
         ax.xlim([0,total_chn])
         ax.ylim([-2000,3000])
         ax.ylabel(ylabel, fontsize=12 )
-        ax.xlabel("APA %s Channel No."%wiretype, fontsize=12 )
+        ax.xlabel("APA Channel No.", fontsize=12 )
         ax.title(title , fontsize=12 )
         ax.grid()
         ax.tight_layout( rect=[0, 0.05, 1, 0.95])
         ax.savefig(pp, format='pdf')
         ax.close()
- 
+
+    if ( (plot_en&0x20) != 0 ):
+        fig = plt.figure(figsize=(16,9))
+        ax = plt
+        total_chn = len(chn_np)
+        title = "Pulse Waveform Overlap of %d (without averaging) "%(total_chn)
+        ylabel = "ADC output /bin"
+        print "Pulse Waveform-->%d channels in total"%(total_chn)
+        for chn in chn_np:
+            y_np = np.array(chn_wave[chn])
+            smps_np = np.arange(len(chn_wave[chn])) 
+            x_np = smps_np * 0.5
+            ax.scatter( x_np, y_np)
+            ax.plot( x_np, y_np)
+        ax.tick_params(labelsize=8)
+        ax.xlim([0,50])
+        ax.ylim([0,4100])
+        ax.ylabel(ylabel, fontsize=12 )
+        ax.xlabel("Time / us", fontsize=12 )
+        ax.title(title , fontsize=12 )
+        ax.grid()
+        ax.tight_layout( rect=[0, 0.05, 1, 0.95])
+        ax.savefig(pp, format='pdf')
+        ax.close()
+
+
 def PD_CHKOUT (datapath, step, plot_en=0x2F,  avg_cycle=300, jumbo_flag=True ):
     result_pdfpath = datapath + step + 'results.pdf'
     pp = PdfPages(result_pdfpath)
@@ -275,7 +289,7 @@ def PD_CHKOUT (datapath, step, plot_en=0x2F,  avg_cycle=300, jumbo_flag=True ):
     plots(plt, plot_en, wibsdata, pp, avg_cycle)
     pp.close()
 
-datapath = "D:/testtemp/Rawdata/Rawdata_02_25_2018/run01avg/CEbox001WIB00step2A/"
-step = "CEbox001WIB00step2A_"
-PD_CHKOUT (datapath, step, plot_en=0x2F,  avg_cycle=10, jumbo_flag=True )
+#datapath = "D:/testtemp/Rawdata/Rawdata_02_25_2018/run01avg/CEbox001WIB00step2A/"
+#step = "CEbox001WIB00step2A_"
+#PD_CHKOUT (datapath, step, plot_en=0x3F,  avg_cycle=10, jumbo_flag=True )
 
