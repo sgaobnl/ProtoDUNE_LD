@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Sun Feb 25 19:53:09 2018
+Last modified: Sun Feb 25 21:05:14 2018
 """
 
 #defaut setting for scientific caculation
@@ -27,6 +27,7 @@ from timeit import default_timer as timer
 
 ###############################################################################
 from ce_runs import CE_RUNS
+from set_path import set_path
 ceruns = CE_RUNS()
 
 start = timer()
@@ -36,10 +37,11 @@ RTD_flg = (sys.argv[3] == "True")
 
 ceruns.wib_version_id = 0x116
 ceruns.femb_ver_id = 0x323
+rawpath = set_path(os="windows")
 
 if (ceruns.APA == "APA40"):
     print ceruns.APA
-    ceruns.path = "D:/Temp/Rawdata/" 
+    ceruns.path = rawpath 
     ceruns.wib_ips = [ "192.168.121.1", "192.168.121.2"  ]
     ceruns.wib_pwr_femb = [[1,1,1,1],[1,1,1,1]]
     ceruns.femb_mask    = [[0,0,0,0],[0,0,0,0] ]
@@ -49,21 +51,27 @@ elif ( (ceruns.APA == "Coldbox") or \
        (ceruns.APA == "APA1") or  (ceruns.APA == "APA2")  or  (ceruns.APA == "APA3")  or  \
        (ceruns.APA == "APA4") or  (ceruns.APA == "APA5")  or  (ceruns.APA == "APA6") ): 
     print ceruns.APA
-    ceruns.path = "/nfs/rscratch/bnl_ce/shanshan/Rawdata/APA3/" 
     if (ceruns.APA == "Coldbox"): 
         ceruns.wib_ips = ["10.73.137.20", "10.73.137.21", "10.73.137.22", "10.73.137.23", "10.73.137.24"]  
+        ceruns.path = rawpath + "/Coldbox/" 
     elif (ceruns.APA == "APA1"): 
         ceruns.wib_ips = ["10.73.137.26", "10.73.137.27", "10.73.137.28", "10.73.137.29", "10.73.137.30"]  
+        ceruns.path = rawpath + "/APA1/" 
     elif (ceruns.APA == "APA2"): 
         ceruns.wib_ips = ["10.73.137.31", "10.73.137.32", "10.73.137.33", "10.73.137.34", "10.73.137.35"]  
+        ceruns.path = rawpath + "/APA2/" 
     elif (ceruns.APA == "APA3"): 
         ceruns.wib_ips = ["10.73.137.36", "10.73.137.37", "10.73.137.38", "10.73.137.39", "10.73.137.40"]  
+        ceruns.path = rawpath + "/APA3/" 
     elif (ceruns.APA == "APA4"): 
         ceruns.wib_ips = ["10.73.137.41", "10.73.137.42", "10.73.137.43", "10.73.137.44", "10.73.137.45"]  
+        ceruns.path = rawpath + "/APA4/" 
     elif (ceruns.APA == "APA5"): 
         ceruns.wib_ips = ["10.73.137.46", "10.73.137.47", "10.73.137.48", "10.73.137.55", "10.73.137.49"]  
+        ceruns.path = rawpath + "/APA5/" 
     elif (ceruns.APA == "APA6"): 
         ceruns.wib_ips = ["10.73.137.50", "10.73.137.51", "10.73.137.52", "10.73.137.53", "10.73.137.54"]  
+        ceruns.path = rawpath + "/APA6/" 
 
     ceruns.wib_pwr_femb = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
     ceruns.femb_mask    = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
@@ -71,7 +79,7 @@ elif ( (ceruns.APA == "Coldbox") or \
     ceruns.jumbo_flag = False
 elif (ceruns.APA == "CHKOUT"): 
     print ceruns.APA
-    ceruns.path = "D:/testtemp/Rawdata/" 
+    ceruns.path = rawpath + "/CHKOUT/" 
     ceruns.wib_ips = [ "192.168.121.1" ]
     ceruns.wib_pwr_femb = [[1,1,1,1]]
     ceruns.femb_mask    = [[0,0,0,0]]
@@ -247,7 +255,7 @@ if (test_runs&0x40 != 0x0 ):
     if (ceruns.APA == "CHKOUT"): 
         print "Average Checkout"
         print "time cost = %.3f seconds"%(timer()-start)
-        ceruns.avg_run(val = 1600, avg_cycle=100)
+        ceruns.avg_run(val = 1600, avg_cycle=300)
 
     with open(logfile, "a+") as f:
         f.write( "%2X: Average Checkout\n" %(test_runs&0x40) ) 

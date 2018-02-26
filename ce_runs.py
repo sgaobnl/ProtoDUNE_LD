@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Sun Feb 25 20:08:40 2018
+Last modified: Sun Feb 25 21:09:58 2018
 """
 
 #defaut setting for scientific caculation
@@ -425,7 +425,9 @@ class CE_RUNS:
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
 
     def avg_run(self, val = 1600, avg_cycle=300): 
+        
         run_code, val, runpath = self.save_setting(run_code="A", val=val) 
+        resultpaths = []
         for wib_pos in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_pos]
             print "WIB (IP=%s)"%(wib_ip)
@@ -443,7 +445,11 @@ class CE_RUNS:
                 datapath= self.femb_meas.avg_chkout(runpath, step, femb_addr, sg=sg, tp=tp, clk_cs=1, pls_cs = 1, dac_sel=1, \
                                           fpga_dac=1, asic_dac=0, slk0 = self.slk0, slk1= self.slk1, val=val)
                 PD_CHKOUT (datapath, step, plot_en=0x3F,  avg_cycle=avg_cycle, jumbo_flag=self.jumbo_flag )
+                resultpaths.append(datapath)
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
+        print "Please check the pdf format files in the folder below: "
+        for onepath in resultpaths:
+            print onepath
         self.run_code = run_code
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
