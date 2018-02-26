@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Sun Feb 25 21:05:14 2018
+Last modified: Sun Feb 25 21:53:39 2018
 """
 
 #defaut setting for scientific caculation
@@ -37,7 +37,7 @@ RTD_flg = (sys.argv[3] == "True")
 
 ceruns.wib_version_id = 0x116
 ceruns.femb_ver_id = 0x323
-rawpath = set_path(os="windows")
+rawpath = set_path(os="mac")
 
 if (ceruns.APA == "APA40"):
     print ceruns.APA
@@ -269,10 +269,12 @@ if (test_runs&0x80 != 0x0 ):
     ceruns.FEMBs_PWR_SW(SW = "OFF")
     with open(logfile, "a+") as f:
         f.write( "Begin\n") 
-        f.write( "Turn PS OFF\n" ) 
+        for onelog in ceruns.linkcurs:
+            f.write( onelog + "\n") 
         f.write (ceruns.runpath + "\n" )
         f.write (ceruns.runtime + "\n" )
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+        f.write( "PS is OFF\n" ) 
         f.write( "End\n") 
         f.write( "\n") 
 

@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Sun Feb 25 21:09:58 2018
+Last modified: Sun Feb 25 21:45:23 2018
 """
 
 #defaut setting for scientific caculation
@@ -80,6 +80,71 @@ class CE_RUNS:
                 self.wib_ips.remove(wib_ip)
         print self.wib_ips
 
+    def WIB_LINK_CUR(self):
+        logs = []
+        runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
+        logs.append ( runtime + "--> Link and current check" )
+        #link
+        tmp1 = self.femb_meas.femb_config.femb.read_reg_wib(0x100)
+        logs.append ( "Addr(0x100) = " + format(tmp1, "08X") ) 
+        self.femb_meas.femb_config.femb.write_reg_wib(18, 0x100)
+        for addr in [32,33,34,35,36,37,38,39]:
+            b =  self.femb_meas.femb_config.femb.read_reg_wib(addr)
+            logs.append ( "Addr(0x%X) = "%addr + format(b, "08X") ) 
+ 
+        for i in range(16):
+            self.femb_meas.femb_config.femb.write_reg_wib(18, i)
+            b =  self.femb_meas.femb_config.femb.read_reg_wib(34)
+            logs.append ( "Addr(0x%X) = "%(34) + format(b, "08X") ) 
+        #current 
+        for j in range(3):
+            self.femb_meas.femb_config.femb.write_reg_wib(5, 0x00000)
+            self.femb_meas.femb_config.femb.write_reg_wib(5, 0x00000 | 0x10000)
+            self.femb_meas.femb_config.femb.write_reg_wib(5, 0x00000)
+            time.sleep(0.1)
+            vcts =[]
+            for i in range(30):
+                self.femb_meas.femb_config.femb.write_reg_wib(5, i)
+                time.sleep(0.001)
+                vcts.append(  self.femb_meas.femb_config.femb.read_reg_wib(6) & 0x0000FFFFFFFF )
+                time.sleep(0.001)
+
+        for fembno in range(4):
+            femb_vcts=vcts[fembno*6+1: fembno*6+7]
+            vcs = np.array(femb_vcts)
+            vcsh = (vcs[1:6]&0x0FFFF0000) >> 16 
+            vcshx = vcsh & 0x4000
+            vs = []
+            for i in range(len(vcsh)):
+                if (vcshx[i] == 0 ):
+                    vs.append(vcsh[i])
+                else:
+                    vs.append(0)
+            vs = ((np.array(vs) & 0x3FFF) * 305.18) * 0.000001
+            vcsl = (vcs[1:6]&0x0FFFF) 
+            cs = ((vcsl & 0x3FFF) * 19.075) * 0.000001 / 0.1
+            cs[2] = cs[2] / 0.1
+            cs_tmp =[]
+            for csi in cs:
+                if csi < 3.1 :
+                    cs_tmp.append(csi)
+                else:
+                    cs_tmp.append(0)
+            cs = np.array(cs_tmp)
+
+            spl_in = (((vcs[0]&0x0FFFF0000) >> 16) & 0x3FFF) * 305.18 * 0.000001 + 2.5
+            temp = (((vcs[0]&0x0FFFF) & 0x3FFF) * 62.5) * 0.001
+
+            logs.append ( "FEMB%d " %fembno   ) 
+            logs.append ( "Temperature = %3.5f " %temp   ) 
+            logs.append ( "BIAS 5V : %3.5fV, %3.5fA" %(vs[4], cs[4]) ) 
+            logs.append ( "FM 4.2V : %3.5fV, %3.5fA" %(vs[0], cs[0]) ) 
+            logs.append ( "FM 3.0V : %3.5fV, %3.5fA" %(vs[1], cs[1]) ) 
+            logs.append ( "FM 1.5V : %3.5fV, %3.5fA" %(vs[3], cs[3]) ) 
+            logs.append ( "AM 2.5V : %3.5fV, %3.5fA" %(vs[2], cs[2]) ) 
+        logs.append ( "--> Link and current check done" )
+        self.linkcurs = logs
+
     def FEMBs_PWR_SW(self, SW = "ON"):
         run_code, val, runpath = self.save_setting(run_code="C", val=100) 
         self.run_code = run_code
@@ -90,6 +155,7 @@ class CE_RUNS:
             #wib_pos = int(wib_ip[-1])
             wib_pos = wib_addr
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
+            self.WIB_LINK_CUR( )
             femb_pwr = self.wib_pwr_femb[wib_pos]
             if (femb_pwr[0] == 1 ):
                 fe0_pwr = 0x1000F
@@ -469,6 +535,7 @@ class CE_RUNS:
         self.run_code = "0"
         self.udp_err_np = []
         self.ceboxes = []
+        self.linkcurs = []
 
         self.sts_tuple = ((0,"CapOff_"), (1,"CapOnn_"))
         self.snc_tuple = ((0,"900mV_"), (1,"200mV_"))
