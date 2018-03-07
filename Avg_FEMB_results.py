@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Sun Feb 25 19:04:01 2018
+Last modified: Wed Mar  7 15:13:42 2018
 """
 
 #defaut setting for scientific caculation
@@ -50,8 +50,8 @@ def Avg_FEMB_results(datapath, step, jumbo_flag = True, feed_freq = 500, avg_cyc
                 chip = int( rawfilep[rawfilep.find("CHIP") + 4])
 
                 smps = (len_file-1024)/2/16 
-                if (smps > (avg_cycle+1)*500 ):
-                    smps = (avg_cycle+1)*500 
+                if (smps > (avg_cycle+10)*500 ):
+                    smps = (avg_cycle+10)*500  
                 else:
                     pass
 
