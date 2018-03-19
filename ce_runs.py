@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Mar 19 14:52:51 2018
+Last modified: Mon Mar 19 17:06:48 2018
 """
 
 #defaut setting for scientific caculation
@@ -143,13 +143,14 @@ class CE_RUNS:
             logs.append ( "FM 1.5V : %3.5fV, %3.5fA" %(vs[3], cs[3]) ) 
             logs.append ( "AM 2.5V : %3.5fV, %3.5fA" %(vs[2], cs[2]) ) 
         logs.append ( "--> Link and current check done" )
-        self.linkcurs = logs
+        self.linkcurs.append(logs)
 
     def FEMBs_PWR_SW(self, SW = "ON"):
         run_code, val, runpath = self.save_setting(run_code="C", val=100) 
         self.run_code = run_code
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
+        self.linkcurs = []
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
             #wib_pos = int(wib_ip[-1])
