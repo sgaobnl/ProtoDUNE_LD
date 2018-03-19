@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Mar 19 17:06:48 2018
+Last modified: Mon Mar 19 17:39:05 2018
 """
 
 #defaut setting for scientific caculation
@@ -55,7 +55,7 @@ class CE_RUNS:
             ver_value = self.femb_meas.femb_config.femb.read_reg_wib (0xFF)
             ver_value = self.femb_meas.femb_config.femb.read_reg_wib (0xFF)
 
-            if ( (ver_value&0x0FFF) == self.wib_version_id) and (ver_value != -1) :
+            if ( ver_value == self.wib_version_id) and (ver_value != -1) :
                 print "WIB(%s) passed self check!"%(wib_ip)
             else:
                 print "WIB%s fails, mask this WIB!!!"%wib_ip
@@ -143,7 +143,7 @@ class CE_RUNS:
             logs.append ( "FM 1.5V : %3.5fV, %3.5fA" %(vs[3], cs[3]) ) 
             logs.append ( "AM 2.5V : %3.5fV, %3.5fA" %(vs[2], cs[2]) ) 
         logs.append ( "--> Link and current check done" )
-        self.linkcurs.append(logs)
+        self.linkcurs = self.linkcurs + logs
 
     def FEMBs_PWR_SW(self, SW = "ON"):
         run_code, val, runpath = self.save_setting(run_code="C", val=100) 
@@ -208,7 +208,7 @@ class CE_RUNS:
                 ver_value = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x101)
                 ver_value = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x101)
                 print "WIB%dFEMB%d firmware version: %X"%((wib_pos+1), femb_addr, ver_value )
-                if ( (ver_value &0xFFF) == self.femb_ver_id ) and (ver_value != -1) :
+                if ( ver_value  == self.femb_ver_id ) and (ver_value != -1) :
                     print "WIB%dFEMB%d is good"%((wib_pos+1), femb_addr)
                     self.femb_mask[wib_pos][femb_addr]  = 0
                 else:
