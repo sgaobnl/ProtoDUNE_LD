@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Mar 19 17:06:48 2018
+Last modified: Mon Mar 19 17:48:46 2018
 """
 
 #defaut setting for scientific caculation
@@ -143,7 +143,7 @@ class CE_RUNS:
             logs.append ( "FM 1.5V : %3.5fV, %3.5fA" %(vs[3], cs[3]) ) 
             logs.append ( "AM 2.5V : %3.5fV, %3.5fA" %(vs[2], cs[2]) ) 
         logs.append ( "--> Link and current check done" )
-        self.linkcurs.append(logs)
+        self.linkcurs = self.linkcurs + logs
 
     def FEMBs_PWR_SW(self, SW = "ON"):
         run_code, val, runpath = self.save_setting(run_code="C", val=100) 
