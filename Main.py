@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Thu Mar  8 11:29:49 2018
+Last modified: Mon Mar 19 14:51:42 2018
 """
 
 #defaut setting for scientific caculation
@@ -205,7 +205,7 @@ if (test_runs&0x7F != 0x0 ):
 
     print "FEMB ADC offset calibration"
     print "time cost = %.3f seconds"%(timer()-start)
-    apa_oft_info = ceruns.oft_run( ) 
+    apa_oft_info = ceruns.oft_run( test_runs&0x7F ) 
 #    if (False):
 #        oft_file = "D:/Hibay_V3/Rawdata/Rawdata_01_13_2018/run01oft/APA_ADC_OFT_01132018_155658.bin"
 #        with open (oft_file, 'rb') as fp:

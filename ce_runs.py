@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Sun Feb 25 21:45:23 2018
+Last modified: Mon Mar 19 14:52:51 2018
 """
 
 #defaut setting for scientific caculation
@@ -219,7 +219,7 @@ class CE_RUNS:
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
         return mask_femb
 
-    def oft_run(self): 
+    def oft_run(self, test_runs): 
         run_code, val, runpath = self.save_setting(run_code="B", val=100) 
         self.run_code = run_code
         apa_oft_info = [[]]*20
@@ -232,16 +232,19 @@ class CE_RUNS:
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
 
-            self.ceboxes = []
-            for femb_addr in femb_on_wib:
-                while (True):
-                    try  :
-                        tmp = raw_input("CE box number (000-999) on FE slot%d: "%femb_addr)
-                        tmp = int(tmp)
-                        break
-                    except ValueError:
-                        print "Value must be in 000 to 999, please input correct CE box number..."
-                self.ceboxes.append("CEbox" + format(tmp, '03d'))
+            if (test_runs == 0x40):
+                self.ceboxes = []
+                for femb_addr in femb_on_wib:
+                    while (True):
+                        try  :
+                            tmp = raw_input("CE box number (000-999) on FE slot%d: "%femb_addr)
+                            tmp = int(tmp)
+                            break
+                        except ValueError:
+                            print "Value must be in 000 to 999, please input correct CE box number..."
+                    self.ceboxes.append("CEbox" + format(tmp, '03d'))
+            else:
+                self.ceboxes = []
 
             for femb_addr in femb_on_wib:
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
