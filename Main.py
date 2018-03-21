@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Mon Mar 19 14:51:42 2018
+Last modified: Tue Mar 20 22:04:35 2018
 """
 
 #defaut setting for scientific caculation
@@ -136,6 +136,7 @@ if (test_runs == 0x0 ):
     print "Power FEMBs ON"
     print "time cost = %.3f seconds"%(timer()-start)
     ceruns.FEMBs_PWR_SW(SW = "ON")
+    ceruns.apa_cebox_chk() 
     with open(logfile, "a+") as f:
         f.write( "Begin\n") 
         f.write( "Turn PS on\n" ) 
@@ -204,6 +205,7 @@ if (test_runs&0x7F != 0x0 ):
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
     print "FEMB ADC offset calibration"
+
     print "time cost = %.3f seconds"%(timer()-start)
     apa_oft_info = ceruns.oft_run( test_runs&0x7F ) 
 #    if (False):
