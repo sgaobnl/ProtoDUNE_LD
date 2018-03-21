@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Mar 20 22:05:37 2018
+Last modified: Tue Mar 20 22:21:35 2018
 """
 
 #defaut setting for scientific caculation
@@ -305,15 +305,16 @@ class CE_RUNS:
             femb_on_wib = self.alive_fembs[wib_pos] 
 
             for femb_addr in femb_on_wib:
+                wib.write_reg_femb(femb_addr, 13, 1)
                 pages = []
                 for oft in range(10):
-                    self.femb_meas.femb_config.femb.write_reg_femb(0, 11, 256*(20000+oft) )
-                    self.femb_meas.femb_config.femb.write_reg_femb(0, 10, 3) 
-                    self.femb_meas.femb_config.femb.write_reg_femb(0, 10, 0x103) 
-                    self.femb_meas.femb_config.femb.write_reg_femb(0, 10, 0x3) 
+                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 11, 256*(20000+oft) )
+                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 10, 3) 
+                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 10, 0x103) 
+                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 10, 0x3) 
                     page = []
                     for i in range(16):
-                        a = self.femb_meas.femb_config.femb.read_reg_femb(0, 0x240 + i )
+                        a = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x240 + i )
                         page.append(a)
                     pages.append(page)
                 for page in pages:
