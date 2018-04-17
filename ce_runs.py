@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Apr 17 12:27:36 2018
+Last modified: Tue Apr 17 10:03:05 2018
 """
 
 #defaut setting for scientific caculation
@@ -295,52 +295,53 @@ class CE_RUNS:
         return apa_oft_info
 
     def apa_cebox_chk(self): 
-        cebox = []
-        for wib_addr in range(len(self.wib_ips)):
-            wib_ip = self.wib_ips[wib_addr]
-            wib_pos = wib_addr
-            print "WIB%d (IP=%s)"%((wib_pos+1), wib_ip)
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
-            self.femb_on_apa ()
-            femb_on_wib = self.alive_fembs[wib_pos] 
-
-            for femb_addr in femb_on_wib:
-                self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 13, 1)
-                pages = []
-                for oft in range(2):
-                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 11, 256*(20000+oft) )
-                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 10, 3) 
-                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 10, 0x103) 
-                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 10, 0x3) 
-                    page = []
-                    for i in range(16):
-                        a = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x240 + i )
-                        page.append(a)
-                        print hex(a)
-                    pages.append(page)
-                for page in pages:
-                    if page[0] != 0xFFFFFFFF :
-                        CEbox_id = page[0]
-                    if page[1] != 0xFFFFFFFF :
-                        APA_info = page[1]
-                print [hex(APA_info), hex(CEbox_id), wib_ip, wib_pos, femb_addr]
-                cebox.append([APA_info, CEbox_id, wib_ip, wib_pos, femb_addr])
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
-
-        runtime =  datetime.now().strftime('%m_%d_%Y')
-        runpath = self.path + "Rawdata_" + runtime + "/" 
-        try: 
-            os.makedirs(runpath)
-        except OSError:
-            if os.path.exists(runpath):
-                pass
-
-        savefile = runpath +  "CEbox_" + runtime + '.bin'
-        if (os.path.isfile(savefile)): 
-            pass
-        else:
-            with open(savefile, "wb") as fp:
-                pickle.dump(cebox, fp)
+        pass
+#        cebox = []
+#        for wib_addr in range(len(self.wib_ips)):
+#            wib_ip = self.wib_ips[wib_addr]
+#            wib_pos = wib_addr
+#            print "WIB%d (IP=%s)"%((wib_pos+1), wib_ip)
+#            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
+#            self.femb_on_apa ()
+#            femb_on_wib = self.alive_fembs[wib_pos] 
+#
+#            for femb_addr in femb_on_wib:
+#                self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 13, 1)
+#                pages = []
+#                for oft in range(2):
+#                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 11, 256*(20000+oft) )
+#                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 10, 3) 
+#                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 10, 0x103) 
+#                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 10, 0x3) 
+#                    page = []
+#                    for i in range(16):
+#                        a = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x240 + i )
+#                        page.append(a)
+#                        print hex(a)
+#                    pages.append(page)
+#                for page in pages:
+#                    if page[0] != 0xFFFFFFFF :
+#                        CEbox_id = page[0]
+#                    if page[1] != 0xFFFFFFFF :
+#                        APA_info = page[1]
+#                print [hex(APA_info), hex(CEbox_id), wib_ip, wib_pos, femb_addr]
+#                cebox.append([APA_info, CEbox_id, wib_ip, wib_pos, femb_addr])
+#            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
+#
+#        runtime =  datetime.now().strftime('%m_%d_%Y')
+#        runpath = self.path + "Rawdata_" + runtime + "/" 
+#        try: 
+#            os.makedirs(runpath)
+#        except OSError:
+#            if os.path.exists(runpath):
+#                pass
+#
+#        savefile = runpath +  "CEbox_" + runtime + '.bin'
+#        if (os.path.isfile(savefile)): 
+#            pass
+#        else:
+#            with open(savefile, "wb") as fp:
+#                pickle.dump(cebox, fp)
 
 
     def femb_oft_bias_regs (self, apa_oft_info, wib_ip, femb_addr):
