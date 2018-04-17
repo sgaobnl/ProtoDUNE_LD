@@ -165,11 +165,14 @@ class FEMB_CONFIG:
         while ( adc_fifo_sync != 0 ):
             adc_fifo_sync = ( (self.femb.read_reg_femb (femb_addr,6))&0xffff0000 ) >> 16
             time.sleep(0.001)
+            adc_fifo_sync0 = ( (self.femb.read_reg_femb (femb_addr,6))&0xffff0000 ) >> 16
+            time.sleep(0.01)
             adc_fifo_sync = ( (self.femb.read_reg_femb (femb_addr,6))&0xffff0000 ) >> 16
-            if (adc_fifo_sync == 0 ) :
+            if (adc_fifo_sync0 == 0) and (adc_fifo_sync == 0 ) :
                 print "FEMB%d: Successful SPI configuration and ADC FIFO synced"%femb_addr
                 break
             else:
+                print "ERROR: {0:16b}".format(adc_fifo_sync0)
                 print "ERROR: {0:16b}".format(adc_fifo_sync)
                 for i in range(8):
                     a = adc_fifo_sync & a_cs[i]

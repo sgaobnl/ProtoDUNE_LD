@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Mar 20 22:35:22 2018
+Last modified: Tue Apr 17 10:03:05 2018
 """
 
 #defaut setting for scientific caculation
@@ -552,7 +552,7 @@ class CE_RUNS:
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
 
-    def monitor_run(self, temp_or_pluse = "temp"): 
+    def monitor_run(self, temp_or_pluse = "temp", chn=0): 
         #temp_or_pluse: temp, pulse, banggap
         run_code, val, runpath = self.save_setting(run_code="9", val=100) 
         for tmpwib_pos in range(len(self.tmp_wib_ips)):
@@ -565,7 +565,7 @@ class CE_RUNS:
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
-            self.femb_meas.wib_monitor(runpath, temp_or_pluse = temp_or_pluse )
+            self.femb_meas.wib_monitor(runpath, temp_or_pluse = temp_or_pluse, chn=chn )
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
         self.run_code = run_code
         self.runpath = runpath

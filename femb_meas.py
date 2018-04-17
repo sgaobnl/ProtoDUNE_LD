@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Sun Feb 25 18:49:34 2018
+Last modified: Mon Apr  9 16:07:35 2018
 """
 
 #defaut setting for scientific caculation
@@ -623,7 +623,7 @@ class FEMB_MEAS: #for one FEMB
         self.femb_config.femb.get_rawdata_packets_bromberg(path=path, step=step, fe_cfg_r=fe_cfg_r, fembs_np=fembs_np , cycle=cycle)
 
     #for one WIB operation
-    def wib_monitor(self, runpath, temp_or_pluse = "pulse" ):
+    def wib_monitor(self, runpath, temp_or_pluse = "pulse", chn=0 ):
         clk_cs = 1
         adc_en_gr = 1
         pls_cs = 1
