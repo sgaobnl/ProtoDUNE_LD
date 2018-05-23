@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Wed May 23 16:25:40 2018
+Last modified: Wed May 23 17:47:10 2018
 """
 
 #defaut setting for scientific caculation
@@ -212,6 +212,7 @@ class CE_RUNS:
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
+                self.femb_meas.femb_n = wib_addr * 4 + femb_addr
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 ver_value = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x102)
                 ver_value = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x101)
@@ -241,6 +242,8 @@ class CE_RUNS:
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
+                self.femb_meas.femb_n = wib_addr * 4 + femb_addr
+                self.femb_meas.femb_n = wib_addr * 4 + femb_addr
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 apaloc = wib_pos*4 + femb_addr
                 femb_addr, adc_oft_regs, yuv_bias_regs = self.femb_meas.femb_oft_set(femb_addr, en_oft = self.en_oft ) 
@@ -341,6 +344,7 @@ class CE_RUNS:
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
+                self.femb_meas.femb_n = wib_addr * 4 + femb_addr
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
                 for sg in sgs:
@@ -365,6 +369,7 @@ class CE_RUNS:
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
+                self.femb_meas.femb_n = wib_addr * 4 + femb_addr
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
                 for sg in sgs:
@@ -389,6 +394,7 @@ class CE_RUNS:
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
+                self.femb_meas.femb_n = wib_addr * 4 + femb_addr
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
                 for sg in sgs:
@@ -414,6 +420,7 @@ class CE_RUNS:
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
+                self.femb_meas.femb_n = wib_addr * 4 + femb_addr
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
                 for sg in sgs:
@@ -450,6 +457,7 @@ class CE_RUNS:
             adc_oft_regs_np = [[], [], [], []]
             yuv_bias_regs_np = [[], [], [], []]
             for femb_addr in femb_on_wib:
+                self.femb_meas.femb_n = wib_addr * 4 + femb_addr
                 adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
                 adc_oft_regs_np[femb_addr] = adc_oft_regs
                 yuv_bias_regs_np[femb_addr] = yuv_bias_regs
@@ -504,6 +512,7 @@ class CE_RUNS:
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
+                self.femb_meas.femb_n = wib_addr * 4 + femb_addr
                 sg=2
                 tp=1
                 step = self.ceboxes[femb_addr] + "WIB" + format(wib_pos, '02d') +  "step" + str(sg) + run_code
@@ -553,6 +562,7 @@ class CE_RUNS:
         self.slk1_tuple = ((0,"pAx10Dis_"), (1, "pAx10Enn_"))
         self.slk0 = 0
         self.slk1 = 0
+        self.APA = "LArIAT"
         self.femb_meas = FEMB_MEAS()
         self.COTSADC = False
 

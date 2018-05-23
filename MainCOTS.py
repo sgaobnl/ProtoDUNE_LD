@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: 5/22/2018 3:09:57 PM
+Last modified: Wed May 23 17:51:18 2018
 """
 
 #defaut setting for scientific caculation
@@ -31,6 +31,7 @@ ceruns = CE_RUNS()
 
 start = timer()
 ceruns.APA = sys.argv[1]
+ceruns.femb_meas.APA = ceruns.APA 
 ceruns.env = ""
 test_runs = int(sys.argv[2],16)
 RTD_flg = (sys.argv[3] == "True")
@@ -62,6 +63,23 @@ if (ceruns.APA == "APA40"):
     ceruns.tmp_wib_ips = ["192.168.121.1"] 
     ceruns.avg_wib_ips = ["192.168.121.1"] 
     ceruns.avg_wib_pwr_femb = [[1,1,1,0]]
+    ceruns.avg_femb_on_wib = [0] 
+    ceruns.jumbo_flag = True
+    ceruns.COTSADC = True
+    ceruns.femb_meas.femb_config.phase_set = phase_set
+elif (ceruns.APA == "LArIAT"):
+    print ceruns.APA
+    ceruns.wib_version_id = 0x101
+    ceruns.femb_ver_id = 0x405
+    ceruns.path = "D:/APA40/Rawdata/" 
+    #ceruns.path = "D:/APA40/Rawdata/" 
+    ceruns.wib_ips = [  "192.168.121.1",  "192.168.121.2" ]
+    ceruns.wib_pwr_femb = [[1,1,1,1], [1,1,1,1]]
+    ceruns.femb_mask    = [[0,0,0,0], [0,0,0,0]]
+    ceruns.bbwib_ips = [ "192.168.121.1"] 
+    ceruns.tmp_wib_ips = ["192.168.121.1"] 
+    ceruns.avg_wib_ips = ["192.168.121.1"] 
+    ceruns.avg_wib_pwr_femb = [[1,1,1,1]]
     ceruns.avg_femb_on_wib = [0] 
     ceruns.jumbo_flag = True
     ceruns.COTSADC = True

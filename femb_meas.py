@@ -786,7 +786,9 @@ class FEMB_MEAS: #for one FEMB
         self.jumbo_flag = True
 #        self.APA = "ProtoDUNE"
 #        self.APA = "COTS"
-        self.APA = "APA40"
+#        self.APA = "APA40"
+        self.APA = "LArIAT"
+        self.femb_n = 0
         self.apamap = APA_MAP()
         self.apamap.APA = self.APA 
 
