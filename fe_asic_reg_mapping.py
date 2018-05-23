@@ -5,7 +5,7 @@ import string
 class FE_ASIC_REG_MAPPING:
 
 ####sec_chn_reg only sets a channel register, the other registers remains as before
-    def set_fechn_reg(self, chip=0, chn=0, sts=0, snc=0, sg=0, st=0, smn=0, sdf=0 ):
+    def set_fechn_reg(self, chip=0, chn=0, sts=0, snc=0, sg=0, st=0, smn=0, sdf=1 ):
         chn_reg = ((sts&0x01)<<7) + ((snc&0x01)<<6) + ((sg&0x03)<<4) + ((st&0x03)<<2)  + ((smn&0x01)<<1) + ((sdf&0x01)<<0) 
         chn_reg_bool = []
         for j in range(8):
@@ -35,7 +35,7 @@ class FE_ASIC_REG_MAPPING:
 
 ####sec_chip sets registers of a whole chip, registers of the other chips remains as before
     def set_fechip(self, chip=0,
-                 sts=0, snc=0, sg=0, st=0, smn=0, sdf=0,
+                 sts=0, snc=0, sg=0, st=0, smn=0, sdf=1,
                  slk0=0, stb1=0, stb=0, s16=0, slk1=0, sdc=0, swdac=0, dac=0):
         for chn in range(16):
             self.set_fechn_reg(chip=chip, chn=chn, sts=sts, snc=snc, sg=sg, st=st, smn=smn, sdf=sdf)     
@@ -43,7 +43,7 @@ class FE_ASIC_REG_MAPPING:
         self.set_fechip_global (chip, slk0, stb1, stb, s16, slk1, sdc, swdac, dac)
 
 ####sec_board sets registers of a whole board 
-    def set_fe_board(self, sts=0, snc=0, sg=0, st=0, smn=0, sdf=0, 
+    def set_fe_board(self, sts=0, snc=0, sg=0, st=0, smn=0, sdf=1, 
                        slk0 = 0, stb1 = 0, stb = 0, s16=0, slk1=0, sdc=0, swdac=0, dac=0):
         for chip in range(8):
             self.set_fechip( chip, sts, snc, sg, st, smn, sdf, slk0, stb1, stb, s16, slk1, sdc, swdac, dac)

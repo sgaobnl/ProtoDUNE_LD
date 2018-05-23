@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Apr  9 16:07:35 2018
+ast modified: 2/16/2018 6:06:22 PM
 """
 
 #defaut setting for scientific caculation
@@ -50,6 +50,9 @@ class FEMB_MEAS: #for one FEMB
         femb_fe_regs = []
         for tmp_r in range(len(fe_regs)):
             femb_fe_regs.append( fe_regs[tmp_r] | yuv_bias_regs[tmp_r]) 
+#        for i in range(0,1152,8):
+#            print femb_fe_regs[i: i + 8]
+#        sys.exit()
         return copy.deepcopy(femb_fe_regs)
 
     def yuv_bias_set (self, femb_addr):
@@ -59,6 +62,7 @@ class FEMB_MEAS: #for one FEMB
             chip_means = []
             for chn in range (16):
                 chipchn = (chip*16) + chn
+                self.apamap.APA = self.APA 
                 apa_yuv, apa_y, apa_u, apa_v = self.apamap.apa_mapping()
                 bias = 0
                 y_wire = np.where(chipchn == np.array(apa_y))
@@ -89,21 +93,23 @@ class FEMB_MEAS: #for one FEMB
         tp = 1 #st_tuple[3] #3us
     
         adc_oft_regs = []
-        val = 25 
-        if (not(self.jumbo_flag)):
-            self.femb_config.femb.write_reg_wib_checked (0x1F, 0x1FB)
-            val = val*8
-        else:
-            self.femb_config.femb.write_reg_wib_checked (0x1F, 0xEFB)
-            val = val
-    
+        adc_oft_class = ADC_ASIC_REG_MAPPING()
+
         if ( en_oft ):
+            val = 25 
+            if (not(self.jumbo_flag)):
+                self.femb_config.femb.write_reg_wib_checked (0x1F, 0x1FB)
+                val = val*8
+            else:
+                self.femb_config.femb.write_reg_wib_checked (0x1F, 0xEFB)
+                val = val
+
             oft_mean_chns = []
             print "Pedestal configuration starts..."
             for adc_oft in range(4):
                 print "FEMB%d, EN_GR = 1, ADC_Offset = %d"%(femb_addr, adc_oft)
                 self.fe_reg.set_fe_board() # reset the registers value
-                self.fe_reg.set_fe_board (sts=0,sg=sg, st=tp, smn=0, sdf=0, slk0=0, slk1=0, swdac =0, dac=0)
+                self.fe_reg.set_fe_board (sts=0,sg=sg, st=tp, smn=0, sdf=1, slk0=0, slk1=0, swdac =0, dac=0)
                 fe_regs = copy.deepcopy(self.fe_reg.REGS)
         
                 if (clk_cs == 1):
@@ -154,7 +160,6 @@ class FEMB_MEAS: #for one FEMB
                 oft_mean_chns.append(mean_chns)
     
         ##################################################################################
-            adc_oft_class = ADC_ASIC_REG_MAPPING()
             adc_oft_class.set_adc_board()
         
             brd_means = []
@@ -170,7 +175,9 @@ class FEMB_MEAS: #for one FEMB
                     adc_oft_class.set_chn_reg(chip=chip, chn=chn, d=tmp[0][0] )
                     chip_means.append(oft_mean_chns[tmp[0][0]][chipchn])
                 brd_means.append(chip_means)
-    
+        else:
+            pass
+   
         adc_oft_regs = copy.deepcopy(adc_oft_class.REGS)
         return adc_oft_regs
 
@@ -201,14 +208,8 @@ class FEMB_MEAS: #for one FEMB
                 femb_adc_regs.append( adc_regs[tmp_r] | adc_oft_regs[tmp_r] ) 
         return copy.deepcopy(femb_adc_regs)
     
-#    def fe_regs_bias_config(self, fe_regs,  yuv_bias_regs ):
-#        femb_fe_regs = []
-#        for tmp_r in range(len(fe_regs)):
-#            femb_fe_regs.append( fe_regs[tmp_r] | yuv_bias_regs[tmp_r]) 
-#        return copy.deepcopy(femb_fe_regs)
-
-    def femb_oft_set(self, femb_addr, jumob_flag = True, en_oft = True ): 
-        adc_oft_regs = self.adc_oft_set(femb_addr,  en_oft=True)
+    def femb_oft_set(self, femb_addr, en_oft = True ): 
+        adc_oft_regs = self.adc_oft_set(femb_addr,  en_oft=en_oft)
         yuv_bias_regs = self.yuv_bias_set (femb_addr )
         return femb_addr, adc_oft_regs, yuv_bias_regs
 
@@ -246,7 +247,7 @@ class FEMB_MEAS: #for one FEMB
             sys.exit()
         else:
             self.fe_reg.set_fe_board() # reset the registers value
-            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=0, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
             fe_regs = copy.deepcopy(self.fe_reg.REGS)
             adc_regs = self.adc_clk_engr_config (adc_oft_regs, clk_cs = clk_cs, adc_en_gr = 1, adc_offset = 0 )
             fe_bias_regs = self.fe_regs_bias_config(fe_regs, yuv_bias_regs ) #one FEMB
@@ -254,7 +255,7 @@ class FEMB_MEAS: #for one FEMB
             fe_adc_regs = copy.deepcopy(self.fe_adc_reg.REGS)
 
             if sg == 3: #25mV/fC
-                self.ampl = 4
+                self.ampl = 6
             elif sg == 1: #"14_0mV_"
                 self.ampl = 8
             elif sg == 2: #"07_8mV_":
@@ -293,7 +294,7 @@ class FEMB_MEAS: #for one FEMB
             sys.exit()
         else:
             self.fe_reg.set_fe_board() # reset the registers value
-            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=0, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
+            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
             fe_regs = copy.deepcopy(self.fe_reg.REGS)
             adc_regs = self.adc_clk_engr_config (adc_oft_regs, clk_cs = clk_cs, adc_en_gr = 1, adc_offset = 0 )
             fe_bias_regs = self.fe_regs_bias_config(fe_regs, yuv_bias_regs ) #one FEMB
@@ -331,7 +332,7 @@ class FEMB_MEAS: #for one FEMB
 
             self.femb_config.config_femb_mode(femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac)
 
-            asic = 0
+            asic = 2
             val = 20
             if (not(self.jumbo_flag) ):
                 val = val*8
@@ -352,12 +353,12 @@ class FEMB_MEAS: #for one FEMB
             for i in peaks_index :
                 peaks_value.append(np_data[i])
 
-            peaksmean = np.mean(peaks_value)
+            peaksmean = np.mean(peaks_value) - pedvalue
             if ( math.isnan(peaksmean)):
                 peaksmean = 0
             else:
-                print "FPGA DAC = %d gets maximum ADC bin = %d"%(ampl, peaksmean)
-            if (peaksmean > 3000 ):
+                print "FPGA DAC = %d gets maximum amplitude  = %d"%(ampl, peaksmean)
+            if (peaksmean > 1000 ):
                 break
             else:
                 ampl = ampl + 1 
@@ -415,7 +416,7 @@ class FEMB_MEAS: #for one FEMB
             sys.exit()
         else:
             self.fe_reg.set_fe_board() # reset the registers value
-            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=0, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
             fe_regs = copy.deepcopy(self.fe_reg.REGS)
             adc_regs = self.adc_clk_engr_config (adc_oft_regs, clk_cs = clk_cs, adc_en_gr = 1, adc_offset = 0 )
             fe_bias_regs = self.fe_regs_bias_config(fe_regs, yuv_bias_regs ) #one FEMB
@@ -464,7 +465,7 @@ class FEMB_MEAS: #for one FEMB
         else:
             for dac in range(3,64,1):
                 self.fe_reg.set_fe_board() # reset the registers value
-                self.fe_reg.set_fe_board (sts=1,sg=sg, st=tp, smn=0, sdf=0, slk0=slk0, slk1=slk1, swdac =1, dac=dac)
+                self.fe_reg.set_fe_board (sts=1,sg=sg, st=tp, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=dac)
                 fe_regs = copy.deepcopy(self.fe_reg.REGS)
                 adc_regs = self.adc_clk_engr_config (adc_oft_regs, clk_cs = clk_cs, adc_en_gr = 1, adc_offset = 0 )
                 fe_bias_regs = self.fe_regs_bias_config(fe_regs, yuv_bias_regs ) #one FEMB
@@ -476,7 +477,7 @@ class FEMB_MEAS: #for one FEMB
                 self.femb_config.femb.write_reg_femb_checked (femb_addr, 5, self.reg_5_value)
                 self.femb_config.config_femb_mode(femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac)
   
-                rawdata = self.femb_config.get_rawdata_packets_femb(femb_addr,asic=0, val=100)
+                rawdata = self.femb_config.get_rawdata_packets_femb(femb_addr,asic=2, val=100)
             
                 smps = (len(rawdata)-1024)//2//16
                 chn_data = raw_convertor(rawdata, smps, self.jumbo_flag)
@@ -490,12 +491,12 @@ class FEMB_MEAS: #for one FEMB
                 for i in peaks_index :
                     peaks_value.append(np_data[i])
             
-                peaksmean = np.mean(peaks_value)
+                peaksmean = np.mean(peaks_value) - pedvalue
                 if ( math.isnan(peaksmean)):
                     peaksmean = 0
                 else:
-                    print "ASIC DAC = %d gets maximum ADC bin = %d"%(dac, peaksmean)
-                if (peaksmean > 3000 ):
+                    print "ASIC DAC = %d gets maximum amplitude = %d"%(dac, peaksmean)
+                if (peaksmean > 1000 ):
                     break
     
             dly_pos = []
@@ -543,7 +544,7 @@ class FEMB_MEAS: #for one FEMB
     
             for dac in dac_value_np:
                 self.fe_reg.set_fe_board() # reset the registers value
-                self.fe_reg.set_fe_board (sts=1,sg=sg, st=tp, smn=0, sdf=0, slk0=slk0, slk1=slk1, swdac =1, dac=dac)
+                self.fe_reg.set_fe_board (sts=1,sg=sg, st=tp, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=dac)
                 fe_regs = copy.deepcopy(self.fe_reg.REGS)
                 adc_regs = self.adc_clk_engr_config (adc_oft_regs, clk_cs = clk_cs, adc_en_gr = 1, adc_offset = 0 )
                 fe_bias_regs = self.fe_regs_bias_config(fe_regs, yuv_bias_regs ) #one FEMB
@@ -585,7 +586,7 @@ class FEMB_MEAS: #for one FEMB
 
         for femb_addr in fembs_np:
             self.fe_reg.set_fe_board() # reset the registers value
-            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=0, smn=0, sdf=0, slk0=slk0, slk1=slk1 )
+            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1 )
             fe_regs = copy.deepcopy(self.fe_reg.REGS)
             adc_regs = self.adc_clk_engr_config (adc_oft_regs_np[femb_addr], clk_cs = clk_cs, adc_en_gr = 1, adc_offset = 0 )
             fe_bias_regs = self.fe_regs_bias_config(fe_regs, yuv_bias_regs_np[femb_addr] ) #one FEMB
@@ -623,7 +624,7 @@ class FEMB_MEAS: #for one FEMB
         self.femb_config.femb.get_rawdata_packets_bromberg(path=path, step=step, fe_cfg_r=fe_cfg_r, fembs_np=fembs_np , cycle=cycle)
 
     #for one WIB operation
-    def wib_monitor(self, runpath, temp_or_pluse = "pulse", chn=0 ):
+    def wib_monitor(self, runpath, temp_or_pluse = "pulse" ):
         clk_cs = 1
         adc_en_gr = 1
         pls_cs = 1
@@ -651,7 +652,7 @@ class FEMB_MEAS: #for one FEMB
                     self.fe_reg.set_fe_board() # reset the registers value
 
                     #set registers for FEMB
-                    self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, snc=1, smn=0, sdf=0, slk0=0, slk1=0, swdac =1, dac=dac )
+                    self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, snc=1, smn=0, sdf=1, slk0=0, slk1=0, swdac =1, dac=dac )
                     #set global registers for FE
                     if (monitor_out == "pulse" ):
                         self.fe_reg.set_fechip_global(chip=chip, slk0=0, stb1 = 0, stb = 0, slk1=0, swdac=1, dac=dac)
@@ -660,7 +661,7 @@ class FEMB_MEAS: #for one FEMB
                     else:
                         self.fe_reg.set_fechip_global(chip=chip, slk0=0, stb1 = 0, stb = 1, slk1=0, swdac=1, dac=dac)
                     #set chn registers for FE
-                    self.fe_reg.set_fechn_reg(chip=chip, chn=0, sts=1, snc=1, sg=sg, st=tp, smn=1, sdf=0 )
+                    self.fe_reg.set_fechn_reg(chip=chip, chn=0, sts=1, snc=1, sg=sg, st=tp, smn=1, sdf=1 )
                     fe_regs = copy.deepcopy(self.fe_reg.REGS)
 
                     self.adc_reg.set_adc_board(clk0=1,f0 =0) #external clk
@@ -731,7 +732,7 @@ class FEMB_MEAS: #for one FEMB
             sys.exit()
         else:
             self.fe_reg.set_fe_board() # reset the registers value
-            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=0, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
             fe_regs = copy.deepcopy(self.fe_reg.REGS)
             self.adc_reg.set_adc_board(clk0=1,f0 =0) #external clk
             adc_regs = copy.deepcopy(self.adc_reg.REGS)
@@ -743,9 +744,9 @@ class FEMB_MEAS: #for one FEMB
             if sg == 3: #25mV/fC
                 self.ampl = 4
             elif sg == 1: #"14_0mV_"
-                self.ampl = 9
+                self.ampl = 8
             elif sg == 2: #"07_8mV_":
-                self.ampl = 15
+                self.ampl = 12
             elif sg == 0: #"04_7mV_":
                 self.ampl = 20
             else:
@@ -769,12 +770,11 @@ class FEMB_MEAS: #for one FEMB
                 if rawdata != None:
                     with open(filename,"wb") as f:
                         f.write(rawdata) 
-        return savepath
 
     def __init__(self):
         self.freq = 500
         self.dly = 10 
-        self.peak_chn = 11
+        self.peak_chn = 0 
         self.ampl = 0 #% 32
         self.int_dac = 0 # or 0xA1
         self.dac_meas = self.int_dac  # or 60
@@ -784,7 +784,9 @@ class FEMB_MEAS: #for one FEMB
         self.fe_reg = FE_ASIC_REG_MAPPING() 
         self.fe_adc_reg = FE_ADC_MAPPING()
         self.jumbo_flag = True
-        self.APA = "ProtoDUNE"
+#        self.APA = "ProtoDUNE"
+#        self.APA = "COTS"
+        self.APA = "APA40"
         self.apamap = APA_MAP()
         self.apamap.APA = self.APA 
 
