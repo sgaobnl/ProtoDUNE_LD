@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Wed May 23 17:51:18 2018
+Last modified: Sun Jun  3 11:26:23 2018
 """
 
 #defaut setting for scientific caculation
@@ -37,20 +37,6 @@ test_runs = int(sys.argv[2],16)
 RTD_flg = (sys.argv[3] == "True")
 phase_set = int(sys.argv[4])
 
-#ceruns.wib_version_id = 0x113
-#ceruns.femb_ver_id = 0x323
-
-#if (ceruns.APA == "40APA"):
-#    print ceruns.APA
-#    ceruns.path = "D:/Hibay_V3/Rawdata/" 
-#    ceruns.wib_ips = [ "192.168.121.50", "192.168.121.10"  ]
-#    ceruns.wib_pwr_femb = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
-#    ceruns.bbwib_ips = [ "192.168.121.50", "192.168.121.10"] 
-#    ceruns.tmp_wib_ips = ["192.168.121.50"] 
-#    ceruns.avg_wib_ips = ["192.168.121.50"] 
-#    ceruns.avg_wib_pwr_femb = [[1,0,0,0]]
-#    ceruns.avg_femb_on_wib = [0] 
-#    ceruns.jumbo_flag = True
 if (ceruns.APA == "APA40"):
     print ceruns.APA
     ceruns.wib_version_id = 0x101
@@ -74,7 +60,7 @@ elif (ceruns.APA == "LArIAT"):
     ceruns.path = "D:/APA40/Rawdata/" 
     #ceruns.path = "D:/APA40/Rawdata/" 
     ceruns.wib_ips = [  "192.168.121.1",  "192.168.121.2" ]
-    ceruns.wib_pwr_femb = [[1,1,1,1], [1,1,1,1]]
+    ceruns.wib_pwr_femb = [[1,1,1,1], [1,0,0,0]]
     ceruns.femb_mask    = [[0,0,0,0], [0,0,0,0]]
     ceruns.bbwib_ips = [ "192.168.121.1"] 
     ceruns.tmp_wib_ips = ["192.168.121.1"] 
@@ -208,6 +194,29 @@ if (test_runs&0x7F != 0x0 ):
         f.write (ceruns.runpath + "\n" )
         f.write (ceruns.runtime + "\n" )
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+
+if (test_runs&0x20 != 0x0 ):
+    print "LArIAT Configuration"
+    sgs = [int(sys.argv[5])]
+    tps = [int(sys.argv[6])]
+    fpgadac_en = (sys.argv[7] == "True")
+    asicdac_en = (sys.argv[8] == "True")
+    vdac = int(sys.argv[9])
+    ceruns.slk0 = (int(sys.argv[10]))&0x01
+    ceruns.slk1 = (int(sys.argv[11]))&0x02
+    femb_pul_en =  (sys.argv[12] == "True")
+    wib_pul_en =  (sys.argv[13] == "True")
+
+
+
+    ceruns.qc_run(apa_oft_info, sgs=[3], tps =[0,1,2,3], val = 100) 
+    with open(logfile, "a+") as f:
+        f.write( "%2X: Quick Checkout Test\n" %(test_runs&0x10) ) 
+        f.write (ceruns.runpath + "\n" )
+        f.write (ceruns.runtime + "\n" )
+        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+
+    print "time cost = %.3f seconds"%(timer()-start)
 
 if (test_runs&0x10 != 0x0 ):
     print "Quick Checkout Test"

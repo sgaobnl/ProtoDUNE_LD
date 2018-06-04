@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Wed May 23 17:47:10 2018
+Last modified: Sun Jun  3 11:27:19 2018
 """
 
 #defaut setting for scientific caculation
@@ -333,6 +333,31 @@ class CE_RUNS:
             self.femb_meas.femb_config.femb.write_reg_wib_checked (0x1F, 0xEFB)
             val = val        
         return run_code, val, runpath
+
+    def larcfg_run(self, apa_oft_info, sgs = [3], tps =[0,1,2,3], fpgadac_en=False, asicdac_en=False, vdac = 0, femb_pul_en=False, wib_pul_en=False, val = 100): 
+        run_code, val, runpath = self.save_setting(run_code="0", val=val) 
+        self.run_code = run_code
+        for wib_addr in range(len(self.wib_ips)):
+            wib_ip = self.wib_ips[wib_addr]
+            wib_pos = wib_addr
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
+            self.femb_on_apa ()
+            femb_on_wib = self.alive_fembs[wib_pos] 
+            for femb_addr in femb_on_wib:
+                self.femb_meas.femb_n = wib_addr * 4 + femb_addr
+                udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
+                adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
+                for sg in sgs:
+                    for tp in tps:
+                        step = "WIB" + format(wib_pos, '02d') + "step" + str(sg) + run_code
+                        self.femb_meas.save_chkout(runpath, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, clk_cs=1, pls_cs = 1, \
+                                                   dac_sel=1, fpga_dac=1, asic_dac=0, slk0 = self.slk0, slk1= self.slk1,  val=val)
+                udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
+                self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
+        self.runpath = runpath
+        self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
+
 
     def qc_run(self, apa_oft_info, sgs = [3], tps =[0,1,2,3], val = 100): 
         run_code, val, runpath = self.save_setting(run_code="0", val=val) 
