@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: 1/13/2018 3:40:00 PM
+Last modified: Fri Jun  8 14:43:24 2018
 """
 
 #defaut setting for scientific caculation
@@ -18,7 +18,7 @@ Last modified: 1/13/2018 3:40:00 PM
 import numpy as np
 import struct
 
-def raw_convertor_feedloc(raw_data, smps, jumbo_flag = True):
+def raw_convertor_feedloc(raw_data, smps, jumbo_flag = False):
     dataNtuple =struct.unpack_from(">%dH"%(smps*16),raw_data)
     chn_data=[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],]
     feed_loc=[]
@@ -115,11 +115,11 @@ def raw_convertor_feedloc(raw_data, smps, jumbo_flag = True):
 
     return chn_data, feed_loc
 
-def raw_convertor(raw_data, smps, jumbo_flag = True):
+def raw_convertor(raw_data, smps, jumbo_flag = False):
     chn_data, feed_loc = raw_convertor_feedloc(raw_data, smps, jumbo_flag)
     return chn_data
 
-def raw_convertor_peak(raw_data, smps, jumbo_flag = True):
+def raw_convertor_peak(raw_data, smps, jumbo_flag = False):
     chn_data, feed_loc = raw_convertor_feedloc(raw_data, smps, jumbo_flag)
     if ( len(feed_loc)  ) > 2 :
         chn_peakp=[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],]

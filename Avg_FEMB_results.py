@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Wed May 23 17:23:04 2018
+Last modified: Fri Jun  8 14:44:22 2018
 """
 
 #defaut setting for scientific caculation
@@ -27,7 +27,7 @@ from timeit import default_timer as timer
 
 from raw_convertor_m import raw_convertor_peak
 
-def Avg_FEMB_results(datapath, step, jumbo_flag = True, feed_freq = 500, avg_cycle = 300, apa_n="LArIAT", femb_n = 0):
+def Avg_FEMB_results(datapath, step, jumbo_flag = False, feed_freq = 500, avg_cycle = 300, apa_n="LArIAT", femb_n = 0):
     start = timer()
     alldata = []
         

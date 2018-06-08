@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Sun Jun  3 10:20:50 2018
+Last modified: Fri Jun  8 13:15:20 2018
 """
 
 #defaut setting for scientific caculation
@@ -107,8 +107,6 @@ class APA_MAP:
                     chninfo = [ "V" + format(fl_i, "03d"), format(chn, "03d"), chn//16 , format(chn%15, "02d"), apa_femb_loc[0][4], apa_femb_loc[0][5]]
                     apa_femb_loc.append(chninfo)
                     fl_i = fl_i + 1
-            for i in apa_femb_loc:
-                print i
 
         elif (self.APA == "APA40" ):
             apa_femb_loc = [ 
@@ -173,7 +171,7 @@ class APA_MAP:
                 if chn[0][0] == "U" and int(chn[0][1:3]) == i :
                     U_sort.append(chn)
 
-        print "APA is " + self.APA + ",LArIAT FEMB no is %d"%self.femb 
+#        print "APA is " + self.APA + ",LArIAT FEMB no is %d"%self.femb 
         return All_sort, X_sort, V_sort, U_sort
     
     def apa_mapping(self):
@@ -199,7 +197,7 @@ class APA_MAP:
     def __init__(self):
         self.APA = 'LArIAT'
         self.femb = 4
-        self.path = "./LArIAT_Pin_Mapping_05272018_eric.xlsx"
+        self.path = "./LArIAT_Pin_Mapping_06052018.xlsx"
  
 
 #apa = APA_MAP()

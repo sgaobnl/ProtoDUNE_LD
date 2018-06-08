@@ -18,11 +18,13 @@ class FEMB_CONFIG:
 
         self.femb.write_reg_femb_checked (femb_addr, 18, 0x11)
         if (pls_cs == 0 ):
-            pls_cs_value = 0x11 #disable all
+            pls_cs_value = 0x3 #disable all
         elif (pls_cs == 1 ): #internal pls
-            pls_cs_value = 0x10 
+            pls_cs_value = 0x2 
         elif (pls_cs == 2 ): #external pls
-            pls_cs_value = 0x01 
+            pls_cs_value = 0x1 
+        elif (pls_cs == 3 ): #enable int and ext pls
+            pls_cs_value = 0x0 
         self.femb.write_reg_femb_checked (femb_addr, 18, pls_cs_value)
         time.sleep(0.1)
 
@@ -481,7 +483,7 @@ class FEMB_CONFIG:
 ####            self.femb.write_reg_wib (18, 0x8000)
 ####            self.femb.write_reg_wib (18, 0x8000)
             time.sleep(0.2)
-        time.sleep(5)
+        time.sleep(2.5)
 
     def selectasic_femb(self,femb_addr=0, asic=0):
         self.femb.write_reg_wib ( 7, 0x80000000)
