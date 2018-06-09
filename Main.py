@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Wed May 23 14:39:19 2018
+Last modified: Sat Jun  9 18:41:27 2018
 """
 
 #defaut setting for scientific caculation
@@ -87,9 +87,9 @@ elif (ceruns.APA == "CHKOUT"):
     ceruns.femb_mask    = [[0,0,0,0]]
     ceruns.jumbo_flag = True
 
-elif (ceruns.APA == "CRYO_CHKOUT"): 
+elif (ceruns.APA == "CRYO_CHKOUT"): # to be debugged, not ready to use
     print ceruns.APA
-    ceruns.path = rawpath + "/CHKOUT/" 
+    ceruns.path = rawpath + "/Cryostat/" 
     ceruns.wib_ips = [#  "10.73.137.20", "10.73.137.21", "10.73.137.22", "10.73.137.23", "10.73.137.24", \
                         "10.73.137.26", "10.73.137.27", "10.73.137.28", "10.73.137.29", "10.73.137.30", \
                         "10.73.137.31", "10.73.137.32", "10.73.137.33", "10.73.137.34", "10.73.137.35", \
