@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Apr 17 10:03:05 2018
+Last modified: Mon 04 Jun 2018 04:39:56 PM CEST
 """
 
 #defaut setting for scientific caculation
@@ -217,30 +217,30 @@ class CE_RUNS:
                     print "WIB%dFEMB%d version value(%x) is wrong , mask it"%((wib_pos+1), femb_addr, ver_value)
                     femb_pwr = self.wib_pwr_femb[wib_pos]
                     femb_mask = self.femb_mask[wib_pos]
-                    if (femb_pwr[0] == 1 ) and (femb_mask[0] != 1 ):
-                        fe0_pwr = 0x1000F
-                    else:
-                        fe0_pwr = 0x00000
-                    if (femb_pwr[1] == 1 ) and (femb_mask[1] != 1 ):
-                        fe1_pwr = 0x200F0
-                    else:
-                        fe1_pwr = 0x00000
-                    if (femb_pwr[2] == 1 ) and (femb_mask[2] != 1 ):
-                        fe2_pwr = 0x40F00
-                    else:
-                        fe2_pwr = 0x00000
-                    
-                    if (femb_pwr[3] == 1 ) and (femb_mask[3] != 1 ):
-                        fe3_pwr = 0x8F000
-                    else:
-                        fe3_pwr = 0x00000
-                    pwr_value = long (0x100000)| fe0_pwr| fe1_pwr| fe2_pwr| fe3_pwr
-                    pwr_value_rb = self.femb_meas.femb_config.femb.read_reg_wib(8)
-                    pwr_value_rb = self.femb_meas.femb_config.femb.read_reg_wib(8)
-                    if (pwr_value != pwr_value_rb ):
-                        print "Turn inactive FEMB off"
-                        self.femb_meas.femb_config.femb.write_reg_wib_checked (8, pwr_value)
-                        time.sleep(5)
+                    #if (femb_pwr[0] == 1 ) and (femb_mask[0] != 1 ):
+                    #    fe0_pwr = 0x1000F
+                    #else:
+                    #    fe0_pwr = 0x00000
+                    #if (femb_pwr[1] == 1 ) and (femb_mask[1] != 1 ):
+                    #    fe1_pwr = 0x200F0
+                    #else:
+                    #    fe1_pwr = 0x00000
+                    #if (femb_pwr[2] == 1 ) and (femb_mask[2] != 1 ):
+                    #    fe2_pwr = 0x40F00
+                    #else:
+                    #    fe2_pwr = 0x00000
+                   # 
+                   # if (femb_pwr[3] == 1 ) and (femb_mask[3] != 1 ):
+                   #     fe3_pwr = 0x8F000
+                   # else:
+                   #     fe3_pwr = 0x00000
+                   # pwr_value = long (0x100000)| fe0_pwr| fe1_pwr| fe2_pwr| fe3_pwr
+                   # pwr_value_rb = self.femb_meas.femb_config.femb.read_reg_wib(8)
+                   # pwr_value_rb = self.femb_meas.femb_config.femb.read_reg_wib(8)
+                   # if (pwr_value != pwr_value_rb ):
+                   #     print "Turn inactive FEMB off"
+                   #     self.femb_meas.femb_config.femb.write_reg_wib_checked (8, pwr_value)
+                   #     time.sleep(5)
 
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )

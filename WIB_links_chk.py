@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Sun Feb 25 22:17:25 2018
+Last modified: Mon 04 Jun 2018 04:46:19 PM CEST
 """
 
 import os
@@ -22,7 +22,7 @@ from femb_udp_cmdline import FEMB_UDP
 wib= FEMB_UDP()
 
 logs = []
-for lastip in ["20", "21", "22", "23", "24"]:
+for lastip in ["31", "32", "33", "34", "35"]:
 #for lastip in [ wib_lastbyte,]:
     wib.UDP_IP = "10.73.137." +  lastip
     runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
@@ -112,7 +112,7 @@ for lastip in ["20", "21", "22", "23", "24"]:
     else:
         print "WIB (%s)  doesn't exist or wrong firmware version!)"%(wib.UDP_IP)
 
-logfile =    "/nfs/rscratch/bnl_ce/shanshan/Rawdata/APA3/" + "/WIB_lins_chk.log"
+logfile =    "/nfs/rscratch/bnl_ce/shanshan/Rawdata/APA2/" + "/WIB_lins_chk.log"
 with open(logfile, "a+") as f:
     f.write( "Begin\n" ) 
     f.write( "WIB LINKs check\n" ) 

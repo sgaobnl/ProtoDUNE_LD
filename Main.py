@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Sat Jun  9 18:41:27 2018
+Last modified: Sat Jun  9 19:43:10 2018
 """
 
 #defaut setting for scientific caculation
@@ -76,7 +76,6 @@ elif ( (ceruns.APA == "Coldbox") or \
 
     ceruns.wib_pwr_femb = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
     ceruns.femb_mask    = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
-
     ceruns.tmp_wib_ips = ["10.73.137.24"] 
     ceruns.jumbo_flag = False
 elif (ceruns.APA == "CHKOUT"): 
@@ -87,9 +86,9 @@ elif (ceruns.APA == "CHKOUT"):
     ceruns.femb_mask    = [[0,0,0,0]]
     ceruns.jumbo_flag = True
 
-elif (ceruns.APA == "CRYO_CHKOUT"): # to be debugged, not ready to use
+elif (ceruns.APA == "CRYOSTAT"):  #don't use, to be debugged later
     print ceruns.APA
-    ceruns.path = rawpath + "/Cryostat/" 
+    ceruns.path = rawpath + "/CRYOSTAT/" 
     ceruns.wib_ips = [#  "10.73.137.20", "10.73.137.21", "10.73.137.22", "10.73.137.23", "10.73.137.24", \
                         "10.73.137.26", "10.73.137.27", "10.73.137.28", "10.73.137.29", "10.73.137.30", \
                         "10.73.137.31", "10.73.137.32", "10.73.137.33", "10.73.137.34", "10.73.137.35", \
@@ -99,16 +98,16 @@ elif (ceruns.APA == "CRYO_CHKOUT"): # to be debugged, not ready to use
                         "10.73.137.50", "10.73.137.51", "10.73.137.52", "10.73.137.53", "10.73.137.54", \
 #                        "192.168.121.1"
                      ]
-    ceruns.wib_pwr_femb = [ # [1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1], 
+    ceruns.wib_pwr_femb = [# [1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1], 
                             [1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1], 
                             [1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1], 
                             [1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1], 
                             [1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1], 
                             [1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1], 
                             [1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1], 
-                           # [1,1,1,1],  
+                           # [1,1,1,1],
                             ]
-    ceruns.femb_mask    = [ #[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0], 
+    ceruns.femb_mask    = [# [0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0], 
                             [0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0], 
                             [0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0], 
                             [0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0], 
@@ -117,6 +116,7 @@ elif (ceruns.APA == "CRYO_CHKOUT"): # to be debugged, not ready to use
                             [0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0], 
                            # [0,0,0,0], 
                             ]
+#    ceruns.jumbo_flag = True
     ceruns.jumbo_flag = False
 
 
@@ -235,7 +235,8 @@ if (test_runs&0x10 != 0x0 ):
 if (test_runs&0x01 != 0x0 ):
     print "Noise Measurement Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.rms_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=1600) 
+    #ceruns.rms_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=1600) 
+    ceruns.rms_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], val=1600) 
     with open(logfile, "a+") as f:
         f.write( "%2X: Noise Measurement Test\n" %(test_runs&0x01) ) 
         f.write (ceruns.runpath + "\n" )
@@ -245,7 +246,8 @@ if (test_runs&0x01 != 0x0 ):
 if (test_runs&0x02 != 0x0 ):
     print "FPGA DAC Calibration Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.fpgadac_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=100)
+    #ceruns.fpgadac_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=100)
+    ceruns.fpgadac_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], val=100)
     with open(logfile, "a+") as f:
         f.write( "%2X: FPGA DAC Calibration Test\n" %(test_runs&0x02) ) 
         f.write (ceruns.runpath + "\n" )
