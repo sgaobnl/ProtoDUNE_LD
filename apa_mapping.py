@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Fri Jun  8 13:15:20 2018
+Last modified: Sat Jun  9 10:53:08 2018
 """
 
 #defaut setting for scientific caculation
@@ -92,9 +92,9 @@ class APA_MAP:
                 for vb in va_femb:
                     if int(vb[8]) == chn:
                         if (vb[1].find("Co")) >= 0 : #collection wire
-                            chninfo = [ "U" + vb[0], vb[8], int(vb[6]), int(vb[7]), int(vb[9]), int(vb[10])]
-                        elif (vb[1].find("In")) >= 0 : #induction wire
                             chninfo = [ "X" + vb[0], vb[8], int(vb[6]), int(vb[7]), int(vb[9]), int(vb[10])]
+                        elif (vb[1].find("In")) >= 0 : #induction wire
+                            chninfo = [ "U" + vb[0], vb[8], int(vb[6]), int(vb[7]), int(vb[9]), int(vb[10])]
                         apa_femb_loc.append(chninfo)
             for chn in range(128):
                 fl_w = True
@@ -149,24 +149,21 @@ class APA_MAP:
 
 
         All_sort = []
-        for i in range(0,128,1):
+        X_sort = []
+        V_sort = []
+        U_sort = []
+        for i in range(128):
             for chn in apa_femb_loc:
                 if int(chn[1][0:3]) == i :
                     All_sort.append(chn)
     
-        X_sort = []
-        for i in range(1,49,1):
             for chn in apa_femb_loc:
                 if chn[0][0] == "X" and int(chn[0][1:3]) == i :
                     X_sort.append(chn)
-        V_sort = []
-        for i in range(1,41,1):
             for chn in apa_femb_loc:
                 if chn[0][0] == "V" and int(chn[0][1:3]) == i :
                     V_sort.append(chn)
     
-        U_sort = []
-        for i in range(1,41,1):
             for chn in apa_femb_loc:
                 if chn[0][0] == "U" and int(chn[0][1:3]) == i :
                     U_sort.append(chn)
@@ -201,4 +198,5 @@ class APA_MAP:
  
 
 #apa = APA_MAP()
-#apa.apa_femb_mapping()
+#a = apa.apa_femb_mapping()
+#print len(a[0]), len(a[1]), len(a[2]), len(a[3])
