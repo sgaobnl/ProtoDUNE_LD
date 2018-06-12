@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Mon Jun 11 20:57:45 2018
+Last modified: Tue Jun 12 15:14:36 2018
 """
 
 #defaut setting for scientific caculation
@@ -206,8 +206,8 @@ if (test_runs&0x20 != 0x0 ):
     tps = [int(sys.argv[6])]
     pls_source = (int(sys.argv[7]))&0x3
     dac_source = int(sys.argv[8],16)
-    fpgadac_en = dac_source  & 0x80
-    asicdac_en = dac_source  & 0x40
+    fpgadac_en = (dac_source  & 0x80) >> 7
+    asicdac_en = (dac_source  & 0x40) >> 6
     vdac = dac_source  & 0x3F
     ceruns.slk0 = (int(sys.argv[9]))&0x01
     ceruns.slk1 = (int(sys.argv[9]))&0x02
