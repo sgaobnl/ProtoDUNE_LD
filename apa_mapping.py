@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Sat Jun  9 10:53:08 2018
+Last modified: Tue Jun 12 09:45:25 2018
 """
 
 #defaut setting for scientific caculation
@@ -18,12 +18,13 @@ Last modified: Sat Jun  9 10:53:08 2018
 
 import openpyxl as px
 import numpy as np
-import statsmodels.api as sm
+#import statsmodels.api as sm
 import sys
+import pickle
 
 
 class APA_MAP:
-    def mapping_rd (self  ):
+    def update_mapping_file (self  ):
         vW = px.load_workbook(self.path)
         vp = vW.get_sheet_by_name(name = 'Mapping')
         va=[]
@@ -35,6 +36,14 @@ class APA_MAP:
                     vb.append(str(k.internal_value))
                 va.append(vb)
             vi = vi + 1
+        fp = self.fpmap
+        with open(fp, "wb") as fp:
+            pickle.dump(va, fp)
+
+    def mapping_rd (self  ):
+        fp = self.fpmap
+        with open(fp, "bb") as fp:
+            va = pickle.load(fp)
         return va
 
     def apa_femb_mapping(self):
@@ -194,8 +203,10 @@ class APA_MAP:
     def __init__(self):
         self.APA = 'LArIAT'
         self.femb = 4
-        self.path = "./LArIAT_Pin_Mapping_06052018.xlsx"
- 
+        self.path = "./LArIAT_Pin_Mapping_06052018.xlsx" #if the mapping file changes, self.mapping_rd ( ) need to run once to to generate new *.map file 
+        self.fpmap = "./LArIAT_pin_mapping.map"
+
+#        self.mapping_rd ( )
 
 #apa = APA_MAP()
 #a = apa.apa_femb_mapping()
