@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Tue Jun 12 09:45:25 2018
+Last modified: Tue Jun 12 09:49:22 2018
 """
 
 #defaut setting for scientific caculation
@@ -42,7 +42,7 @@ class APA_MAP:
 
     def mapping_rd (self  ):
         fp = self.fpmap
-        with open(fp, "bb") as fp:
+        with open(fp, "rb") as fp:
             va = pickle.load(fp)
         return va
 
