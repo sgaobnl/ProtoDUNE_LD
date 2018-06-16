@@ -408,7 +408,7 @@ class CE_RUNS:
             val = val        
         return run_code, val, runpath
 
-    def larcfg_run(self, apa_oft_info, sgs = [3], tps =[0,1,2,3], pls_cs=0, dac_sel=1, fpgadac_en=0, asicdac_en=0, vdac = 0, val = 1000, mbb =0): 
+    def larcfg_run(self, apa_oft_info, sgs = [3], tps =[0,1,2,3], pls_cs=0, dac_sel=1, fpgadac_en=0, asicdac_en=0, vdac = 0, val = 1000, mbb =0, datamode=0): 
         run_code, val, runpath = self.save_setting(run_code="E", val=val) 
         self.run_code = run_code
         mbb_en = (mbb & 0x100)>>8
@@ -429,6 +429,7 @@ class CE_RUNS:
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
+                self.femb_meas.femb_config.femb.write_reg_femb_checked (femb_addr, 42, 0 )
                 self.femb_meas.femb_n = wib_addr * 4 + femb_addr
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
@@ -439,6 +440,9 @@ class CE_RUNS:
                                                pls_cs = pls_cs, dac_sel=dac_sel, fpga_dac_en=fpgadac_en, \
                                                asic_dac_en=asicdac_en, dac_val = vdac, slk0 = self.slk0, slk1= self.slk1, val=val)
 
+		if datamode == 3:
+                    lar_fembno = (((wib_pos + femb_addr)&0x0F)<<4) + datamode
+                    self.femb_meas.femb_config.femb.write_reg_femb_checked (femb_addr, 42,lar_fembno )
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)

@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Tue Jun 12 15:14:36 2018
+Last modified: Mon Jun 11 20:57:45 2018
 """
 
 #defaut setting for scientific caculation
@@ -62,7 +62,7 @@ elif (ceruns.APA == "LArIAT"):
     #ceruns.path = "D:/APA40/Rawdata/" 
     #ceruns.path = "D:/APA40/Rawdata/" 
     #ceruns.path = "/Users/shanshangao/LArIAT/Rawdata/" 
-    ceruns.path = "/home/nfs/sbnd/BNL_LD_data/LArIAT/Rawdata/" 
+    ceruns.path = "/daqdata/BNL_LD_data/LArIAT/Rawdata/" 
     ceruns.wib_ips = [  "131.225.150.203",  "131.225.150.206" ]
     ceruns.wib_pwr_femb = [[1,1,1,1], [1,0,0,0]]
     ceruns.femb_mask    = [[0,0,0,0], [0,0,0,0]]
@@ -206,15 +206,16 @@ if (test_runs&0x20 != 0x0 ):
     tps = [int(sys.argv[6])]
     pls_source = (int(sys.argv[7]))&0x3
     dac_source = int(sys.argv[8],16)
-    fpgadac_en = (dac_source  & 0x80) >> 7
-    asicdac_en = (dac_source  & 0x40) >> 6
+    fpgadac_en = (dac_source  & 0x80)>>7
+    asicdac_en = (dac_source  & 0x40)>>6
     vdac = dac_source  & 0x3F
     ceruns.slk0 = (int(sys.argv[9]))&0x01
     ceruns.slk1 = (int(sys.argv[9]))&0x02
     mbb = (int(sys.argv[10],16))&0x1FF
     dac_sel = 1 #1 DAC on FEMB, 0 DAC on WIB(don't use)
+    datamode = 0
  
-    ceruns.larcfg_run(apa_oft_info, sgs = sgs, tps =tps, pls_cs=pls_source, dac_sel=dac_sel, fpgadac_en=fpgadac_en, asicdac_en=asicdac_en, vdac = vdac, val = 1000, mbb=mbb) 
+    ceruns.larcfg_run(apa_oft_info, sgs = sgs, tps =tps, pls_cs=pls_source, dac_sel=dac_sel, fpgadac_en=fpgadac_en, asicdac_en=asicdac_en, vdac = vdac, val = 1000, mbb=mbb, datamode=datamode) 
 
     with open(logfile, "a+") as f:
         f.write( "%2X: Configuration \n" %(test_runs&0x20) ) 
@@ -264,25 +265,50 @@ if (test_runs&0x04 != 0x0 ):
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
 if (test_runs&0x08 != 0x0 ):
-    print "Brombreg Mode Noise Measurement Test"
-    print "time cost = %.3f seconds"%(timer()-start)
-    #ceruns.brombreg_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], cycle=5) 
-    ceruns.brombreg_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], cycle=150) 
-    with open(logfile, "a+") as f:
-        f.write( "%2X: Brombreg Mode Noise Measurement Test\n" %(test_runs&0x08) ) 
-        f.write (ceruns.runpath + "\n" )
-        f.write (ceruns.runtime + "\n" )
-        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+    print "LArIAT Configuration"
+    sgs = [int(sys.argv[5])]
+    tps = [int(sys.argv[6])]
+    pls_source = (int(sys.argv[7]))&0x3
+    dac_source = int(sys.argv[8],16)
+    fpgadac_en = (dac_source  & 0x80)>>7
+    asicdac_en = (dac_source  & 0x40)>>6
+    vdac = dac_source  & 0x3F
+    ceruns.slk0 = (int(sys.argv[9]))&0x01
+    ceruns.slk1 = (int(sys.argv[9]))&0x02
+    mbb = (int(sys.argv[10],16))&0x1FF
+    dac_sel = 1 #1 DAC on FEMB, 0 DAC on WIB(don't use)
 
-if (test_runs&0x20 != 0x0 ):
-    print "Temperature Monitoring"
-    print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.monitor_run(temp_or_pluse = "temp")
+    datamode = 3
+    ceruns.larcfg_run(apa_oft_info, sgs = sgs, tps =tps, pls_cs=pls_source, dac_sel=dac_sel, fpgadac_en=fpgadac_en, asicdac_en=asicdac_en, vdac = vdac, val = 1000, mbb=mbb, datamode=datamode) 
+
     with open(logfile, "a+") as f:
-        f.write( "%2X: Temperature Monitoring\n" %(test_runs&0x20) ) 
+        f.write( "%2X: Configuration \n" %(test_runs&0x08) ) 
         f.write (ceruns.runpath + "\n" )
         f.write (ceruns.runtime + "\n" )
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+    print "time cost = %.3f seconds"%(timer()-start)
+
+
+#if (test_runs&0x08 != 0x0 ):
+#    print "Brombreg Mode Noise Measurement Test"
+#    print "time cost = %.3f seconds"%(timer()-start)
+#    #ceruns.brombreg_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], cycle=5) 
+#    ceruns.brombreg_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], cycle=150) 
+#    with open(logfile, "a+") as f:
+#        f.write( "%2X: Brombreg Mode Noise Measurement Test\n" %(test_runs&0x08) ) 
+#        f.write (ceruns.runpath + "\n" )
+#        f.write (ceruns.runtime + "\n" )
+#        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+
+#if (test_runs&0x20 != 0x0 ):
+#    print "Temperature Monitoring"
+#    print "time cost = %.3f seconds"%(timer()-start)
+#    ceruns.monitor_run(temp_or_pluse = "temp")
+#    with open(logfile, "a+") as f:
+#        f.write( "%2X: Temperature Monitoring\n" %(test_runs&0x20) ) 
+#        f.write (ceruns.runpath + "\n" )
+#        f.write (ceruns.runtime + "\n" )
+#        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
 if (test_runs&0x40 != 0x0 ):
     if (ceruns.APA == "CHKOUT"): 

@@ -30,13 +30,13 @@ from femb_udp_cmdline import FEMB_UDP
 wib= FEMB_UDP()
 
 logs = []
-for lastip in ["20", "21", "22", "23", "24"]:
+for lastip in ["203", "206"]:
 #for lastip in [ wib_lastbyte,]:
-    wib.UDP_IP = "10.73.137." +  lastip
+    wib.UDP_IP = "131.225.150." +  lastip
     runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
     logs.append ( runtime )
     version = wib.read_reg_wib(0xFF)
-    if ((version &0xFFF) == 0x116) and (version != -1) :
+    if ((version &0xFFF) == 0x104) and (version != -1) :
         logs.append ( wib.UDP_IP +": Addr(0xFF) =  " + format(version, "08X") )
         print wib.UDP_IP , hex(version)
         tmp1 = wib.read_reg_wib(0x100)
@@ -120,7 +120,7 @@ for lastip in ["20", "21", "22", "23", "24"]:
     else:
         print "WIB (%s)  doesn't exist or wrong firmware version!)"%(wib.UDP_IP)
 
-logfile =    "/nfs/rscratch/bnl_ce/shanshan/Rawdata/APA3/" + "/WIB_lins_chk.log"
+logfile =    "/daqdata/BNL_LD_data" + "/WIB_lins_chk.log"
 with open(logfile, "a+") as f:
     f.write( "Begin\n" ) 
     f.write( "WIB LINKs check\n" ) 

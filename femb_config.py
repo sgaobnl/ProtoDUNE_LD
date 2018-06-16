@@ -26,6 +26,7 @@ class FEMB_CONFIG:
         elif (pls_cs == 3 ): #enable int and ext pls
             pls_cs_value = 0x0 
         self.femb.write_reg_femb_checked (femb_addr, 18, pls_cs_value)
+        print femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac 
         time.sleep(0.1)
 
     def ext_clk_reg_wr_femb(self, femb_addr, reg_addr, addr_data):
