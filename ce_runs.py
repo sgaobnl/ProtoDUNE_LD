@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Jun 18 16:01:49 2018
+Last modified: Mon Jun 18 16:12:53 2018
 """
 
 #defaut setting for scientific caculation
@@ -418,8 +418,9 @@ class CE_RUNS:
             wib_pos = wib_addr
 
             if (mbb_en ==1):
-                if (PLL_flg):
+                if (PLL_cfgflg):
                     self.WIB_PLL_cfg( )
+                    PLL_cfgflg = False
                 self.femb_meas.femb_config.femb.UDP_IP = wib_ip
                 self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
                 time.sleep(0.01)
@@ -472,6 +473,21 @@ class CE_RUNS:
 
         if (mbb_en):
             self.mbb_run(mbb)
+
+        for wib_addr in range(len(self.wib_ips)):
+            wib_ip = self.wib_ips[wib_addr]
+            wib_pos = wib_addr
+            #sync nevis daq
+            time.sleep(2)
+            self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            time.sleep(0.1)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+            time.sleep(0.1)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
