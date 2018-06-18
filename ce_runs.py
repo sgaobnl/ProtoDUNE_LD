@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Fri Jun  8 16:03:09 2018
+Last modified: Mon Jun 18 16:01:49 2018
 """
 
 #defaut setting for scientific caculation
@@ -412,16 +412,18 @@ class CE_RUNS:
         run_code, val, runpath = self.save_setting(run_code="E", val=val) 
         self.run_code = run_code
         mbb_en = (mbb & 0x100)>>8
+        PLL_cfgflg = True
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
             wib_pos = wib_addr
 
             if (mbb_en ==1):
-                self.WIB_PLL_cfg( )
+                if (PLL_flg):
+                    self.WIB_PLL_cfg( )
                 self.femb_meas.femb_config.femb.UDP_IP = wib_ip
                 self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
                 time.sleep(0.01)
-                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x00)
                 time.sleep(0.01)
                 self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
 
@@ -439,6 +441,16 @@ class CE_RUNS:
                         self.femb_meas.lar_cfg(runpath, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, \
                                                pls_cs = pls_cs, dac_sel=dac_sel, fpga_dac_en=fpgadac_en, \
                                                asic_dac_en=asicdac_en, dac_val = vdac, slk0 = self.slk0, slk1= self.slk1, val=val)
+                        #sync nevis daq
+                        self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+                        time.sleep(0.1)
+                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+                        time.sleep(0.1)
+                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 
 		if datamode == 3:
                     lar_fembno = (((wib_pos + femb_addr)&0x0F)<<4) + datamode
@@ -451,10 +463,10 @@ class CE_RUNS:
             self.femb_meas.femb_config.femb.UDP_IP = wib_ip
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-            time.sleep(10)
+            time.sleep(0.1)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-            time.sleep(10)
+            time.sleep(0.1)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 
