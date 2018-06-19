@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Jun 19 09:42:31 2018
+Last modified: Tue Jun 19 14:25:04 2018
 """
 
 #defaut setting for scientific caculation
@@ -424,7 +424,7 @@ class CE_RUNS:
                 self.femb_meas.femb_config.femb.UDP_IP = wib_ip
                 self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
                 time.sleep(0.01)
-                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x00)
+                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
                 time.sleep(0.01)
                 self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
 

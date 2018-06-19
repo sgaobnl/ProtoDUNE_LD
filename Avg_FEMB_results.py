@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Fri Jun  8 14:44:22 2018
+Last modified: Tue Jun 19 09:57:33 2018
 """
 
 #defaut setting for scientific caculation
@@ -73,17 +73,21 @@ def Avg_FEMB_results(datapath, step, jumbo_flag = False, feed_freq = 500, avg_cy
                     if (len(feed_loc) < avg_cycle ):
                         avg_cycle = len(feed_loc) 
 
-                    for oneloc in feed_loc[0:avg_cycle]:
-                        rms_data = rms_data + chn_data[chn][oneloc+100: oneloc+feed_freq]
-                        if (avg_cnt == 0 ):
-                            avg_cnt = avg_cnt + 1
-                            chntmp = []
-                            for tmpi in chn_data[chn][oneloc: oneloc+feed_freq] :
-                                chntmp.append( long(0xFFFFFFFF & tmpi) )
-                            avg_data = np.array ( chntmp )
-                        elif (avg_cnt < avg_cycle):
-                            avg_data =avg_data +  np.array (chn_data[chn][oneloc: oneloc+feed_freq] )
-
+                    if (len(feed_loc) > 0 ):
+                        for oneloc in feed_loc[0:avg_cycle]:
+                            rms_data = rms_data + chn_data[chn][oneloc+100: oneloc+feed_freq]
+                            if (avg_cnt == 0 ):
+                                avg_cnt = avg_cnt + 1
+                                chntmp = []
+                                for tmpi in chn_data[chn][oneloc: oneloc+feed_freq] :
+                                    chntmp.append( long(0xFFFFFFFF & tmpi) )
+                                avg_data = np.array ( chntmp )
+                            elif (avg_cnt < avg_cycle):
+                                avg_data =avg_data +  np.array (chn_data[chn][oneloc: oneloc+feed_freq] )
+                    else:
+                        rms_data = chn_data[chn][0:100000]
+                        avg_data = np.array ( chn_data[chn][0: feed_freq] )
+ 
                     avg_data = avg_data / avg_cycle
 
 
