@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Jun 19 14:25:04 2018
+Last modified: Tue Jun 19 15:52:40 2018
 """
 
 #defaut setting for scientific caculation
@@ -502,6 +502,7 @@ class CE_RUNS:
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
+                udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 step = "WIB" + format(wib_pos, '02d') + "step" + "X" + run_code
                 for chip in range(8):
                     rawdata = ""
