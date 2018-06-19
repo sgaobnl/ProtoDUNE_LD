@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Mon Jun 11 20:57:45 2018
+Last modified: Tue Jun 19 09:43:29 2018
 """
 
 #defaut setting for scientific caculation
@@ -288,38 +288,15 @@ if (test_runs&0x08 != 0x0 ):
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
     print "time cost = %.3f seconds"%(timer()-start)
 
-
-#if (test_runs&0x08 != 0x0 ):
-#    print "Brombreg Mode Noise Measurement Test"
-#    print "time cost = %.3f seconds"%(timer()-start)
-#    #ceruns.brombreg_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], cycle=5) 
-#    ceruns.brombreg_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], cycle=150) 
-#    with open(logfile, "a+") as f:
-#        f.write( "%2X: Brombreg Mode Noise Measurement Test\n" %(test_runs&0x08) ) 
-#        f.write (ceruns.runpath + "\n" )
-#        f.write (ceruns.runtime + "\n" )
-#        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-
-#if (test_runs&0x20 != 0x0 ):
-#    print "Temperature Monitoring"
-#    print "time cost = %.3f seconds"%(timer()-start)
-#    ceruns.monitor_run(temp_or_pluse = "temp")
-#    with open(logfile, "a+") as f:
-#        f.write( "%2X: Temperature Monitoring\n" %(test_runs&0x20) ) 
-#        f.write (ceruns.runpath + "\n" )
-#        f.write (ceruns.runtime + "\n" )
-#        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-
 if (test_runs&0x40 != 0x0 ):
-    if (ceruns.APA == "CHKOUT"): 
-        print "Average Checkout"
-        print "time cost = %.3f seconds"%(timer()-start)
-        ceruns.avg_run(val = 1600)
+    print "LArIAT DATA collectting during DAQ running"
+    ceruns.larcfg_getdata(val=10000) 
     with open(logfile, "a+") as f:
-        f.write( "%2X: Average Checkout\n" %(test_runs&0x40) ) 
+        f.write( "%2X: Configuration \n" %(test_runs&0x40) ) 
         f.write (ceruns.runpath + "\n" )
         f.write (ceruns.runtime + "\n" )
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+    print "time cost = %.3f seconds"%(timer()-start)
 
 if (test_runs&0x80 != 0x0 ):
     print "Turn FEMBs OFF"
@@ -366,4 +343,37 @@ if (test_runs&0x7F != 0x0 ):
         f.write( "\n") 
 
 print "Well Done"
+
+#if (test_runs&0x08 != 0x0 ):
+#    print "Brombreg Mode Noise Measurement Test"
+#    print "time cost = %.3f seconds"%(timer()-start)
+#    #ceruns.brombreg_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], cycle=5) 
+#    ceruns.brombreg_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], cycle=150) 
+#    with open(logfile, "a+") as f:
+#        f.write( "%2X: Brombreg Mode Noise Measurement Test\n" %(test_runs&0x08) ) 
+#        f.write (ceruns.runpath + "\n" )
+#        f.write (ceruns.runtime + "\n" )
+#        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+
+#if (test_runs&0x20 != 0x0 ):
+#    print "Temperature Monitoring"
+#    print "time cost = %.3f seconds"%(timer()-start)
+#    ceruns.monitor_run(temp_or_pluse = "temp")
+#    with open(logfile, "a+") as f:
+#        f.write( "%2X: Temperature Monitoring\n" %(test_runs&0x20) ) 
+#        f.write (ceruns.runpath + "\n" )
+#        f.write (ceruns.runtime + "\n" )
+#        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+
+#if (test_runs&0x40 != 0x0 ):
+#    if (ceruns.APA == "CHKOUT"): 
+#        print "Average Checkout"
+#        print "time cost = %.3f seconds"%(timer()-start)
+#        ceruns.avg_run(val = 1600)
+#    with open(logfile, "a+") as f:
+#        f.write( "%2X: Average Checkout\n" %(test_runs&0x40) ) 
+#        f.write (ceruns.runpath + "\n" )
+#        f.write (ceruns.runtime + "\n" )
+#        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+
 
