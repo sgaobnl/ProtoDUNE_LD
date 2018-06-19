@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Jun 19 15:52:40 2018
+Last modified: Tue Jun 19 15:59:39 2018
 """
 
 #defaut setting for scientific caculation
@@ -492,7 +492,7 @@ class CE_RUNS:
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
 
-    def larcfg_getdata(self, val=10000 ): 
+    def larcfg_getdata(self, val=1000 ): 
         run_code, val, runpath = self.save_setting(run_code="E", val=val) 
         self.run_code = run_code
         for wib_addr in range(len(self.wib_ips)):

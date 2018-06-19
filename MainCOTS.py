@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Tue Jun 19 15:49:08 2018
+Last modified: Tue Jun 19 16:05:43 2018
 """
 
 #defaut setting for scientific caculation
@@ -291,7 +291,7 @@ if (test_runs&0x08 != 0x0 ):
 
 if (test_runs&0x40 != 0x0 ):
     print "LArIAT DATA collectting during DAQ running"
-    ceruns.larcfg_getdata(val=10000) 
+    ceruns.larcfg_getdata(val=1000) 
     with open(logfile, "a+") as f:
         f.write( "%2X: Configuration \n" %(test_runs&0x40) ) 
         f.write (ceruns.runpath + "\n" )
