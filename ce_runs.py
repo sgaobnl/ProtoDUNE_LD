@@ -238,14 +238,16 @@ class CE_RUNS:
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
         self.linkcurs = []
 
-        if (SW == "ON"):
-            for wib_addr in range(len(self.wib_ips)):
-                wib_ip = self.wib_ips[wib_addr]
-                wib_pos = wib_addr
-                self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
-                self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
-                time.sleep(5)
-            print "WIBs are reset"
+        #reset WIBs
+        #if (SW == "ON"):
+        #    for wib_addr in range(len(self.wib_ips)):
+        #        wib_ip = self.wib_ips[wib_addr]
+        #        wib_pos = wib_addr
+        #        self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
+        #        self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
+        #        time.sleep(5)
+        #    print "WIBs are reset"
+        #    self.WIB_self_chk()
 
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
@@ -544,6 +546,21 @@ class CE_RUNS:
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
+
+        for wib_addr in range(len(self.wib_ips)):
+            wib_ip = self.wib_ips[wib_addr]
+            wib_pos = wib_addr
+            #sync nevis daq
+            time.sleep(2)
+            self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            time.sleep(0.1)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+            time.sleep(0.1)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 

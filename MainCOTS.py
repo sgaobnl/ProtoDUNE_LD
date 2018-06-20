@@ -108,7 +108,8 @@ else:
 logfile = ceruns.path +  ceruns.APA + "readme.log"
 print "WIEC self check"
 print "time cost = %.3f seconds"%(timer()-start)
-ceruns.WIB_self_chk()
+if (test_runs != 0x40 ):
+    ceruns.WIB_self_chk()
 
 if (test_runs == 0x0 ):
     print "Power FEMBs ON"
@@ -190,7 +191,8 @@ if (test_runs&0x7F != 0x0 ):
     print "time cost = %.3f seconds"%(timer()-start)
 
     if (test_runs&0x7F == 0x40):
-        oft_file = "./APA_ADC_OFT_06192018_152839.bin"
+#    if (True):
+        oft_file = "./APA_ADC_OFT_06202018_121405.bin"
         with open (oft_file, 'rb') as fp:
             apa_oft_info = pickle.load(fp)
     else:
