@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Tue Jun 19 20:39:06 2018
+Last modified: Tue Jun 19 22:23:41 2018
 """
 
 #defaut setting for scientific caculation
@@ -188,7 +188,8 @@ if (test_runs&0x7F != 0x0 ):
 
     print "FEMB ADC offset calibration"
     print "time cost = %.3f seconds"%(timer()-start)
-    if (True):
+
+    if (test_runs&0x7F == 0x40):
         oft_file = "./APA_ADC_OFT_06192018_152839.bin"
         with open (oft_file, 'rb') as fp:
             apa_oft_info = pickle.load(fp)
