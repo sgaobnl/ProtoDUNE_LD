@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Wed Jun 20 12:00:36 2018
+Last modified: Wed Jun 20 12:13:14 2018
 """
 
 #defaut setting for scientific caculation
@@ -108,7 +108,7 @@ class CE_RUNS:
                     adrs_l.append((adr&0xFF))
                     datass.append((int(line[tmp+3:-2],16))&0xFF)
         for wib_ip in self.wib_ips:
-            loc_flg = False
+            lol_flg = False
             for i in range(5):
                 print "check PLL status, please wait..."
                 time.sleep(1)
@@ -119,9 +119,9 @@ class CE_RUNS:
                 lolXAXB = (ver_value & 0x20000)>>17
                 INTR = (ver_value & 0x40000)>>18
                 if (lol == 1):
-                    lol_flg == True
+                    lol_flg = True
                     break
-            if (lol_flg == True ):
+            if (lol_flg):
                 print "PLL of WIB (%s) has locked"%wib_ip
             else:
                 print "configurate PLL of WIB (%s), please wait..."%wib_ip
