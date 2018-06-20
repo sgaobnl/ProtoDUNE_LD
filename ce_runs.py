@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Jun 19 20:09:44 2018
+Last modified: Wed Jun 20 12:00:36 2018
 """
 
 #defaut setting for scientific caculation
@@ -108,34 +108,10 @@ class CE_RUNS:
                     adrs_l.append((adr&0xFF))
                     datass.append((int(line[tmp+3:-2],16))&0xFF)
         for wib_ip in self.wib_ips:
-            print "configurate PLL of WIB (%s), please wait..."%wib_ip
-            p_addr = 1
-            #step1
-            page4 = adrs_h[0]
-            self.WIB_PLL_wr( wib_ip, p_addr, page4)
-            self.WIB_PLL_wr( wib_ip, adrs_l[0], datass[0])
-            #step2
-            page4 = adrs_h[1]
-            self.WIB_PLL_wr( wib_ip, p_addr, page4)
-            self.WIB_PLL_wr( wib_ip, adrs_l[1], datass[1])
-            #step3
-            page4 = adrs_h[2]
-            self.WIB_PLL_wr( wib_ip, p_addr, page4)
-            self.WIB_PLL_wr( wib_ip, adrs_l[2], datass[2])
-            time.sleep(0.5)
-            #step4
-            for cnt in range(len(adrs_h)):
-                if (page4 == adrs_h[cnt]):
-                    tmpadr = adrs_l[2]
-                    self.WIB_PLL_wr(wib_ip, adrs_l[cnt], datass[cnt])
-                else:
-                    page4 = adrs_h[cnt]
-                    self.WIB_PLL_wr( wib_ip, p_addr, page4)
-                    self.WIB_PLL_wr(wib_ip, adrs_l[cnt], datass[cnt])
-
-            for i in range(10):
-                time.sleep(3)
+            loc_flg = False
+            for i in range(5):
                 print "check PLL status, please wait..."
+                time.sleep(1)
                 self.femb_meas.femb_config.femb.UDP_IP = wib_ip
                 ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
                 ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
@@ -143,12 +119,52 @@ class CE_RUNS:
                 lolXAXB = (ver_value & 0x20000)>>17
                 INTR = (ver_value & 0x40000)>>18
                 if (lol == 1):
-                    print "PLL of WIB(%s) is locked"%wib_ip
+                    lol_flg == True
                     break
-                if (i ==9):
-                    print "Fail to configurate PLL of WIB(%s), please check "%wib_ip
-                    print "Exit anyway"
-                    sys.exit()
+            if (lol_flg == True ):
+                print "PLL of WIB (%s) has locked"%wib_ip
+            else:
+                print "configurate PLL of WIB (%s), please wait..."%wib_ip
+                p_addr = 1
+                #step1
+                page4 = adrs_h[0]
+                self.WIB_PLL_wr( wib_ip, p_addr, page4)
+                self.WIB_PLL_wr( wib_ip, adrs_l[0], datass[0])
+                #step2
+                page4 = adrs_h[1]
+                self.WIB_PLL_wr( wib_ip, p_addr, page4)
+                self.WIB_PLL_wr( wib_ip, adrs_l[1], datass[1])
+                #step3
+                page4 = adrs_h[2]
+                self.WIB_PLL_wr( wib_ip, p_addr, page4)
+                self.WIB_PLL_wr( wib_ip, adrs_l[2], datass[2])
+                time.sleep(0.5)
+                #step4
+                for cnt in range(len(adrs_h)):
+                    if (page4 == adrs_h[cnt]):
+                        tmpadr = adrs_l[2]
+                        self.WIB_PLL_wr(wib_ip, adrs_l[cnt], datass[cnt])
+                    else:
+                        page4 = adrs_h[cnt]
+                        self.WIB_PLL_wr( wib_ip, p_addr, page4)
+                        self.WIB_PLL_wr(wib_ip, adrs_l[cnt], datass[cnt])
+
+                for i in range(10):
+                    time.sleep(3)
+                    print "check PLL status, please wait..."
+                    self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+                    ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
+                    ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
+                    lol = (ver_value & 0x10000)>>16
+                    lolXAXB = (ver_value & 0x20000)>>17
+                    INTR = (ver_value & 0x40000)>>18
+                    if (lol == 1):
+                        print "PLL of WIB(%s) is locked"%wib_ip
+                        break
+                    if (i ==9):
+                        print "Fail to configurate PLL of WIB(%s), please check "%wib_ip
+                        print "Exit anyway"
+                        sys.exit()
 
     def WIB_LINK_CUR(self):
         logs = []
@@ -221,6 +237,16 @@ class CE_RUNS:
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
         self.linkcurs = []
+
+        if (SW == "ON"):
+            for wib_addr in range(len(self.wib_ips)):
+                wib_ip = self.wib_ips[wib_addr]
+                wib_pos = wib_addr
+                self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
+                self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
+                time.sleep(5)
+            print "WIBs are reset"
+
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
             wib_pos = wib_addr
