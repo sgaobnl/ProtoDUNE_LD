@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Tue Jun 19 16:05:43 2018
+Last modified: Tue Jun 19 20:39:06 2018
 """
 
 #defaut setting for scientific caculation
@@ -166,7 +166,7 @@ with open(logfile, "a+") as f:
 
 if (test_runs&0x7F != 0x0 ):
     #if (RTD_flg == True):
-    if (True):
+    if (test_runs&0x7F != 0x40):
         print "Please write a sentence to describe the test purpose: "
         test_note = raw_input("Please input: ")
         #print "Please input temperatures measured by RTDs (leave blank if RTD disconnected) "

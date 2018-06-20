@@ -386,6 +386,8 @@ class CE_RUNS:
             run_type = "msk"
         elif (run_code == "E" ):
             run_type = "cfg"
+        elif (run_code == "F" ):
+            run_type = "dat"
         else:
             run_type = "und"
 
@@ -493,7 +495,7 @@ class CE_RUNS:
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
 
     def larcfg_getdata(self, val=1000 ): 
-        run_code, val, runpath = self.save_setting(run_code="E", val=val) 
+        run_code, val, runpath = self.save_setting(run_code="F", val=val) 
         self.run_code = run_code
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
