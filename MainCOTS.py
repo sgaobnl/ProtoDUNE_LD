@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Tue Jun 19 22:23:41 2018
+Last modified: Wed Jun 20 17:25:39 2018
 """
 
 #defaut setting for scientific caculation
@@ -106,14 +106,17 @@ else:
         sys.exit()
 
 logfile = ceruns.path +  ceruns.APA + "readme.log"
-print "WIEC self check"
-print "time cost = %.3f seconds"%(timer()-start)
+
 if (test_runs != 0x40 ):
+#if (True ):
+    print "WIEC self check"
+    print "time cost = %.3f seconds"%(timer()-start)
     ceruns.WIB_self_chk()
 
 if (test_runs == 0x0 ):
     print "Power FEMBs ON"
     print "time cost = %.3f seconds"%(timer()-start)
+
     ceruns.FEMBs_PWR_SW(SW = "ON")
     with open(logfile, "a+") as f:
         f.write( "Begin\n") 

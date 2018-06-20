@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Wed Jun 20 12:13:14 2018
+Last modified: Wed Jun 20 17:30:36 2018
 """
 
 #defaut setting for scientific caculation
@@ -67,18 +67,16 @@ class CE_RUNS:
             else:
                 jumbo_size = 0x1FB
             self.femb_meas.femb_config.femb.write_reg_wib_checked (0x1F, jumbo_size)
-            #set external clk
-            self.femb_meas.femb_config.femb.write_reg_wib_checked (0x4, 8)
+            #use 16M external clk from DAQ
             #set normal mode
             self.femb_meas.femb_config.femb.write_reg_wib_checked (16, 0x7F00)
             self.femb_meas.femb_config.femb.write_reg_wib_checked (15, 0)
-
             #self.femb_meas.femb_config.femb.write_reg_wib_checked (40, 0)
             #self.femb_meas.femb_config.femb.write_reg_wib_checked (41, 0)
 
+        self.WIB_PLL_cfg( )
         for wib_ip in wib_ips_removed:
                 self.wib_ips.remove(wib_ip)
-
         print self.wib_ips
 
     def WIB_PLL_wr(self, wib_ip, addr, din):
@@ -160,11 +158,22 @@ class CE_RUNS:
                     INTR = (ver_value & 0x40000)>>18
                     if (lol == 1):
                         print "PLL of WIB(%s) is locked"%wib_ip
+                        self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+                        time.sleep(0.01)
+                        self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+                        time.sleep(0.01)
+                        self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
                         break
                     if (i ==9):
                         print "Fail to configurate PLL of WIB(%s), please check "%wib_ip
-                        print "Exit anyway"
-                        sys.exit()
+                        int_cs = raw_input("Do you want use internal clock of WIB(Y/N) :  ")
+                        if (int_cs == "Y"):
+                            #use internal clk from WIB
+                            self.femb_meas.femb_config.femb.write_reg_wib_checked (0x4, 8)
+                            break
+                        else:
+                            print "Exit!!!"
+                            sys.exit()
 
     def WIB_LINK_CUR(self):
         logs = []
@@ -247,7 +256,7 @@ class CE_RUNS:
         #        self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
         #        time.sleep(5)
         #    print "WIBs are reset"
-        #    self.WIB_self_chk()
+        #     self.WIB_init_set()
 
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
@@ -451,12 +460,11 @@ class CE_RUNS:
                 if (PLL_cfgflg):
                     self.WIB_PLL_cfg( )
                     PLL_cfgflg = False
+            else:
                 self.femb_meas.femb_config.femb.UDP_IP = wib_ip
-                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
-                time.sleep(0.01)
-                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
-                time.sleep(0.01)
-                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+                print "Use internal clk from WIB"
+                self.femb_meas.femb_config.femb.write_reg_wib_checked (0x4, 8)
+ 
 
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             self.femb_on_apa ()
