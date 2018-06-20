@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Jun 19 15:59:39 2018
+Last modified: Tue Jun 19 20:09:44 2018
 """
 
 #defaut setting for scientific caculation
@@ -454,7 +454,7 @@ class CE_RUNS:
                         self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 
 		if datamode == 3:
-                    lar_fembno = (((wib_pos + femb_addr)&0x0F)<<4) + datamode
+                    lar_fembno = (((wib_pos*4 + femb_addr)&0x0F)<<4) + datamode
                     self.femb_meas.femb_config.femb.write_reg_femb_checked (femb_addr, 42,lar_fembno )
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
@@ -503,10 +503,11 @@ class CE_RUNS:
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
-                step = "WIB" + format(wib_pos, '02d') + "step" + "X" + run_code
+                step = "WIB" + format(wib_pos, '02d') + "step" + "4" + run_code
+                savepath = self.femb_meas.wib_savepath (runpath, step)
                 for chip in range(8):
                     rawdata = ""
-                    filename = runpath + step +"_FEMB" + str(femb_addr) + "CHIP" + str(chip) + "_"  + "_CFG_DATA"  + ".bin"
+                    filename = savepath + step +"_FEMB" + str(femb_addr) + "CHIP" + str(chip) + "_"  + "_CFG_DATA"  + ".bin"
                     print filename
                     rawdata = self.femb_meas.femb_config.get_rawdata_packets_femb(femb_addr, chip, val)
                     if rawdata != None:
