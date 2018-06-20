@@ -39,6 +39,7 @@
 
 #python "./MainCOTS.py" LArIAT 0x00 False 0
 python "./MainCOTS.py" LArIAT 0x20 False 0 1 3 3 0x8D 0 0x102
+python "./MainCOTS.py" LArIAT 0x40 False 0 
 #python "./MainCOTS.py" LArIAT 0x80 False 0
 
 
