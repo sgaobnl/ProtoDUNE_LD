@@ -11,7 +11,7 @@
 #####argv[4]  --> ADC phase set, default 0, no need to change
 
 #python "./MainCOTS.py" LArIAT 0x00 False 0 
-#python "./MainCOTS.py" LArIAT 0x10 False 0 
+python "./MainCOTS.py" LArIAT 0x10 False 0 
 #python "./MainCOTS.py" LArIAT 0x80 False 0
 #python "./MainCOTS.py" LArIAT 0x01 True 0 
 #python "./MainCOTS.py" LArIAT 0x02 False 0 
@@ -38,7 +38,7 @@
 ####argv[10] --> mbb configuration bit[8:0], bit[0] --> MBB calibration pulse
 
 #python "./MainCOTS.py" LArIAT 0x00 False 0
-python "./MainCOTS.py" LArIAT 0x20 False 0 1 3 2 0x8D 0 0x002
+#python "./MainCOTS.py" LArIAT 0x20 False 0 1 3 3 0x8D 0 0x102
 #python "./MainCOTS.py" LArIAT 0x80 False 0
 
 
