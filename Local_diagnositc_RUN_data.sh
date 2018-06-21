@@ -17,7 +17,6 @@
 #python "./MainCOTS.py" LArIAT 0x02 False 0 
 #python "./MainCOTS.py" LArIAT 0x04 False 0 
 #python "./MainCOTS.py" LArIAT 0x80 False 0
-python "./MainCOTS.py" LArIAT 0x40 False 0 
 
 ####argvp5] to argv[10] need to be set only when argv[2] is 0x20
 ####argv[5]  --> gain setting 0 = 4.7mV/fC, 1 = 14, 2=7.8, 3 = 25.0
@@ -41,4 +40,7 @@ python "./MainCOTS.py" LArIAT 0x40 False 0
 #python "./MainCOTS.py" LArIAT 0x00 False 0
 #python "./MainCOTS.py" LArIAT 0x80 False 0
 
-
+####argvp5] to argv[6] need to be set only when argv[2] is 0x20
+####argv[5]  --> how many times you want to get local diagnositcs data 
+####argv[6]  --> gap between two sets of local diagnositcs data 
+python "./MainCOTS.py" LArIAT 0x40 False 0 1 10

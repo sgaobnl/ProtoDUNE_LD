@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Wed Jun 20 17:44:09 2018
+Last modified: Thu Jun 21 09:36:06 2018
 """
 
 #defaut setting for scientific caculation
@@ -168,7 +168,8 @@ with open(logfile, "a+") as f:
 
 if (test_runs&0x7F != 0x0 ):
     #if (RTD_flg == True):
-    if (test_runs&0x7F != 0x40):
+    #if (test_runs&0x7F != 0x40):
+    if (False):
         print "Please write a sentence to describe the test purpose: "
         test_note = raw_input("Please input: ")
         #print "Please input temperatures measured by RTDs (leave blank if RTD disconnected) "
@@ -294,14 +295,24 @@ if (test_runs&0x08 != 0x0 ):
     print "time cost = %.3f seconds"%(timer()-start)
 
 if (test_runs&0x40 != 0x0 ):
-    print "LArIAT DATA collectting during DAQ running"
-    ceruns.larcfg_getdata(val=1000) 
-    with open(logfile, "a+") as f:
-        f.write( "%2X: Configuration \n" %(test_runs&0x40) ) 
-        f.write (ceruns.runpath + "\n" )
-        f.write (ceruns.runtime + "\n" )
-        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-    print "time cost = %.3f seconds"%(timer()-start)
+    run_cnt = int(sys.argv[5])
+    for i in range(run_cnt):
+        if i > 0:
+            t_sleep = int(sys.argv[6])
+            t_min = t_sleep/60
+            runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
+            print "sleep %d minutes starting from %s"%(t_min,runtime)
+            print "Ctrl-C to if you want to stop the script before it finishes"
+            time.sleep(t_sleep)
+        print "LArIAT DATA collectting during DAQ running"
+        ceruns.larcfg_getdata(val=1000) 
+        with open(logfile, "a+") as f:
+            f.write( "%2X: Configuration \n" %(test_runs&0x40) ) 
+            f.write (ceruns.runpath + "\n" )
+            f.write (ceruns.runtime + "\n" )
+            f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+        print "time cost = %.3f seconds"%(timer()-start)
+        
 
 if (test_runs&0x80 != 0x0 ):
     print "Turn FEMBs OFF"
