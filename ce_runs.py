@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Wed Jun 20 17:30:36 2018
+Last modified: Wed Jun 20 22:12:08 2018
 """
 
 #defaut setting for scientific caculation
@@ -121,6 +121,11 @@ class CE_RUNS:
                     break
             if (lol_flg):
                 print "PLL of WIB (%s) has locked"%wib_ip
+                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+                time.sleep(0.01)
+                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+                time.sleep(0.01)
+                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
             else:
                 print "configurate PLL of WIB (%s), please wait..."%wib_ip
                 p_addr = 1
@@ -165,15 +170,17 @@ class CE_RUNS:
                         self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
                         break
                     if (i ==9):
-                        print "Fail to configurate PLL of WIB(%s), please check "%wib_ip
-                        int_cs = raw_input("Do you want use internal clock of WIB(Y/N) :  ")
-                        if (int_cs == "Y"):
-                            #use internal clk from WIB
-                            self.femb_meas.femb_config.femb.write_reg_wib_checked (0x4, 8)
-                            break
-                        else:
-                            print "Exit!!!"
-                            sys.exit()
+                        print "Fail to configurate PLL of WIB(%s), please check if MBB is on or 16MHz from dAQ"%wib_ip
+                        print "Exit anyway"
+                        sys.exit()
+                        #int_cs = raw_input("Do you want use internal clock of WIB(Y/N) :  ")
+                        #if (int_cs == "Y"):
+                        #    #use internal clk from WIB
+                        #    self.femb_meas.femb_config.femb.write_reg_wib_checked (0x4, 8)
+                        #    break
+                        #else:
+                        #    print "Exit!!!"
+                        #    sys.exit()
 
     def WIB_LINK_CUR(self):
         logs = []
@@ -248,15 +255,15 @@ class CE_RUNS:
         self.linkcurs = []
 
         #reset WIBs
-        #if (SW == "ON"):
-        #    for wib_addr in range(len(self.wib_ips)):
-        #        wib_ip = self.wib_ips[wib_addr]
-        #        wib_pos = wib_addr
-        #        self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
-        #        self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
-        #        time.sleep(5)
-        #    print "WIBs are reset"
-        #     self.WIB_init_set()
+        if (SW == "ON"):
+            for wib_addr in range(len(self.wib_ips)):
+                wib_ip = self.wib_ips[wib_addr]
+                wib_pos = wib_addr
+                self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
+                self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
+                time.sleep(10)
+            print "WIBs are reset"
+            self.WIB_self_chk()
 
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
@@ -460,10 +467,10 @@ class CE_RUNS:
                 if (PLL_cfgflg):
                     self.WIB_PLL_cfg( )
                     PLL_cfgflg = False
-            else:
-                self.femb_meas.femb_config.femb.UDP_IP = wib_ip
-                print "Use internal clk from WIB"
-                self.femb_meas.femb_config.femb.write_reg_wib_checked (0x4, 8)
+            #else:
+            #    self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+            #    print "Use internal clk from WIB(%s)"%wib_ip
+            #    self.femb_meas.femb_config.femb.write_reg_wib_checked (0x4, 8)
  
 
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
@@ -601,6 +608,7 @@ class CE_RUNS:
         self.femb_meas.femb_config.femb.write_reg_wib (1, 0)
         self.femb_meas.femb_config.femb.write_reg_wib (1, 0)
 
+
         mbb_tmp2 = 0
         if (mbb_cal_en == 1):
             mbb_tmp2 = mbb_tmp2 | 0x01
@@ -612,7 +620,7 @@ class CE_RUNS:
             mbb_tmp2 = mbb_tmp2 | 0x08
         self.femb_meas.femb_config.femb.write_reg_wib (2, mbb_tmp2)
         self.femb_meas.femb_config.femb.write_reg_wib (2, mbb_tmp2)
-        time.sleep(0.01)
+        time.sleep(0.1)
 
         time.sleep(1)
 
