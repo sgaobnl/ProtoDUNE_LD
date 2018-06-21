@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Thu Jun 21 09:36:06 2018
+Last modified: Thu Jun 21 13:46:19 2018
 """
 
 #defaut setting for scientific caculation
@@ -233,7 +233,7 @@ if (test_runs&0x20 != 0x0 ):
 if (test_runs&0x10 != 0x0 ):
     print "Quick Checkout Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.qc_run(apa_oft_info, sgs=[1], tps =[0,1,2,3], val = 100) 
+    ceruns.qc_run(apa_oft_info, sgs=[1,3], tps =[0,1,2,3], val = 100) 
     with open(logfile, "a+") as f:
         f.write( "%2X: Quick Checkout Test\n" %(test_runs&0x10) ) 
         f.write (ceruns.runpath + "\n" )
@@ -243,7 +243,7 @@ if (test_runs&0x10 != 0x0 ):
 if (test_runs&0x01 != 0x0 ):
     print "Noise Measurement Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.rms_run(apa_oft_info, sgs = [1], tps =[0,1,2,3], val=1600) 
+    ceruns.rms_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=1600) 
     with open(logfile, "a+") as f:
         f.write( "%2X: Noise Measurement Test\n" %(test_runs&0x01) ) 
         f.write (ceruns.runpath + "\n" )
@@ -253,7 +253,7 @@ if (test_runs&0x01 != 0x0 ):
 if (test_runs&0x02 != 0x0 ):
     print "FPGA DAC Calibration Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.fpgadac_run(apa_oft_info, sgs = [1], tps =[0,1,2,3], val=100)
+    ceruns.fpgadac_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=100)
     with open(logfile, "a+") as f:
         f.write( "%2X: FPGA DAC Calibration Test\n" %(test_runs&0x02) ) 
         f.write (ceruns.runpath + "\n" )
