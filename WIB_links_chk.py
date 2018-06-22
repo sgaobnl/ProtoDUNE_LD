@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Tue Feb  6 21:05:53 2018
+Last modified: Fri Jun 22 10:53:09 2018
 """
 
 #defaut setting for scientific caculation
@@ -34,29 +34,45 @@ for lastip in ["203", "206"]:
 #for lastip in [ wib_lastbyte,]:
     wib.UDP_IP = "131.225.150." +  lastip
     runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
-    logs.append ( runtime )
+    logs.append ( "BNL_check_time >> " + runtime )
+    print ( "BNL_check_time >> " + runtime )
     version = wib.read_reg_wib(0xFF)
+    wib.write_reg_wib(9, 0x20)
+    if lastip == "203":
+        wibno = 0
+    else:
+        wibno = 1
     if ((version &0xFFF) == 0x104) and (version != -1) :
-        logs.append ( wib.UDP_IP +": Addr(0xFF) =  " + format(version, "08X") )
-        print wib.UDP_IP , hex(version)
+        logs.append (  "BNL_WIB%d_IP >> "%wibno +wib.UDP_IP +": Addr(0xFF) =  " )
+        print (  "BNL_WIB%d_IP >> "%wibno +wib.UDP_IP +": Addr(0xFF) =  " )
+        logs.append (  "BNL_WIB%d_Version >> "%wibno + format(version, "08X") )
+        print (  "BNL_WIB%d_Version >> "%wibno + format(version, "08X") )
         tmp1 = wib.read_reg_wib(0x100)
-        logs.append ( "Addr(0x100) = " + format(tmp1, "08X") ) 
+        undefno = 1
+        logs.append ( "BNL_WIB%d_Undef%d >> "%(wibno, undefno) +"Addr(0x100) = " + format(tmp1, "08X") ) 
+        print ( "BNL_WIB%d_Undef%d >> "%(wibno, undefno) +"Addr(0x100) = " + format(tmp1, "08X") ) 
+        undefno = undefno + 1 
         
         wib.write_reg_wib(18, 0x100)
         for addr in [32,33,34,35,36,37,38,39]:
             b =  wib.read_reg_wib(addr)
-            print addr, hex(b)
-            logs.append ( "Addr(0x%X) = "%addr + format(b, "08X") ) 
+            if addr == 33:
+                logs.append ( "BNL_WIB%d_Link >> "%(wibno) + "Addr(0x%X) = "%addr + format(b, "08X") ) 
+                print ( "BNL_WIB%d_Link >> "%(wibno) + "Addr(0x%X) = "%addr + format(b, "08X") ) 
+            elif addr == 36:
+                logs.append ( "BNL_WIB%d_EQ >> "%(wibno) +  "Addr(0x%X) = "%addr + format(b, "08X") ) 
+                print ( "BNL_WIB%d_EQ >> "%(wibno) +  "Addr(0x%X) = "%addr + format(b, "08X") ) 
+            else:
+                logs.append ("BNL_WIB%d_Undef%d >> "%(wibno, undefno) + "Addr(0x%X) = "%addr + format(b, "08X") ) 
+                print ("BNL_WIB%d_Undef%d >> "%(wibno, undefno) + "Addr(0x%X) = "%addr + format(b, "08X") ) 
+                undefno = undefno + 1 
         
-        logs.append ( "##########################")  
         for i in range(16):
             wib.write_reg_wib(18, i)
             b =  wib.read_reg_wib(34)
-            print 34, hex(b)
-            logs.append ( "Addr(0x%X) = "%(34) + format(b, "08X") ) 
-        logs.append ( "##########################\n")  
+            logs.append ( "BNL_WIB%d_Timestamp%d >> "%(wibno, i+1) + "Addr(0x%X) = "%(34) + format(b, "08X") ) 
+            print ( "BNL_WIB%d_Timestamp%d >> "%(wibno, i+1) + "Addr(0x%X) = "%(34) + format(b, "08X") ) 
 
-        logs.append ( "########CURRENT##############")  
         for j in range(3):
             wib.write_reg_wib(5, 0x00000)
             wib.write_reg_wib(5, 0x00000 | 0x10000)
@@ -72,8 +88,8 @@ for lastip in ["203", "206"]:
         for fembno in range(4):
             femb_vcts=vcts[fembno*6+1: fembno*6+7]
             vcs = np.array(femb_vcts)
-
             vcsh = (vcs[1:6]&0x0FFFF0000) >> 16 
+            vcsh = np.append(vcsh, 0x4000) 
 
             vcshx = vcsh & 0x4000
             vs = []
@@ -82,10 +98,11 @@ for lastip in ["203", "206"]:
                     vs.append(vcsh[i])
                 else:
                     vs.append(0)
-
             vs = ((np.array(vs) & 0x3FFF) * 305.18) * 0.000001
 
             vcsl = (vcs[1:6]&0x0FFFF) 
+            vcsl = np.append(vcsl, 0x4000) 
+
             cs = ((vcsl & 0x3FFF) * 19.075) * 0.000001 / 0.1
             cs[2] = cs[2] / 0.1
             cs_tmp =[]
@@ -99,39 +116,34 @@ for lastip in ["203", "206"]:
             spl_in = (((vcs[0]&0x0FFFF0000) >> 16) & 0x3FFF) * 305.18 * 0.000001 + 2.5
             temp = (((vcs[0]&0x0FFFF) & 0x3FFF) * 62.5) * 0.001
 
-            print ( "FEMB%d " %fembno   ) 
-            print ( "Temperature = %3.5f " %temp   ) 
-            print ( "BIAS 5V : %3.5fV, %3.5fA" %(vs[4], cs[4]) ) 
-            print ( "FM 4.2V : %3.5fV, %3.5fA" %(vs[0], cs[0]) ) 
-            print ( "FM 3.0V : %3.5fV, %3.5fA" %(vs[1], cs[1]) ) 
-            print ( "FM 1.5V : %3.5fV, %3.5fA" %(vs[3], cs[3]) ) 
-            print ( "AM 2.5V : %3.5fV, %3.5fA" %(vs[2], cs[2]) ) 
-
-            #logs.append ( "Supply IN   = %3.5f \n" %spl_in ) 
-            logs.append ( "FEMB%d " %fembno   ) 
-            logs.append ( "Temperature = %3.5f " %temp   ) 
-            logs.append ( "BIAS 5V : %3.5fV, %3.5fA" %(vs[4], cs[4]) ) 
-            logs.append ( "FM 4.2V : %3.5fV, %3.5fA" %(vs[0], cs[0]) ) 
-            logs.append ( "FM 3.0V : %3.5fV, %3.5fA" %(vs[1], cs[1]) ) 
-            logs.append ( "FM 1.5V : %3.5fV, %3.5fA" %(vs[3], cs[3]) ) 
-            logs.append ( "AM 2.5V : %3.5fV, %3.5fA" %(vs[2], cs[2]) ) 
-        logs.append ( "##########################\n")  
-
+            logs.append ("BNL_WIB%d_FEMB%d_Tempe>> "%(wibno, fembno) + "Temperature : %3.3f " %temp   ) 
+            logs.append ("BNL_WIB%d_FEMB%d_BS50V>> "%(wibno, fembno) + "BIAS 5V : %3.3fV, %3.3fA" %(vs[4], cs[4]) ) 
+            logs.append ("BNL_WIB%d_FEMB%d_FM42V>> "%(wibno, fembno) + "FM 4.2V : %3.3fV, %3.3fA" %(vs[0], cs[0]) ) 
+            logs.append ("BNL_WIB%d_FEMB%d_FM30V>> "%(wibno, fembno) + "FM 3.0V : %3.3fV, %3.3fA" %(vs[1], cs[1]) ) 
+            logs.append ("BNL_WIB%d_FEMB%d_FM15V>> "%(wibno, fembno) + "FM 1.5V : %3.3fV, %3.3fA" %(vs[3], cs[3]) ) 
+            logs.append ("BNL_WIB%d_FEMB%d_AM36V>> "%(wibno, fembno) + "AM 3.6V : %3.3fV, %3.3fA" %(vs[2], cs[2]) ) 
+            logs.append ("BNL_WIB%d_FEMB%d_AM25V>> "%(wibno, fembno) + "AM 2.5V : %3.3fV, %3.3fA" %(vs[5], cs[5]) ) 
+            print ("BNL_WIB%d_FEMB%d_Tempe>> "%(wibno, fembno) + "Temperature : %3.3f " %temp   ) 
+            print ("BNL_WIB%d_FEMB%d_BS50V>> "%(wibno, fembno) + "BIAS 5V : %3.3fV, %3.3fA" %(vs[4], cs[4]) ) 
+            print ("BNL_WIB%d_FEMB%d_FM42V>> "%(wibno, fembno) + "FM 4.2V : %3.3fV, %3.3fA" %(vs[0], cs[0]) ) 
+            print ("BNL_WIB%d_FEMB%d_FM30V>> "%(wibno, fembno) + "FM 3.0V : %3.3fV, %3.3fA" %(vs[1], cs[1]) ) 
+            print ("BNL_WIB%d_FEMB%d_FM15V>> "%(wibno, fembno) + "FM 1.5V : %3.3fV, %3.3fA" %(vs[3], cs[3]) ) 
+            print ("BNL_WIB%d_FEMB%d_AM36V>> "%(wibno, fembno) + "AM 3.6V : %3.3fV, %3.3fA" %(vs[2], cs[2]) ) 
+            print ("BNL_WIB%d_FEMB%d_AM25V>> "%(wibno, fembno) + "AM 2.5V : %3.3fV, %3.3fA" %(vs[5], cs[5]) ) 
     else:
         print "WIB (%s)  doesn't exist or wrong firmware version!)"%(wib.UDP_IP)
 
 logfile =    "/daqdata/BNL_LD_data" + "/WIB_lins_chk.log"
 with open(logfile, "a+") as f:
-    f.write( "Begin\n" ) 
-    f.write( "WIB LINKs check\n" ) 
-    runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    f.write( "####Begin\n" ) 
+    f.write( "####WIB LINKs and Votages and Currents Checkout\n" ) 
     f.write( runtime + "\n" )
     for onelog in logs:
         f.write( "%s\n"%onelog ) 
-    f.write ("There are %d times WIB UDP Registers Write Error"%wib.wib_wrerr_cnt )
-    f.write ("There are %d times FEMB UDP Registers Write Error"%wib.femb_wrerr_cnt )
-    f.write ("There are %d times UDP timeouts"%wib.udp_timeout_cnt )
-    f.write ("There are %d times UDP High Speed links timeouts"%wib.udp_hstimeout_cnt )
-    f.write( "End\n") 
+    f.write ("####There are %d times WIB UDP Registers Write Error"%wib.wib_wrerr_cnt )
+    f.write ("####There are %d times FEMB UDP Registers Write Error"%wib.femb_wrerr_cnt )
+    f.write ("####There are %d times UDP timeouts"%wib.udp_timeout_cnt )
+    f.write ("####There are %d times UDP High Speed links timeouts"%wib.udp_hstimeout_cnt )
+    f.write( "####End\n") 
     f.write( "\n") 
 

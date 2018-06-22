@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Wed Jun 20 22:12:08 2018
+Last modified: Fri Jun 22 10:22:36 2018
 """
 
 #defaut setting for scientific caculation
@@ -215,6 +215,7 @@ class CE_RUNS:
             femb_vcts=vcts[fembno*6+1: fembno*6+7]
             vcs = np.array(femb_vcts)
             vcsh = (vcs[1:6]&0x0FFFF0000) >> 16 
+            vcsh = np.append(vcsh, 0x4000) 
             vcshx = vcsh & 0x4000
             vs = []
             for i in range(len(vcsh)):
@@ -224,6 +225,7 @@ class CE_RUNS:
                     vs.append(0)
             vs = ((np.array(vs) & 0x3FFF) * 305.18) * 0.000001
             vcsl = (vcs[1:6]&0x0FFFF) 
+            vcsl = np.append(vcsl, 0x4000) 
             cs = ((vcsl & 0x3FFF) * 19.075) * 0.000001 / 0.1
             cs[2] = cs[2] / 0.1
             cs_tmp =[]
@@ -244,6 +246,7 @@ class CE_RUNS:
             logs.append ( "FM 3.0V : %3.5fV, %3.5fA" %(vs[1], cs[1]) ) 
             logs.append ( "FM 1.5V : %3.5fV, %3.5fA" %(vs[3], cs[3]) ) 
             logs.append ( "AM 2.5V : %3.5fV, %3.5fA" %(vs[2], cs[2]) ) 
+            logs.append ( "AM 3.6V : %3.5fV, %3.5fA" %(vs[5], cs[5]) ) 
         logs.append ( "--> Link and current check done" )
         self.linkcurs = self.linkcurs + logs
 

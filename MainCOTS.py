@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Thu Jun 21 13:46:19 2018
+Last modified: Fri Jun 22 10:28:31 2018
 """
 
 #defaut setting for scientific caculation
@@ -148,6 +148,8 @@ if (test_runs == 0x0 ):
                 log1 = femb_wrerr_log[logn+1]
                 if log0 != log1 :
                     f.write ("Write ERROR happens at FEMB%d, Addr=%x, Value=%x"%(log1[0], log1[1],log1[2]) )
+        for onelinkcur in ceruns.linkcurs:
+            f.write( onelinkcur + "\n") 
         f.write( "End\n") 
         f.write( "\n") 
 
