@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Fri Jun 22 10:53:09 2018
+Last modified: Fri Jun 22 11:32:31 2018
 """
 
 #defaut setting for scientific caculation
@@ -89,7 +89,6 @@ for lastip in ["203", "206"]:
             femb_vcts=vcts[fembno*6+1: fembno*6+7]
             vcs = np.array(femb_vcts)
             vcsh = (vcs[1:6]&0x0FFFF0000) >> 16 
-            vcsh = np.append(vcsh, 0x4000) 
 
             vcshx = vcsh & 0x4000
             vs = []
@@ -101,10 +100,9 @@ for lastip in ["203", "206"]:
             vs = ((np.array(vs) & 0x3FFF) * 305.18) * 0.000001
 
             vcsl = (vcs[1:6]&0x0FFFF) 
-            vcsl = np.append(vcsl, 0x4000) 
 
             cs = ((vcsl & 0x3FFF) * 19.075) * 0.000001 / 0.1
-            cs[2] = cs[2] / 0.1
+            cs3_6 = cs[2] / 0.1
             cs_tmp =[]
             for csi in cs:
                 if csi < 3.1 :
@@ -121,8 +119,8 @@ for lastip in ["203", "206"]:
             logs.append ("BNL_WIB%d_FEMB%d_FM42V>> "%(wibno, fembno) + "FM 4.2V : %3.3fV, %3.3fA" %(vs[0], cs[0]) ) 
             logs.append ("BNL_WIB%d_FEMB%d_FM30V>> "%(wibno, fembno) + "FM 3.0V : %3.3fV, %3.3fA" %(vs[1], cs[1]) ) 
             logs.append ("BNL_WIB%d_FEMB%d_FM15V>> "%(wibno, fembno) + "FM 1.5V : %3.3fV, %3.3fA" %(vs[3], cs[3]) ) 
-            logs.append ("BNL_WIB%d_FEMB%d_AM36V>> "%(wibno, fembno) + "AM 3.6V : %3.3fV, %3.3fA" %(vs[2], cs[2]) ) 
-            logs.append ("BNL_WIB%d_FEMB%d_AM25V>> "%(wibno, fembno) + "AM 2.5V : %3.3fV, %3.3fA" %(vs[5], cs[5]) ) 
+            logs.append ("BNL_WIB%d_FEMB%d_AM36V>> "%(wibno, fembno) + "AM 3.6V : %3.3fV, %3.3fA" %(vs[2], cs3_6) ) 
+            logs.append ("BNL_WIB%d_FEMB%d_AM25V>> "%(wibno, fembno) + "AM 2.5V : %3.3fV, %3.3fA" %(vs[2], cs[2]) ) 
             print ("BNL_WIB%d_FEMB%d_Tempe>> "%(wibno, fembno) + "Temperature : %3.3f " %temp   ) 
             print ("BNL_WIB%d_FEMB%d_BS50V>> "%(wibno, fembno) + "BIAS 5V : %3.3fV, %3.3fA" %(vs[4], cs[4]) ) 
             print ("BNL_WIB%d_FEMB%d_FM42V>> "%(wibno, fembno) + "FM 4.2V : %3.3fV, %3.3fA" %(vs[0], cs[0]) ) 
