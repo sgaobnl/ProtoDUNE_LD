@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Fri Jun 22 10:22:36 2018
+Last modified: Mon Jun 25 19:45:50 2018
 """
 
 #defaut setting for scientific caculation
@@ -183,79 +183,146 @@ class CE_RUNS:
                         #    sys.exit()
 
     def WIB_LINK_CUR(self):
-        logs = []
-        runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
-        logs.append ( runtime + "--> Link and current check" )
-        #link
-        tmp1 = self.femb_meas.femb_config.femb.read_reg_wib(0x100)
-        logs.append ( "Addr(0x100) = " + format(tmp1, "08X") ) 
-        self.femb_meas.femb_config.femb.write_reg_wib(18, 0x100)
-        for addr in [32,33,34,35,36,37,38,39]:
-            b =  self.femb_meas.femb_config.femb.read_reg_wib(addr)
-            logs.append ( "Addr(0x%X) = "%addr + format(b, "08X") ) 
+        alllogs = []
+        monlogs = []
+        mon_vst = "SBND_VST_"
+        for wib_addr in range(len(self.wib_ips)):
+            wib_ip = self.wib_ips[wib_addr]
+            wib_pos = wib_addr
+            mon_wib = "WIB%d_"wib_pos
  
-        for i in range(16):
-            self.femb_meas.femb_config.femb.write_reg_wib(18, i)
-            b =  self.femb_meas.femb_config.femb.read_reg_wib(34)
-            logs.append ( "Addr(0x%X) = "%(34) + format(b, "08X") ) 
-        #current 
-        for j in range(3):
-            self.femb_meas.femb_config.femb.write_reg_wib(5, 0x00000)
-            self.femb_meas.femb_config.femb.write_reg_wib(5, 0x00000 | 0x10000)
-            self.femb_meas.femb_config.femb.write_reg_wib(5, 0x00000)
-            time.sleep(0.1)
-            vcts =[]
-            for i in range(30):
-                self.femb_meas.femb_config.femb.write_reg_wib(5, i)
-                time.sleep(0.001)
-                vcts.append(  self.femb_meas.femb_config.femb.read_reg_wib(6) & 0x0000FFFFFFFF )
-                time.sleep(0.001)
+            runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
+            wib_ver = self.femb_meas.femb_config.femb.read_reg_wib(0x100)  
 
-        for fembno in range(4):
-            femb_vcts=vcts[fembno*6+1: fembno*6+7]
-            vcs = np.array(femb_vcts)
-            vcsh = (vcs[1:6]&0x0FFFF0000) >> 16 
-            vcsh = np.append(vcsh, 0x4000) 
-            vcshx = vcsh & 0x4000
-            vs = []
-            for i in range(len(vcsh)):
-                if (vcshx[i] == 0 ):
-                    vs.append(vcsh[i])
-                else:
-                    vs.append(0)
-            vs = ((np.array(vs) & 0x3FFF) * 305.18) * 0.000001
-            vcsl = (vcs[1:6]&0x0FFFF) 
-            vcsl = np.append(vcsl, 0x4000) 
-            cs = ((vcsl & 0x3FFF) * 19.075) * 0.000001 / 0.1
-            cs[2] = cs[2] / 0.1
-            cs_tmp =[]
-            for csi in cs:
-                if csi < 3.1 :
-                    cs_tmp.append(csi)
-                else:
-                    cs_tmp.append(0)
-            cs = np.array(cs_tmp)
+            self.femb_meas.femb_config.femb.write_reg_wib(18, 0x100)
+            addr = 32 #
+            wib_undef32 = self.femb_meas.femb_config.femb.read_reg_wib(addr) 
+            addr = 33 #
+            wib_link = self.femb_meas.femb_config.femb.read_reg_wib(addr) 
+            addr = 34 #
+            wib_undef34 = self.femb_meas.femb_config.femb.read_reg_wib(addr) 
+            addr = 35 #
+            wib_undef35 = self.femb_meas.femb_config.femb.read_reg_wib(addr) 
+            addr = 36 #
+            wib_eq = self.femb_meas.femb_config.femb.read_reg_wib(addr) 
+            addr = 37 #
+            wib_undef37 = self.femb_meas.femb_config.femb.read_reg_wib(addr) 
+            addr = 38 #
+            wib_undef38 = self.femb_meas.femb_config.femb.read_reg_wib(addr) 
+            addr = 39 #
+            wib_undef39 = self.femb_meas.femb_config.femb.read_reg_wib(addr) 
 
-            spl_in = (((vcs[0]&0x0FFFF0000) >> 16) & 0x3FFF) * 305.18 * 0.000001 + 2.5
-            temp = (((vcs[0]&0x0FFFF) & 0x3FFF) * 62.5) * 0.001
+            timestamps = []
+            for i in range(16):
+                self.femb_meas.femb_config.femb.write_reg_wib(18, i)
+                timestamps.append( format( self.femb_meas.femb_config.femb.read_reg_wib(34), "08X") )
 
-            logs.append ( "FEMB%d " %fembno   ) 
-            logs.append ( "Temperature = %3.5f " %temp   ) 
-            logs.append ( "BIAS 5V : %3.5fV, %3.5fA" %(vs[4], cs[4]) ) 
-            logs.append ( "FM 4.2V : %3.5fV, %3.5fA" %(vs[0], cs[0]) ) 
-            logs.append ( "FM 3.0V : %3.5fV, %3.5fA" %(vs[1], cs[1]) ) 
-            logs.append ( "FM 1.5V : %3.5fV, %3.5fA" %(vs[3], cs[3]) ) 
-            logs.append ( "AM 2.5V : %3.5fV, %3.5fA" %(vs[2], cs[2]) ) 
-            logs.append ( "AM 3.6V : %3.5fV, %3.5fA" %(vs[5], cs[5]) ) 
-        logs.append ( "--> Link and current check done" )
-        self.linkcurs = self.linkcurs + logs
+            #current & temperature 
+            for j in range(3):
+                self.femb_meas.femb_config.femb.write_reg_wib(5, 0x00000)
+                self.femb_meas.femb_config.femb.write_reg_wib(5, 0x00000 | 0x10000)
+                self.femb_meas.femb_config.femb.write_reg_wib(5, 0x00000)
+                time.sleep(0.1)
+                vcts =[]
+                for i in range(30):
+                    self.femb_meas.femb_config.femb.write_reg_wib(5, i)
+                    time.sleep(0.001)
+                    vcts.append(  self.femb_meas.femb_config.femb.read_reg_wib(6) & 0x0000FFFFFFFF )
+                    time.sleep(0.001)
+
+            for fembno in range(4):
+                mon_femb = "FEMB%d_"fembno
+                femb_vcts=vcts[fembno*6+1: fembno*6+7]
+                vcs = np.array(femb_vcts)
+                vcsh = (vcs[1:6]&0x0FFFF0000) >> 16 
+                vcsh = np.append(vcsh, 0x4000) 
+                vcshx = vcsh & 0x4000
+                vs = []
+                for i in range(len(vcsh)):
+                    if (vcshx[i] == 0 ):
+                        vs.append(vcsh[i])
+                    else:
+                        vs.append(0)
+                vs = ((np.array(vs) & 0x3FFF) * 305.18) * 0.000001
+                vcsl = (vcs[1:6]&0x0FFFF) 
+                vcsl = np.append(vcsl, 0x4000) 
+                cs = ((vcsl & 0x3FFF) * 19.075) * 0.000001 / 0.1
+                cs3_6 = cs3_6 / 0.1
+                cs_tmp =[]
+                for csi in cs:
+                    if csi < 3.1 :
+                        cs_tmp.append(csi)
+                    else:
+                        cs_tmp.append(0)
+                cs = np.array(cs_tmp)
+
+                spl_in = (((vcs[0]&0x0FFFF0000) >> 16) & 0x3FFF) * 305.18 * 0.000001 + 2.5
+                temp = (((vcs[0]&0x0FFFF) & 0x3FFF) * 62.5) * 0.001
+
+                mon_pre  = mon_vst + mon_wib + mon_femb  
+
+                monlogs.append ( mon_pre + "TEMP/TEMP_READ" + " " + "%3.3f"%temp )
+#                monlogs.append ( mon_pre + "LINK/LINK_READ" + " " + str( (wib_link >> (8*fembno))&0xFF ) )
+#                monlogs.append ( mon_pre + "EQER/EQER_READ" + " " + str((wib_eq >> (4*fembno))&0xF ) )
+                monlogs.append ( mon_pre + "BS50/VOLT_READ" + " " + "%3.3f"%vs[4] ) 
+                monlogs.append ( mon_pre + "FM42/VOLT_READ" + " " + "%3.3f"%vs[0] ) 
+                monlogs.append ( mon_pre + "FM30/VOLT_READ" + " " + "%3.3f"%vs[1] ) 
+                monlogs.append ( mon_pre + "FM15/VOLT_READ" + " " + "%3.3f"%vs[3] ) 
+                monlogs.append ( mon_pre + "AM36/VOLT_READ" + " " + "%3.3f"%vs[2] ) 
+                monlogs.append ( mon_pre + "AM25/VOLT_READ" + " " + "%3.3f"%vs[5] ) 
+                monlogs.append ( mon_pre + "BS50/CURR_READ" + " " + "%3.3f"%cs[4] ) 
+                monlogs.append ( mon_pre + "FM42/CURR_READ" + " " + "%3.3f"%cs[0] ) 
+                monlogs.append ( mon_pre + "FM30/CURR_READ" + " " + "%3.3f"%cs[1] ) 
+                monlogs.append ( mon_pre + "FM15/CURR_READ" + " " + "%3.3f"%cs[3] ) 
+                monlogs.append ( mon_pre + "AM36/CURR_READ" + " " + "%3.3f"%cs3_6 ) 
+                monlogs.append ( mon_pre + "AM25/CURR_READ" + " " + "%3.3f"%cs[2] ) 
+
+                alllogs.append ( mon_pre + "TIME/TIME_READ" + " " +  runtime)
+                alllogs.append ( mon_pre + "VERS/VERS_READ" + " " +  format(wib_ver, "08X") )
+                alllogs.append ( mon_pre + "AD32/AD32_READ" + " " +  format(wib_undef32, "08X") )
+                alllogs.append ( mon_pre + "AD33/AD33_READ" + " " +  format(wib_link, "08X") )
+                alllogs.append ( mon_pre + "AD34/AD34_READ" + " " +  format(wib_undef34, "08X") )
+                alllogs.append ( mon_pre + "AD35/AD35_READ" + " " +  format(wib_undef35, "08X") )
+                alllogs.append ( mon_pre + "AD36/AD36_READ" + " " +  format(wib_eq, "08X") )
+                alllogs.append ( mon_pre + "AD37/AD37_READ" + " " +  format(wib_undef37, "08X") )
+                alllogs.append ( mon_pre + "AD38/AD38_READ" + " " +  format(wib_undef38, "08X") )
+                alllogs.append ( mon_pre + "AD39/AD39_READ" + " " +  format(wib_undef39, "08X") )
+                for i in range(len(timestamps)):
+                    alllogs.append ( mon_pre + "TS"+format(i, "02X") + "/TS" +format(i, "02X") + "_READ" + " " +  format(timestamps(i), "08X")
+                alllogs.append ( mon_pre + "TEMP/TEMP_READ" + " " + "%3.3f"%temp )
+                alllogs.append ( mon_pre + "LINK/LINK_READ" + " " + str( (wib_link >> (8*fembno))&0xFF ) )
+                alllogs.append ( mon_pre + "EQER/EQER_READ" + " " + str((wib_eq >> (4*fembno))&0xF ) )
+                alllogs.append ( mon_pre + "BS50/VOLT_READ" + " " + "%3.3f"%vs[4] ) 
+                alllogs.append ( mon_pre + "FM42/VOLT_READ" + " " + "%3.3f"%vs[0] ) 
+                alllogs.append ( mon_pre + "FM30/VOLT_READ" + " " + "%3.3f"%vs[1] ) 
+                alllogs.append ( mon_pre + "FM15/VOLT_READ" + " " + "%3.3f"%vs[3] ) 
+                alllogs.append ( mon_pre + "AM36/VOLT_READ" + " " + "%3.3f"%vs[2] ) 
+                alllogs.append ( mon_pre + "AM25/VOLT_READ" + " " + "%3.3f"%vs[5] ) 
+                alllogs.append ( mon_pre + "BS50/CURR_READ" + " " + "%3.3f"%cs[4] ) 
+                alllogs.append ( mon_pre + "FM42/CURR_READ" + " " + "%3.3f"%cs[0] ) 
+                alllogs.append ( mon_pre + "FM30/CURR_READ" + " " + "%3.3f"%cs[1] ) 
+                alllogs.append ( mon_pre + "FM15/CURR_READ" + " " + "%3.3f"%cs[3] ) 
+                alllogs.append ( mon_pre + "AM36/CURR_READ" + " " + "%3.3f"%cs3_6 ) 
+                alllogs.append ( mon_pre + "AM25/CURR_READ" + " " + "%3.3f"%cs[2] ) 
+
+        self.linkcurs = alllogs
+        monfile = self.path +  self.APA + "status.txt"
+        rm_err = False
+        if (os.path.isfile(monfile)): 
+            try:
+                os.remove(monfile)
+            except OSError:
+                rm_err = True
+        if (rm_err != True):
+            with open(monfile, "w") as f:
+                for onemon in monlogs:
+                    f.write ( onemon + "\n" )
 
     def FEMBs_PWR_SW(self, SW = "ON"):
         run_code, val, runpath = self.save_setting(run_code="C", val=100) 
         self.run_code = run_code
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
-        self.linkcurs = []
 
         #reset WIBs
         if (SW == "ON"):
@@ -268,11 +335,11 @@ class CE_RUNS:
             print "WIBs are reset"
             self.WIB_self_chk()
 
+        self.WIB_LINK_CUR( )
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
             wib_pos = wib_addr
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
-            self.WIB_LINK_CUR( )
             femb_pwr = self.wib_pwr_femb[wib_pos]
             if (femb_pwr[0] == 1 ):
                 fe0_pwr = 0x31000F
@@ -304,6 +371,7 @@ class CE_RUNS:
             else:
                 print "All FEMBs have been turned off"
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
+
 
     def FEMBs_Self_CHK(self):
         run_code, val, runpath = self.save_setting(run_code="D", val=100) 

@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Fri Jun 22 10:28:31 2018
+Last modified: Mon Jun 25 20:01:12 2018
 """
 
 #defaut setting for scientific caculation
@@ -105,7 +105,8 @@ else:
         print "Can't create a folder, exit"
         sys.exit()
 
-logfile = ceruns.path +  ceruns.APA + "readme.log"
+logfile = ceruns.path +  ceruns.APA + "_readme.log"
+monlogfile = ceruns.path +  ceruns.APA + "_monitor.log"
 
 print "WIEC self check"
 print "time cost = %.3f seconds"%(timer()-start)
@@ -169,13 +170,9 @@ with open(logfile, "a+") as f:
     f.write( "\n") 
 
 if (test_runs&0x7F != 0x0 ):
-    #if (RTD_flg == True):
-    #if (test_runs&0x7F != 0x40):
     if (False):
         print "Please write a sentence to describe the test purpose: "
         test_note = raw_input("Please input: ")
-        #print "Please input temperatures measured by RTDs (leave blank if RTD disconnected) "
-        #rtd_temp = raw_input("TT0206 to TT0200: ")
     else:
         test_note = "Continuate test..."
     rtd_temp = " "
@@ -188,7 +185,7 @@ if (test_runs&0x7F != 0x0 ):
         f.write(ceruns.env + "\n") 
         f.write("Test Code = 0X" + format(test_runs,"02X")+ "\n")  
         f.write(test_note + "\n") 
-        f.write("RTDs(TT0206 to TT0200): %s"%rtd_temp + "\n")  
+        f.write("RTDs: %s"%rtd_temp + "\n")  
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
     print "FEMB ADC offset calibration"
@@ -314,7 +311,24 @@ if (test_runs&0x40 != 0x0 ):
             f.write (ceruns.runtime + "\n" )
             f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
         print "time cost = %.3f seconds"%(timer()-start)
-        
+
+if (test_runs&0x100 != 0x0 ):
+    run_cnt = int(sys.argv[5])
+    for i in range(run_cnt):
+        if i > 0:
+            t_sleep = int(sys.argv[6])
+            t_min = t_sleep/60
+            runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
+            print "sleep %d minutes starting from %s"%(t_min,runtime)
+            print "Ctrl-C to if you want to stop the script before it finishes"
+            time.sleep(t_sleep)
+        print "WIB status check start"
+        print  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        ceruns.WIB_LINK_CUR()
+        with open(monlogfile, "a+") as f:
+            for onelinkcur in ceruns.linkcurs:
+                f.write( onelinkcur + "\n") 
+        print "Done!"
 
 if (test_runs&0x80 != 0x0 ):
     print "Turn FEMBs OFF"
@@ -361,37 +375,5 @@ if (test_runs&0x7F != 0x0 ):
         f.write( "\n") 
 
 print "Well Done"
-
-#if (test_runs&0x08 != 0x0 ):
-#    print "Brombreg Mode Noise Measurement Test"
-#    print "time cost = %.3f seconds"%(timer()-start)
-#    #ceruns.brombreg_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], cycle=5) 
-#    ceruns.brombreg_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], cycle=150) 
-#    with open(logfile, "a+") as f:
-#        f.write( "%2X: Brombreg Mode Noise Measurement Test\n" %(test_runs&0x08) ) 
-#        f.write (ceruns.runpath + "\n" )
-#        f.write (ceruns.runtime + "\n" )
-#        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-
-#if (test_runs&0x20 != 0x0 ):
-#    print "Temperature Monitoring"
-#    print "time cost = %.3f seconds"%(timer()-start)
-#    ceruns.monitor_run(temp_or_pluse = "temp")
-#    with open(logfile, "a+") as f:
-#        f.write( "%2X: Temperature Monitoring\n" %(test_runs&0x20) ) 
-#        f.write (ceruns.runpath + "\n" )
-#        f.write (ceruns.runtime + "\n" )
-#        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-
-#if (test_runs&0x40 != 0x0 ):
-#    if (ceruns.APA == "CHKOUT"): 
-#        print "Average Checkout"
-#        print "time cost = %.3f seconds"%(timer()-start)
-#        ceruns.avg_run(val = 1600)
-#    with open(logfile, "a+") as f:
-#        f.write( "%2X: Average Checkout\n" %(test_runs&0x40) ) 
-#        f.write (ceruns.runpath + "\n" )
-#        f.write (ceruns.runtime + "\n" )
-#        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
 
