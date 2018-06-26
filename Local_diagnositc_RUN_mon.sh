@@ -10,7 +10,7 @@
 #####argv[3]  --> True or False, jumbo frame size,
 #####argv[4]  --> ADC phase set, default 0, no need to change
 
-python "./MainCOTS.py" LArIAT 0x80 False 0 #--> Don't change to 0x00 to turn on FEMBs because it is vacuum inside cryostat now. 
+#python "./MainCOTS.py" LArIAT 0x00 False 0 
 #python "./MainCOTS.py" LArIAT 0x10 False 0 
 #python "./MainCOTS.py" LArIAT 0x80 False 0
 #python "./MainCOTS.py" LArIAT 0x01 True 0 
@@ -38,7 +38,10 @@ python "./MainCOTS.py" LArIAT 0x80 False 0 #--> Don't change to 0x00 to turn on 
 ####argv[10] --> mbb configuration bit[8:0], bit[0] --> MBB calibration pulse
 
 #python "./MainCOTS.py" LArIAT 0x00 False 0
-#python "./MainCOTS.py" LArIAT 0x20 False 0 1 3 3 0x8D 0 0x102
 #python "./MainCOTS.py" LArIAT 0x80 False 0
 
 
+####argvp5] to argv[6] need to be set only when argv[2] is 0x20
+####argv[5]  --> how many times you want to get local diagnositcs data 
+####argv[6]  --> gap between two sets of local diagnositcs data 
+python "./MainCOTS.py" LArIAT 0x40 False 0 3000 300
