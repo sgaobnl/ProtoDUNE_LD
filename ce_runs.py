@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Jun 26 08:19:10 2018
+Last modified: Tue Jun 26 14:55:54 2018
 """
 
 #defaut setting for scientific caculation
@@ -250,11 +250,11 @@ class CE_RUNS:
                     else:
                         vs.append(0)
                 vs = ((np.array(vs) & 0x3FFF) * 305.18) * 0.000001
-                print vs
  
                 vcsl = (vcs&0x0FFFF) 
                 cs = ((vcsl & 0x3FFF) * 19.075) * 0.000001 / 0.1
                 cs[2] = cs[2] / 0.1
+                cs[5] = cs[5] / 0.1
                 cs_tmp =[]
                 for csi in cs:
                     if csi < 3.1 :
@@ -262,7 +262,6 @@ class CE_RUNS:
                     else:
                         cs_tmp.append(0)
                 cs = np.array(cs_tmp)
-                print cs
 
                 spl_in = (((vct[0]&0x0FFFF0000) >> 16) & 0x3FFF) * 305.18 * 0.000001 + 2.5
                 temp = (((vct[0]&0x0FFFF) & 0x3FFF) * 62.5) * 0.001
