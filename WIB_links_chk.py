@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Mon Jun 25 20:01:55 2018
+Last modified: Tue Jun 26 15:06:27 2018
 """
 
 #defaut setting for scientific caculation
@@ -26,18 +26,16 @@ from timeit import default_timer as timer
 
 ###############################################################################
 from femb_udp_cmdline import FEMB_UDP
-#wib_lastbyte = sys.argv[1]
 wib= FEMB_UDP()
 
 logs = []
 for lastip in ["203", "206"]:
-#for lastip in [ wib_lastbyte,]:
     wib.UDP_IP = "131.225.150." +  lastip
     runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
     logs.append ( "BNL_check_time >> " + runtime )
     print ( "BNL_check_time >> " + runtime )
     version = wib.read_reg_wib(0xFF)
-    wib.write_reg_wib(9, 0x20)
+
     if lastip == "203":
         wibno = 0
     else:
@@ -79,7 +77,7 @@ for lastip in ["203", "206"]:
             wib.write_reg_wib(5, 0x00000)
             time.sleep(0.1)
             vcts =[]
-            for i in range(30):
+            for i in range(35):
                 wib.write_reg_wib(5, i)
                 time.sleep(0.001)
                 vcts.append(  wib.read_reg_wib(6) & 0x0000FFFFFFFF )
@@ -87,22 +85,28 @@ for lastip in ["203", "206"]:
 
         for fembno in range(4):
             femb_vcts=vcts[fembno*6+1: fembno*6+7]
-            vcs = np.array(femb_vcts)
-            vcsh = (vcs[1:6]&0x0FFFF0000) >> 16 
+            vct = []
+            vcs = []
+            vs  = []
+            cs  = []
 
+            vct = np.array(femb_vcts)
+            vc25 = vcts[31+fembno]
+            vcs = np.append(vct[1:6], vc25) 
+
+            vcsh = (vcs&0x0FFFF0000) >> 16 
             vcshx = vcsh & 0x4000
-            vs = []
             for i in range(len(vcsh)):
                 if (vcshx[i] == 0 ):
                     vs.append(vcsh[i])
                 else:
                     vs.append(0)
             vs = ((np.array(vs) & 0x3FFF) * 305.18) * 0.000001
-
-            vcsl = (vcs[1:6]&0x0FFFF) 
-
+ 
+            vcsl = (vcs&0x0FFFF) 
             cs = ((vcsl & 0x3FFF) * 19.075) * 0.000001 / 0.1
-            cs3_6 = cs[2] / 0.1
+            cs[2] = cs[2] / 0.1
+            cs[5] = cs[5] / 0.1
             cs_tmp =[]
             for csi in cs:
                 if csi < 3.1 :
@@ -111,8 +115,8 @@ for lastip in ["203", "206"]:
                     cs_tmp.append(0)
             cs = np.array(cs_tmp)
 
-            spl_in = (((vcs[0]&0x0FFFF0000) >> 16) & 0x3FFF) * 305.18 * 0.000001 + 2.5
-            temp = (((vcs[0]&0x0FFFF) & 0x3FFF) * 62.5) * 0.001
+            spl_in = (((vct[0]&0x0FFFF0000) >> 16) & 0x3FFF) * 305.18 * 0.000001 + 2.5
+            temp = (((vct[0]&0x0FFFF) & 0x3FFF) * 62.5) * 0.001
 
             logs.append ("BNL_WIB%d_FEMB%d_Tempe>> "%(wibno, fembno) + "Temperature : %3.3f " %temp   ) 
             logs.append ("BNL_WIB%d_FEMB%d_BS50V>> "%(wibno, fembno) + "BIAS 5V : %3.3fV, %3.3fA" %(vs[4], cs[4]) ) 
