@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Jun 26 14:55:54 2018
+Last modified: Tue Jun 26 16:48:19 2018
 """
 
 #defaut setting for scientific caculation
@@ -183,9 +183,9 @@ class CE_RUNS:
                         #    sys.exit()
 
     def WIB_LINK_CUR(self):
-        alllogs = []
-        monlogs = ["\n\n"]
-        mon_vst = "SBND_VST_"
+        alllogs = ["\n\n"]
+        monlogs = []
+        mon_vst = "caput SBND_VST_"
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
             wib_pos = wib_addr
