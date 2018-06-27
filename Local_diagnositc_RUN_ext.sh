@@ -38,7 +38,7 @@
 ####argv[10] --> mbb configuration bit[8:0], bit[0] --> MBB calibration pulse
 
 #python "./MainCOTS.py" LArIAT 0x00 False 0
-python "./MainCOTS.py" LArIAT 0x20 False 0 1 3 2 0x8D 0 0x102
+python "./MainCOTS.py" LArIAT 0x20 False 0 1 3 0 0x00 0 0x102
 
 ####argvp5] to argv[6] need to be set only when argv[2] is 0x20
 ####argv[5]  --> how many times you want to get local diagnositcs data 
