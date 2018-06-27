@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Mon Jun 25 20:01:12 2018
+Last modified: Wed Jun 27 10:19:26 2018
 """
 
 #defaut setting for scientific caculation
@@ -108,9 +108,11 @@ else:
 logfile = ceruns.path +  ceruns.APA + "_readme.log"
 monlogfile = ceruns.path +  ceruns.APA + "_monitor.log"
 
-print "WIEC self check"
-print "time cost = %.3f seconds"%(timer()-start)
-ceruns.WIB_self_chk()
+#if (test_runs != 0x100 ):
+if (True ):
+    print "WIEC self check"
+    print "time cost = %.3f seconds"%(timer()-start)
+    ceruns.WIB_self_chk()
 
 if (test_runs == 0x0 ):
     print "Power FEMBs ON"
@@ -154,20 +156,22 @@ if (test_runs == 0x0 ):
         f.write( "End\n") 
         f.write( "\n") 
 
-print "FEMBs self-check"
-mask_femb = ceruns.FEMBs_Self_CHK()
-print ceruns.COTSADC
-with open(logfile, "a+") as f:
-    f.write( "Begin\n") 
-    f.write( "Broken FEMBs are masked\n" ) 
-    f.write (ceruns.runpath + "\n" )
-    f.write (ceruns.runtime + "\n" )
-    f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-    f.write ("ADC Phase: " + str(ceruns.femb_meas.femb_config.phase_set) + "\n" )
-    for onemaskfemb in mask_femb:
-        f.write (onemaskfemb + "\n" )
-    f.write( "End\n") 
-    f.write( "\n") 
+if (test_runs != 0x100 ):
+    print "FEMBs self-check"
+    mask_femb = ceruns.FEMBs_Self_CHK()
+    print ceruns.COTSADC
+
+    with open(logfile, "a+") as f:
+        f.write( "Begin\n") 
+        f.write( "Broken FEMBs are masked\n" ) 
+        f.write (ceruns.runpath + "\n" )
+        f.write (ceruns.runtime + "\n" )
+        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+        f.write ("ADC Phase: " + str(ceruns.femb_meas.femb_config.phase_set) + "\n" )
+        for onemaskfemb in mask_femb:
+            f.write (onemaskfemb + "\n" )
+        f.write( "End\n") 
+        f.write( "\n") 
 
 if (test_runs&0x7F != 0x0 ):
     if (False):

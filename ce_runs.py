@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Wed Jun 27 10:06:05 2018
+Last modified: Wed Jun 27 10:46:08 2018
 """
 
 #defaut setting for scientific caculation
@@ -51,6 +51,7 @@ class CE_RUNS:
         wib_ips_removed = []
         for wib_ip in self.wib_ips:
             self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             ver_value = self.femb_meas.femb_config.femb.read_reg_wib (0x100)
             ver_value = self.femb_meas.femb_config.femb.read_reg_wib (0xFF)
             ver_value = self.femb_meas.femb_config.femb.read_reg_wib (0xFF)
@@ -73,6 +74,7 @@ class CE_RUNS:
             self.femb_meas.femb_config.femb.write_reg_wib_checked (15, 0)
             #self.femb_meas.femb_config.femb.write_reg_wib_checked (40, 0)
             #self.femb_meas.femb_config.femb.write_reg_wib_checked (41, 0)
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
         self.WIB_PLL_cfg( )
         for wib_ip in wib_ips_removed:
@@ -107,6 +109,7 @@ class CE_RUNS:
                     datass.append((int(line[tmp+3:-2],16))&0xFF)
         for wib_ip in self.wib_ips:
             lol_flg = False
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             for i in range(5):
                 print "check PLL status, please wait..."
                 time.sleep(1)
@@ -181,6 +184,7 @@ class CE_RUNS:
                         #else:
                         #    print "Exit!!!"
                         #    sys.exit()
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
     def WIB_LINK_CUR(self):
         alllogs = ["\n\n"]
@@ -189,6 +193,7 @@ class CE_RUNS:
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
             wib_pos = wib_addr
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             mon_wib = "WIB%d_"%wib_pos
  
             runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
@@ -311,6 +316,7 @@ class CE_RUNS:
                 alllogs.append ( mon_pre + "FM15/CURR_READ" + " " + "%3.3f"%cs[3] ) 
                 alllogs.append ( mon_pre + "AM36/CURR_READ" + " " + "%3.3f"%cs[2] ) 
                 alllogs.append ( mon_pre + "AM25/CURR_READ" + " " + "%3.3f"%cs[5] ) 
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
         self.linkcurs = alllogs
         monfile = self.path +  self.APA + "status.txt"
@@ -335,9 +341,11 @@ class CE_RUNS:
         if (SW == "ON"):
             for wib_addr in range(len(self.wib_ips)):
                 wib_ip = self.wib_ips[wib_addr]
+                self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
                 wib_pos = wib_addr
                 self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
                 self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
+                self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
                 time.sleep(10)
             print "WIBs are reset"
             self.WIB_self_chk()
@@ -429,9 +437,9 @@ class CE_RUNS:
         apa_oft_info = [[]]*20
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             wib_pos = wib_addr
             print "WIB%d (IP=%s) OFT running"%((wib_pos+1), wib_ip)
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
@@ -582,7 +590,6 @@ class CE_RUNS:
                     self.femb_meas.femb_config.femb.write_reg_femb_checked (femb_addr, 42,lar_fembno )
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
             #sync nevis daq
             self.femb_meas.femb_config.femb.UDP_IP = wib_ip
@@ -595,11 +602,14 @@ class CE_RUNS:
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
+
         if (mbb_en):
             self.mbb_run(mbb)
 
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             wib_pos = wib_addr
             #sync nevis daq
             time.sleep(2)
@@ -612,6 +622,7 @@ class CE_RUNS:
             time.sleep(0.1)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
@@ -643,6 +654,7 @@ class CE_RUNS:
 
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             wib_pos = wib_addr
             #sync nevis daq
             time.sleep(2)
@@ -655,6 +667,7 @@ class CE_RUNS:
             time.sleep(0.1)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
