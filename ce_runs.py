@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Jun 26 16:48:19 2018
+Last modified: Wed Jun 27 10:06:05 2018
 """
 
 #defaut setting for scientific caculation
@@ -192,7 +192,7 @@ class CE_RUNS:
             mon_wib = "WIB%d_"%wib_pos
  
             runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
-            wib_ver = self.femb_meas.femb_config.femb.read_reg_wib(0x100)  
+            wib_ver = self.femb_meas.femb_config.femb.read_reg_wib(0xFF)  
 
             self.femb_meas.femb_config.femb.write_reg_wib(18, 0x100)
             addr = 32 #
