@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Wed Jun 27 10:19:26 2018
+Last modified: Wed Jun 27 23:27:32 2018
 """
 
 #defaut setting for scientific caculation
@@ -197,7 +197,8 @@ if (test_runs&0x7F != 0x0 ):
 
     if (test_runs&0x7F == 0x40):
 #    if (True):
-        oft_file = "./APA_ADC_OFT_06202018_121405.bin"
+        #oft_file = "./APA_ADC_OFT_06202018_121405.bin"
+        oft_file = "./APA_ADC_OFT_06272018_222333.bin"
         with open (oft_file, 'rb') as fp:
             apa_oft_info = pickle.load(fp)
     else:
