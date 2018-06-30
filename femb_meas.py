@@ -253,31 +253,41 @@ class FEMB_MEAS: #for one FEMB
                 self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
                 #####################################################################################################33
                 if (wib_addr == 0):
-                    if (femb_addr == 2 ) 
-                        self.fe_reg.set_fechip(chip=1, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
-                        self.fe_reg.set_fechip(chip=4, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
-                        self.fe_reg.set_fechip(chip=5, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
-                    if (femb_addr == 1 ) 
-                        self.fe_reg.set_fechip(chip=1, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+                    if (femb_addr == 2 ): 
+                        self.fe_reg.set_fechip(chip=0, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+                        self.fe_reg.set_fechip(chip=1, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+                        self.fe_reg.set_fechip(chip=4, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+                        self.fe_reg.set_fechip(chip=5, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+                    if (femb_addr == 3 ) :
+                        self.fe_reg.set_fechip(chip=0, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+                        self.fe_reg.set_fechip(chip=1, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
                 #####################################################################################################33
             elif (asic_dac_en==1):
                 self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=dac_val )
+                #####################################################################################################33
                 if (wib_addr == 0):
-                    if (femb_addr == 2 ) 
-                        self.fe_reg.set_fechip(chip=1, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
-                        self.fe_reg.set_fechip(chip=4, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
-                        self.fe_reg.set_fechip(chip=5, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
-                    if (femb_addr == 1 ) 
-                        self.fe_reg.set_fechip(chip=1, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
+                    if (femb_addr == 2 ) :
+                        self.fe_reg.set_fechip(chip=0, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
+                        self.fe_reg.set_fechip(chip=1, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
+                        self.fe_reg.set_fechip(chip=4, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
+                        self.fe_reg.set_fechip(chip=5, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
+                    if (femb_addr == 3 ) :
+                        self.fe_reg.set_fechip(chip=0, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
+                        self.fe_reg.set_fechip(chip=1, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
+                #####################################################################################################33
             else:
                 self.fe_reg.set_fe_board(sg=sg, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
+                #####################################################################################################33
                 if (wib_addr == 0):
-                    if (femb_addr == 2 ) 
-                        self.fe_reg.set_fechip(chip=1, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
-                        self.fe_reg.set_fechip(chip=4, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
-                        self.fe_reg.set_fechip(chip=5, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
-                    if (femb_addr == 1 ) 
-                        self.fe_reg.set_fechip(chip=1, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
+                    if (femb_addr == 2 ) :
+                        self.fe_reg.set_fechip(chip=0, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
+                        self.fe_reg.set_fechip(chip=1, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
+                        self.fe_reg.set_fechip(chip=4, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
+                        self.fe_reg.set_fechip(chip=5, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
+                    if (femb_addr == 3 ) :
+                        self.fe_reg.set_fechip(chip=0, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
+                        self.fe_reg.set_fechip(chip=1, sg=0, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
+                #####################################################################################################33
  
             fe_regs = copy.deepcopy(self.fe_reg.REGS)
             clk_cs = 0
