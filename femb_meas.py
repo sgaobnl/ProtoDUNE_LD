@@ -296,7 +296,9 @@ class FEMB_MEAS: #for one FEMB
             sys.exit()
         else:
             self.fe_reg.set_fe_board() # reset the registers value
-            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+            #if (femb_addr == 2):
+            #    self.fe_reg.set_fechip(chip=0,  sts=1, snc=0, sg=sg, st=tp, smn=0, sdf=1 )
             fe_regs = copy.deepcopy(self.fe_reg.REGS)
             adc_regs = self.adc_clk_engr_config (adc_oft_regs, clk_cs = clk_cs, adc_en_gr = 1, adc_offset = 0 )
             fe_bias_regs = self.fe_regs_bias_config(fe_regs, yuv_bias_regs ) #one FEMB
@@ -306,7 +308,7 @@ class FEMB_MEAS: #for one FEMB
             if sg == 3: #25mV/fC
                 self.ampl = 6
             elif sg == 1: #"14_0mV_"
-                self.ampl = 8
+                self.ampl = 10 
             elif sg == 2: #"07_8mV_":
                 self.ampl = 12
             elif sg == 0: #"04_7mV_":
