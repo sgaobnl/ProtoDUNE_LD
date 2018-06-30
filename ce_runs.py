@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Thu Jun 28 08:51:07 2018
+Last modified: Sat Jun 30 11:41:40 2018
 """
 
 #defaut setting for scientific caculation
@@ -573,7 +573,7 @@ class CE_RUNS:
                         step = "WIB" + format(wib_pos, '02d') + "step" + str(sg) + run_code
                         self.femb_meas.lar_cfg(runpath, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, \
                                                pls_cs = pls_cs, dac_sel=dac_sel, fpga_dac_en=fpgadac_en, \
-                                               asic_dac_en=asicdac_en, dac_val = vdac, slk0 = self.slk0, slk1= self.slk1, val=val)
+                                               asic_dac_en=asicdac_en, dac_val = vdac, slk0 = self.slk0, slk1= self.slk1, val=val, wib_addr=wib_addr)
                         #sync nevis daq
                         self.femb_meas.femb_config.femb.UDP_IP = wib_ip
                         self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)

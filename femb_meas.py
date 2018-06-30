@@ -239,7 +239,7 @@ class FEMB_MEAS: #for one FEMB
         return savepath
 
     def lar_cfg(self, path, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, \
-                    pls_cs = 1, dac_sel=1, fpga_dac_en=1, asic_dac_en=0, dac_val = 6, slk0 = 0, slk1= 0, val=100*10):
+                    pls_cs = 1, dac_sel=1, fpga_dac_en=1, asic_dac_en=0, dac_val = 6, slk0 = 0, slk1= 0, val=100*10, wib_addr = 0):
         print "FEMB_DAQ-->Configuration start"
 
         savepath = self.wib_savepath (path, step)
@@ -251,11 +251,34 @@ class FEMB_MEAS: #for one FEMB
             self.fe_reg.set_fe_board() # reset the registers value
             if (fpga_dac_en==1):
                 self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+                #####################################################################################################33
+                if (wib_addr == 0):
+                    if (femb_addr == 2 ) 
+                        self.fe_reg.set_fechip(chip=1, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+                        self.fe_reg.set_fechip(chip=4, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+                        self.fe_reg.set_fechip(chip=5, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+                    if (femb_addr == 1 ) 
+                        self.fe_reg.set_fechip(chip=1, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
+                #####################################################################################################33
             elif (asic_dac_en==1):
                 self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=dac_val )
+                if (wib_addr == 0):
+                    if (femb_addr == 2 ) 
+                        self.fe_reg.set_fechip(chip=1, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
+                        self.fe_reg.set_fechip(chip=4, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
+                        self.fe_reg.set_fechip(chip=5, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
+                    if (femb_addr == 1 ) 
+                        self.fe_reg.set_fechip(chip=1, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =1, dac=0 )
             else:
                 self.fe_reg.set_fe_board(sg=sg, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
-
+                if (wib_addr == 0):
+                    if (femb_addr == 2 ) 
+                        self.fe_reg.set_fechip(chip=1, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
+                        self.fe_reg.set_fechip(chip=4, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
+                        self.fe_reg.set_fechip(chip=5, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
+                    if (femb_addr == 1 ) 
+                        self.fe_reg.set_fechip(chip=1, sg=1, st=tp, sts=0, smn=0, sdf=1, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
+ 
             fe_regs = copy.deepcopy(self.fe_reg.REGS)
             clk_cs = 0
             adc_regs = self.adc_clk_engr_config (adc_oft_regs, clk_cs , adc_en_gr = 0, adc_offset = 0 )
