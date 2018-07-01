@@ -10,7 +10,7 @@
 #####argv[3]  --> True or False, jumbo frame size,
 #####argv[4]  --> ADC phase set, default 0, no need to change
 
-python "./MainCOTS.py" LArIAT 0x80 False 0 #--> Don't change to 0x00 to turn on FEMBs because it is vacuum inside cryostat now. 
+python "./MainCOTS.py" LArIAT 0x00 False 0 
 #python "./MainCOTS.py" LArIAT 0x10 False 0 
 #python "./MainCOTS.py" LArIAT 0x80 False 0
 #python "./MainCOTS.py" LArIAT 0x01 True 0 

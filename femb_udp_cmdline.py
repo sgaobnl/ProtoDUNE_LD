@@ -256,7 +256,7 @@ class FEMB_UDP:
                         timeout_cnt = timeout_cnt + 1
                         self.write_reg_wib_checked (15, 0) 
                         print "ERROR: UDP timeout,  Please check if there is any conflict, Try again in 10 seconds"
-                        time.sleep(10)
+                        time.sleep(0.1)
                         continue
                 if data != None :
                     rawdataPackets.append(data)

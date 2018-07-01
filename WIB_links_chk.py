@@ -29,12 +29,30 @@ from femb_udp_cmdline import FEMB_UDP
 wib= FEMB_UDP()
 
 logs = []
+#for lastip in ["209"]:
+#    wib.write_reg_wib(1, 0x0)
+#    time.sleep(0.1)
+#    wib.write_reg_wib(1, 0x2)
+#    time.sleep(0.1)
+#    wib.write_reg_wib(1, 0x4)
+#    time.sleep(1)
+#    wib.write_reg_wib(1, 0x8)
+#    time.sleep(0.1)
+#    wib.write_reg_wib(1, 0x0)
+
+
 for lastip in ["203", "206"]:
     wib.UDP_IP = "131.225.150." +  lastip
     runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
     logs.append ( "BNL_check_time >> " + runtime )
     print ( "BNL_check_time >> " + runtime )
     version = wib.read_reg_wib(0xFF)
+#    wib.write_reg_wib(20, 0x0)
+#    time.sleep(0.1)
+#    wib.write_reg_wib(20, 0x2)
+#    time.sleep(0.1)
+#    wib.write_reg_wib(20, 0x0)
+#    time.sleep(0.1)
 
     if lastip == "203":
         wibno = 0
