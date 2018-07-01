@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Wed Jun 27 10:07:52 2018
+Last modified: Sun Jul  1 09:47:16 2018
 """
 
 #defaut setting for scientific caculation
@@ -135,7 +135,7 @@ for lastip in ["203", "206"]:
     else:
         print "WIB (%s)  doesn't exist or wrong firmware version!)"%(wib.UDP_IP)
 
-logfile =    "/daqdata/BNL_LD_data" + "/WIB_lins_chk.log"
+logfile =    "/daqdata/sbnd/BNL_LD_data" + "/WIB_lins_chk.log"
 with open(logfile, "a+") as f:
     f.write( "####Begin\n" ) 
     f.write( "####WIB LINKs and Votages and Currents Checkout\n" ) 
