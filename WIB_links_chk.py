@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Sun Jul  1 09:47:16 2018
+Last modified: Tue Jul  3 12:03:37 2018
 """
 
 #defaut setting for scientific caculation
@@ -34,8 +34,9 @@ logs = []
 #    time.sleep(0.1)
 #    wib.write_reg_wib(1, 0x2)
 #    time.sleep(0.1)
-#    wib.write_reg_wib(1, 0x4)
+#    wib.write_reg_wib(1, 0x8)
 #    time.sleep(1)
+#    wib.write_reg_wib(2, 0xF)
 #    wib.write_reg_wib(1, 0x8)
 #    time.sleep(0.1)
 #    wib.write_reg_wib(1, 0x0)
@@ -50,6 +51,9 @@ for lastip in ["203", "206"]:
 #    wib.write_reg_wib(20, 0x0)
 #    time.sleep(0.1)
 #    wib.write_reg_wib(20, 0x2)
+#    time.sleep(0.1)
+#    wib.write_reg_wib(20, 0x0)
+#    wib.write_reg_wib(9, 0x20)
 #    time.sleep(0.1)
 #    wib.write_reg_wib(20, 0x0)
 #    time.sleep(0.1)
@@ -166,4 +170,5 @@ with open(logfile, "a+") as f:
     f.write ("####There are %d times UDP High Speed links timeouts"%wib.udp_hstimeout_cnt )
     f.write( "####End\n") 
     f.write( "\n") 
+
 

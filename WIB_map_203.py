@@ -31,8 +31,8 @@ wib= FEMB_UDP()
 logs = []
 
 #for lastip in ["203", "206"]:
-#for lastip in ["203"]:
-for lastip in ["206"]:
+for lastip in ["203"]:
+#for lastip in ["206"]:
     if lastip == "203":
         wib_pos = 0
     else:
@@ -51,9 +51,9 @@ for lastip in ["206"]:
     time.sleep(1)
     wib.write_reg_wib(20, 0)
 
-#    for fembno in range(4):
+    for fembno in range(4):
     #for fembno in [0,1,2,3]:
-    for fembno in [0]:
+#    for fembno in [0]:
         version = wib.read_reg_femb (fembno, 0x101)
         print "FEMB%d"%fembno
         print hex(version)
