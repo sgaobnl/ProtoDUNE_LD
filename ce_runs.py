@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Sat Jun 30 11:41:40 2018
+Last modified: Tue Jul  3 11:42:36 2018
 """
 
 #defaut setting for scientific caculation
@@ -165,7 +165,7 @@ class CE_RUNS:
                     lolXAXB = (ver_value & 0x20000)>>17
                     INTR = (ver_value & 0x40000)>>18
                     if (lol == 1):
-                        print "PLL of WIB(%s) is locked"%wib_ip
+                        print "PLL of WIB(%s) is locked%s"%wib_ip
                         self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
                         time.sleep(0.01)
                         self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
@@ -184,6 +184,13 @@ class CE_RUNS:
                         #else:
                         #    print "Exit!!!"
                         #    sys.exit()
+#            self.femb_meas.femb_config.femb.write_reg_wib (4, 0x08)
+#            time.sleep(0.01)
+#            self.femb_meas.femb_config.femb.write_reg_wib (4, 0x08)
+#            time.sleep(0.01)
+#            self.femb_meas.femb_config.femb.write_reg_wib (4, 0x08)
+#            time.sleep(0.01)
+
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
     def WIB_LINK_CUR(self):
@@ -581,7 +588,7 @@ class CE_RUNS:
                         time.sleep(0.1)
                         self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
                         self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-                        time.sleep(0.1)
+                        time.sleep(1)
                         self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
                         self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 
@@ -598,7 +605,7 @@ class CE_RUNS:
             time.sleep(0.1)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-            time.sleep(0.1)
+            time.sleep(1)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 
@@ -619,7 +626,7 @@ class CE_RUNS:
             time.sleep(0.1)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-            time.sleep(0.1)
+            time.sleep(10)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
@@ -650,23 +657,6 @@ class CE_RUNS:
                             f.write(rawdata) 
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
-
-        for wib_addr in range(len(self.wib_ips)):
-            wib_ip = self.wib_ips[wib_addr]
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
-            wib_pos = wib_addr
-            #sync nevis daq
-            time.sleep(2)
-            self.femb_meas.femb_config.femb.UDP_IP = wib_ip
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-            time.sleep(0.1)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-            time.sleep(0.1)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
         self.runpath = runpath
