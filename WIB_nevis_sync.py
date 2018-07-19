@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Mon Jul  2 14:01:56 2018
+Last modified: Fri Jul  6 18:56:03 2018
 """
 
 #defaut setting for scientific caculation
@@ -30,27 +30,66 @@ wib= FEMB_UDP()
 
 logs = []
 
-for lastip in ["203", "206"]:
-    wib.UDP_IP = "131.225.150." +  lastip
-    time.sleep(1)
-    print wib.read_reg_wib(0x100)
-    time.sleep(1)
-    wib.write_reg_wib(20, 2)
-    time.sleep(1)
-    wib.write_reg_wib(20, 2)
-    time.sleep(1)
-    print wib.read_reg_wib(20)
+#for lastip in ["209"]:
+#    wib.UDP_IP = "131.225.150." +  lastip
+#    print wib.UDP_IP
+#    time.sleep(1)
+#    print wib.read_reg_wib(0x1)
+#    time.sleep(1)
+#    wib.write_reg_wib(1, 4)
+#    time.sleep(1)
+#    wib.write_reg_wib(1, 4)
+#    time.sleep(1)
+#    print wib.read_reg_wib(1)
+#
 
-print "Wait 300seconds"
-time.sleep(300)
-
-for lastip in ["203", "206"]:
-    wib.UDP_IP = "131.225.150." +  lastip
-    time.sleep(1)
-    wib.write_reg_wib(20, 0)
-    time.sleep(1)
-    wib.write_reg_wib(20, 0)
-    time.sleep(1)
-    print wib.read_reg_wib(20)
+for i in range(100):
+    for lastip in ["203", "206"]:
+        wib.UDP_IP = "131.225.150." +  lastip
+        print wib.UDP_IP
+        time.sleep(1)
+        print wib.read_reg_wib(0x100)
+        wib.write_reg_wib(20, 0)
+        wib.write_reg_wib(20, 0)
+        print wib.read_reg_wib(20)
+        time.sleep(0.1)
+        wib.write_reg_wib(20, 2)
+        wib.write_reg_wib(20, 2)
+        print wib.read_reg_wib(20)
+        time.sleep(0.1)
+        wib.write_reg_wib(20, 0)
+        wib.write_reg_wib(20, 0)
+        time.sleep(0.1)
+        print wib.read_reg_wib(20)
+ 
+#for lastip in ["209"]:
+#    wib.UDP_IP = "131.225.150." +  lastip
+#    print wib.UDP_IP
+#    time.sleep(1)
+#    print wib.read_reg_wib(0x1)
+#
+#    time.sleep(1)
+#    wib.write_reg_wib(1, 8)
+#    wib.write_reg_wib(1, 8)
+#    time.sleep(1)
+#    print wib.read_reg_wib(1)
+#
+#    time.sleep(1)
+#    wib.write_reg_wib(1, 0)
+#    wib.write_reg_wib(1, 0)
+#    time.sleep(1)
+#    print wib.read_reg_wib(1)
+#
+    
+#    time.sleep(1)
+#    
+#    for lastip in ["203", "206"]:
+#        wib.UDP_IP = "131.225.150." +  lastip
+#        time.sleep(1)
+#        wib.write_reg_wib(20, 0)
+#        time.sleep(1)
+#        wib.write_reg_wib(20, 0)
+#        time.sleep(1)
+#        print wib.read_reg_wib(20)
 
 

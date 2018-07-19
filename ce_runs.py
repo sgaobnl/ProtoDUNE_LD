@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Jul  3 11:42:36 2018
+Last modified: Tue Jul 10 14:07:25 2018
 """
 
 #defaut setting for scientific caculation
@@ -165,7 +165,7 @@ class CE_RUNS:
                     lolXAXB = (ver_value & 0x20000)>>17
                     INTR = (ver_value & 0x40000)>>18
                     if (lol == 1):
-                        print "PLL of WIB(%s) is locked%s"%wib_ip
+                        print "PLL of WIB(%s) is locked"%wib_ip
                         self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
                         time.sleep(0.01)
                         self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
@@ -561,12 +561,7 @@ class CE_RUNS:
                 if (PLL_cfgflg):
                     self.WIB_PLL_cfg( )
                     PLL_cfgflg = False
-            #else:
-            #    self.femb_meas.femb_config.femb.UDP_IP = wib_ip
-            #    print "Use internal clk from WIB(%s)"%wib_ip
-            #    self.femb_meas.femb_config.femb.write_reg_wib_checked (0x4, 8)
  
-
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
@@ -581,16 +576,16 @@ class CE_RUNS:
                         self.femb_meas.lar_cfg(runpath, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, \
                                                pls_cs = pls_cs, dac_sel=dac_sel, fpga_dac_en=fpgadac_en, \
                                                asic_dac_en=asicdac_en, dac_val = vdac, slk0 = self.slk0, slk1= self.slk1, val=val, wib_addr=wib_addr)
-                        #sync nevis daq
-                        self.femb_meas.femb_config.femb.UDP_IP = wib_ip
-                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-                        time.sleep(0.1)
-                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-                        time.sleep(1)
-                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#                        #sync nevis daq
+#                        self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#                        time.sleep(0.1)
+#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+#                        time.sleep(1)
+#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 
 		if datamode == 3:
                     lar_fembno = (((wib_pos*4 + femb_addr)&0x0F)<<4) + datamode
@@ -598,16 +593,16 @@ class CE_RUNS:
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
 
-            #sync nevis daq
-            self.femb_meas.femb_config.femb.UDP_IP = wib_ip
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-            time.sleep(0.1)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-            time.sleep(1)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#            #sync nevis daq
+#            self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#            time.sleep(0.1)
+#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+#            time.sleep(1)
+#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
@@ -626,7 +621,7 @@ class CE_RUNS:
             time.sleep(0.1)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-            time.sleep(10)
+            time.sleep(1)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
@@ -684,11 +679,9 @@ class CE_RUNS:
             mbb_tmp1 = mbb_tmp1 | 0x04
         if (mbb_startdaq == 1):
             mbb_tmp1 = mbb_tmp1 | 0x08
-        self.femb_meas.femb_config.femb.write_reg_wib (1, mbb_tmp1)
-        self.femb_meas.femb_config.femb.write_reg_wib (1, mbb_tmp1)
-        time.sleep(0.01)
-        self.femb_meas.femb_config.femb.write_reg_wib (1, 0)
-        self.femb_meas.femb_config.femb.write_reg_wib (1, 0)
+
+        self.femb_meas.femb_config.femb.write_reg_wib_checked (1, mbb_tmp1)
+        self.femb_meas.femb_config.femb.write_reg_wib_checked (1, 0)
 
 
         mbb_tmp2 = 0
@@ -700,9 +693,10 @@ class CE_RUNS:
             mbb_tmp2 = mbb_tmp2 | 0x04
         if (mbb_startdaq_en == 1):
             mbb_tmp2 = mbb_tmp2 | 0x08
-        self.femb_meas.femb_config.femb.write_reg_wib (2, mbb_tmp2)
-        self.femb_meas.femb_config.femb.write_reg_wib (2, mbb_tmp2)
-        time.sleep(0.1)
+
+        self.femb_meas.femb_config.femb.write_reg_wib_checked (1, mbb_tmp2)
+        self.femb_meas.femb_config.femb.write_reg_wib_checked (1, 0)
+
 
         time.sleep(1)
 

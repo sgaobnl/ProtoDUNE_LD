@@ -43,4 +43,4 @@
 ####argvp5] to argv[6] need to be set only when argv[2] is 0x20
 ####argv[5]  --> how many times you want to get local diagnositcs data 
 ####argv[6]  --> gap between two sets of local diagnositcs data 
-python "./MainCOTS.py" LArIAT 0x40 False 0 1 300
+python "./MainCOTS.py" LArIAT 0x40 False 0 50 10
