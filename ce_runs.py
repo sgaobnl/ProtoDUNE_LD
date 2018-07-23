@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Jul 10 14:07:25 2018
+Last modified: Sat Jul  7 13:40:53 2018
 """
 
 #defaut setting for scientific caculation
@@ -620,9 +620,15 @@ class CE_RUNS:
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             time.sleep(0.1)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+            time.sleep(0.1)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+            time.sleep(0.1)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
             time.sleep(1)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            time.sleep(0.1)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            time.sleep(0.1)
             self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
@@ -934,5 +940,6 @@ class CE_RUNS:
         self.femb_meas = FEMB_MEAS()
         self.COTSADC = False
         self.pllfile = "./Si5344-RevD-SBND_V3.txt"
-        self.mbb_ip = "131.225.150.209"
+        #self.mbb_ip = "131.225.150.209"
+        self.mbb_ip = "192.168.100.13"
             

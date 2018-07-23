@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Tue Jul  3 12:03:37 2018
+Last modified: Sun Jul  1 09:47:16 2018
 """
 
 #defaut setting for scientific caculation
@@ -42,12 +42,13 @@ logs = []
 #    wib.write_reg_wib(1, 0x0)
 
 
-for lastip in ["203", "206"]:
-    wib.UDP_IP = "131.225.150." +  lastip
+for lastip in ["11", "12"]:
+    wib.UDP_IP = "192.168.100." +  lastip
     runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
     logs.append ( "BNL_check_time >> " + runtime )
     print ( "BNL_check_time >> " + runtime )
     version = wib.read_reg_wib(0xFF)
+    print version
 #    wib.write_reg_wib(20, 0x0)
 #    time.sleep(0.1)
 #    wib.write_reg_wib(20, 0x2)
@@ -157,7 +158,7 @@ for lastip in ["203", "206"]:
     else:
         print "WIB (%s)  doesn't exist or wrong firmware version!)"%(wib.UDP_IP)
 
-logfile =    "/daqdata/sbnd/BNL_LD_data" + "/WIB_lins_chk.log"
+logfile =    "/home/nfs/sbnd/BNL_LD_data" + "/WIB_lins_chk.log"
 with open(logfile, "a+") as f:
     f.write( "####Begin\n" ) 
     f.write( "####WIB LINKs and Votages and Currents Checkout\n" ) 

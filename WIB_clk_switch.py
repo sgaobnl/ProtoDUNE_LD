@@ -30,23 +30,19 @@ wib= FEMB_UDP()
 
 logs = []
 
-
 for i in range(1):
-    for lastip in ["11", "12"]:
-        wib.UDP_IP = "192.168.100." +  lastip
+    for lastip in ["203", "206"]:
+        wib.UDP_IP = "131.225.150." +  lastip
         print wib.UDP_IP
+        print hex(wib.read_reg_wib(0xFF))
         time.sleep(1)
-        print wib.read_reg_wib(0xFF)
-        wib.write_reg_wib(20, 0)
-        wib.write_reg_wib(20, 0)
-        print wib.read_reg_wib(20)
-        time.sleep(0.1)
-        wib.write_reg_wib(20, 2)
-        wib.write_reg_wib(20, 2)
-        print wib.read_reg_wib(20)
-        time.sleep(0.1)
-        wib.write_reg_wib(20, 0)
-        wib.write_reg_wib(20, 0)
-        time.sleep(0.1)
-        print wib.read_reg_wib(20)
+        print wib.read_reg_wib(4)
+        time.sleep(1)
+        wib.write_reg_wib(4, 8)
+        time.sleep(1)
+        print wib.read_reg_wib(4)
+        time.sleep(1)
+        wib.write_reg_wib(4, 3)
+        print wib.read_reg_wib(4)
+
 

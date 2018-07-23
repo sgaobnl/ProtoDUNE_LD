@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Thu Jul 19 10:18:25 2018
+Last modified: Wed Jun 27 15:35:12 2018
 """
 
 #defaut setting for scientific caculation
@@ -93,7 +93,6 @@ class APA_MAP:
         elif (self.APA == "LArIAT" ):
             va = self.mapping_rd ( )
             va_femb = []
-            print len(va)
             for vb in va:
                 if int(vb[9]) == self.femb :
                     va_femb.append(vb)
@@ -203,17 +202,12 @@ class APA_MAP:
 
     def __init__(self):
         self.APA = 'LArIAT'
-        self.femb = 3
+        self.femb = 4
         self.path = "./LArIAT_Pin_Mapping_06262018.xlsx" #if the mapping file changes, self.mapping_rd ( ) need to run once to to generate new *.map file 
         self.fpmap = "./LArIAT_pin_mapping.map"
 
 #        self.mapping_rd ( )
 
 #apa = APA_MAP()
-#a,y,u,v = apa.apa_mapping()
-#print a
-#print y
-#print u
-#print v
 #a = apa.apa_femb_mapping()
 #print len(a[0]), len(a[1]), len(a[2]), len(a[3])
