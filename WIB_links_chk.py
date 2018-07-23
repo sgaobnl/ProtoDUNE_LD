@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Sun Jul  1 09:47:16 2018
+Last modified: Mon Jul 23 14:29:33 2018
 """
 
 #defaut setting for scientific caculation
@@ -29,18 +29,6 @@ from femb_udp_cmdline import FEMB_UDP
 wib= FEMB_UDP()
 
 logs = []
-#for lastip in ["209"]:
-#    wib.write_reg_wib(1, 0x0)
-#    time.sleep(0.1)
-#    wib.write_reg_wib(1, 0x2)
-#    time.sleep(0.1)
-#    wib.write_reg_wib(1, 0x8)
-#    time.sleep(1)
-#    wib.write_reg_wib(2, 0xF)
-#    wib.write_reg_wib(1, 0x8)
-#    time.sleep(0.1)
-#    wib.write_reg_wib(1, 0x0)
-
 
 for lastip in ["11", "12"]:
     wib.UDP_IP = "192.168.100." +  lastip
@@ -49,20 +37,12 @@ for lastip in ["11", "12"]:
     print ( "BNL_check_time >> " + runtime )
     version = wib.read_reg_wib(0xFF)
     print version
-#    wib.write_reg_wib(20, 0x0)
-#    time.sleep(0.1)
-#    wib.write_reg_wib(20, 0x2)
-#    time.sleep(0.1)
-#    wib.write_reg_wib(20, 0x0)
-#    wib.write_reg_wib(9, 0x20)
-#    time.sleep(0.1)
-#    wib.write_reg_wib(20, 0x0)
-#    time.sleep(0.1)
 
     if lastip == "203":
         wibno = 0
     else:
         wibno = 1
+
     if ((version &0xFFF) == 0x104) and (version != -1) :
         logs.append (  "BNL_WIB%d_IP >> "%wibno +wib.UDP_IP  )
         print (  "BNL_WIB%d_IP >> "%wibno +wib.UDP_IP  )

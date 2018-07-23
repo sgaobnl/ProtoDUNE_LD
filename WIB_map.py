@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Mon Jul  2 14:01:56 2018
+Last modified: Mon Jul 23 14:28:42 2018
 """
 
 #defaut setting for scientific caculation
@@ -31,38 +31,29 @@ wib= FEMB_UDP()
 logs = []
 
 #for lastip in ["203", "206"]:
-#for lastip in ["203"]:
-for lastip in ["206"]:
+for lastip in ["11"]:
+#for lastip in ["206"]:
     if lastip == "203":
         wib_pos = 0
     else:
         wib_pos = 1
 
-    wib.UDP_IP = "131.225.150." +  lastip
+    wib.UDP_IP = "192.168.100." +  lastip
     runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
     logs.append ( "BNL_check_time >> " + runtime )
     print ( "BNL_check_time >> " + runtime )
     version = wib.read_reg_wib(0xFF)
     print hex(version)
     time.sleep(1)
-    wib.write_reg_wib(4, 8)
-    time.sleep(1)
-    wib.write_reg_wib(20, 2)
-    time.sleep(1)
-    wib.write_reg_wib(20, 0)
 
-#    for fembno in range(4):
-    #for fembno in [0,1,2,3]:
-    for fembno in [0]:
+    for fembno in range(4):
         version = wib.read_reg_femb (fembno, 0x101)
         print "FEMB%d"%fembno
         print hex(version)
         lar_fembno = (((wib_pos*4 + fembno)&0x0F)<<4) + 3
-    #    wib.write_reg_femb (fembno, 42, lar_fembno )
         wib.write_reg_femb (fembno, 42, 0 )
         time.sleep(1)
         b = wib.read_reg_femb (fembno, 42 )
-        print hex(b)
         time.sleep(1)
 
 

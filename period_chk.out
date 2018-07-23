@@ -1,2 +1,0 @@
-nohup: ignoring input
-./Local_diagnositc_RUN_data.sh: line 46: 24992 Terminated              python "./MainCOTS.py" LArIAT 0x40 False 0 3000 3600
