@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Sun Jul  1 09:46:46 2018
+Last modified: Mon Jul 23 14:31:01 2018
 """
 
 #defaut setting for scientific caculation
@@ -290,7 +290,7 @@ if (test_runs&0x08 != 0x0 ):
     dac_sel = 1 #1 DAC on FEMB, 0 DAC on WIB(don't use)
 
     datamode = 3
-    ceruns.larcfg_run(apa_oft_info, sgs = sgs, tps =tps, pls_cs=pls_source, dac_sel=dac_sel, fpgadac_en=fpgadac_en, asicdac_en=asicdac_en, vdac = vdac, val = 1000, mbb=mbb, datamode=datamode) 
+    ceruns.larcfg_run(apa_oft_info, sgs = sgs, tps =tps, pls_cs=pls_source, dac_sel=dac_sel, fpgadac_en=fpgadac_en, asicdac_en=asicdac_en, vdac = vdac, val = 100, mbb=mbb, datamode=datamode) 
 
     with open(logfile, "a+") as f:
         f.write( "%2X: Configuration \n" %(test_runs&0x08) ) 
@@ -310,7 +310,7 @@ if (test_runs&0x40 != 0x0 ):
             print "Ctrl-C to if you want to stop the script before it finishes"
             time.sleep(t_sleep)
         print "LArIAT DATA collectting during DAQ running"
-        ceruns.larcfg_getdata(val=1000) 
+        ceruns.larcfg_getdata(val=1600) 
         with open(logfile, "a+") as f:
             f.write( "%2X: Configuration \n" %(test_runs&0x40) ) 
             f.write (ceruns.runpath + "\n" )

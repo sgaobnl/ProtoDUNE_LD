@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Sat Jul  7 13:40:53 2018
+Last modified: Mon Jul 23 14:36:44 2018
 """
 
 #defaut setting for scientific caculation
@@ -124,11 +124,12 @@ class CE_RUNS:
                     break
             if (lol_flg):
                 print "PLL of WIB (%s) has locked"%wib_ip
-                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
-                time.sleep(0.01)
-                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
-                time.sleep(0.01)
-                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+                if ( self.femb_meas.femb_config.femb.read_reg_wib(4) != 0x03):
+                    self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+                    time.sleep(0.01)
+                    self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+                    time.sleep(0.01)
+                    self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
             else:
                 print "configurate PLL of WIB (%s), please wait..."%wib_ip
                 p_addr = 1
@@ -156,10 +157,11 @@ class CE_RUNS:
                         self.WIB_PLL_wr(wib_ip, adrs_l[cnt], datass[cnt])
 
                 for i in range(10):
-                    time.sleep(3)
+                    time.sleep(2)
                     print "check PLL status, please wait..."
                     self.femb_meas.femb_config.femb.UDP_IP = wib_ip
                     ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
+                    time.sleep(0.01)
                     ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
                     lol = (ver_value & 0x10000)>>16
                     lolXAXB = (ver_value & 0x20000)>>17
