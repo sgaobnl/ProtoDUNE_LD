@@ -347,11 +347,9 @@ class FEMB_CONFIG:
                             print "ERROR: {0:16b}".format(adc_fifo_sync)
                             sys.exit()
     
-                self.femb.write_reg_wib (20, 3)
-                self.femb.write_reg_wib (20, 3)
+                self.femb.write_reg_wib_checked (20, 3)
                 time.sleep(0.001)
-                self.femb.write_reg_wib (20, 0)
-                self.femb.write_reg_wib (20, 0)
+                self.femb.write_reg_wib_checked (20, 0)
                 time.sleep(0.001)
                 k = k + 1
     
@@ -459,11 +457,9 @@ class FEMB_CONFIG:
                 self.femb.write_reg_femb_checked (femb_addr, 9, 9)
                 time.sleep(0.1)
     
-                self.femb.write_reg_wib (20, 3)
-                self.femb.write_reg_wib (20, 3)
+                self.femb.write_reg_wib_checked (20, 3)
                 time.sleep(0.001)
-                self.femb.write_reg_wib (20, 0)
-                self.femb.write_reg_wib (20, 0)
+                self.femb.write_reg_wib_checked (20, 0)
                 time.sleep(0.001)
                 k = k + 1
     

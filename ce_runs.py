@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Jul 23 14:36:44 2018
+Last modified: Mon Jul 23 15:10:41 2018
 """
 
 #defaut setting for scientific caculation
@@ -125,11 +125,7 @@ class CE_RUNS:
             if (lol_flg):
                 print "PLL of WIB (%s) has locked"%wib_ip
                 if ( self.femb_meas.femb_config.femb.read_reg_wib(4) != 0x03):
-                    self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
-                    time.sleep(0.01)
-                    self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
-                    time.sleep(0.01)
-                    self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+                    self.femb_meas.femb_config.femb.write_reg_wib_checked (4, 0x03)
             else:
                 print "configurate PLL of WIB (%s), please wait..."%wib_ip
                 p_addr = 1
@@ -168,11 +164,7 @@ class CE_RUNS:
                     INTR = (ver_value & 0x40000)>>18
                     if (lol == 1):
                         print "PLL of WIB(%s) is locked"%wib_ip
-                        self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
-                        time.sleep(0.01)
-                        self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
-                        time.sleep(0.01)
-                        self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+                        self.femb_meas.femb_config.femb.write_reg_wib_checked (4, 0x03)
                         break
                     if (i ==9):
                         print "Fail to configurate PLL of WIB(%s), please check if MBB is on or 16MHz from dAQ"%wib_ip
@@ -578,33 +570,20 @@ class CE_RUNS:
                         self.femb_meas.lar_cfg(runpath, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, \
                                                pls_cs = pls_cs, dac_sel=dac_sel, fpga_dac_en=fpgadac_en, \
                                                asic_dac_en=asicdac_en, dac_val = vdac, slk0 = self.slk0, slk1= self.slk1, val=val, wib_addr=wib_addr)
-#                        #sync nevis daq
-#                        self.femb_meas.femb_config.femb.UDP_IP = wib_ip
-#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-#                        time.sleep(0.1)
-#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-#                        time.sleep(1)
-#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+                        #sync nevis daq
+                        self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+                        self.femb_meas.femb_config.femb.write_reg_wib_checked (20, 0x00)
+                        time.sleep(0.1)
+                        self.femb_meas.femb_config.femb.write_reg_wib_checked (20, 0x02)
+                        time.sleep(1)
+                        self.femb_meas.femb_config.femb.write_reg_wib_checked (20, 0x00)
+                        time.sleep(0.1)
 
 		if datamode == 3:
                     lar_fembno = (((wib_pos*4 + femb_addr)&0x0F)<<4) + datamode
                     self.femb_meas.femb_config.femb.write_reg_femb_checked (femb_addr, 42,lar_fembno )
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
-
-#            #sync nevis daq
-#            self.femb_meas.femb_config.femb.UDP_IP = wib_ip
-#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-#            time.sleep(0.1)
-#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-#            time.sleep(1)
-#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
@@ -616,22 +595,14 @@ class CE_RUNS:
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             wib_pos = wib_addr
             #sync nevis daq
-            time.sleep(2)
-            self.femb_meas.femb_config.femb.UDP_IP = wib_ip
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-            time.sleep(0.1)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-            time.sleep(0.1)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
-            time.sleep(0.1)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
             time.sleep(1)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+            self.femb_meas.femb_config.femb.write_reg_wib_checked (20, 0x00)
             time.sleep(0.1)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
-            time.sleep(0.1)
-            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            self.femb_meas.femb_config.femb.write_reg_wib_checked (20, 0x02)
+            time.sleep(1)
+            self.femb_meas.femb_config.femb.write_reg_wib_checked (20, 0x00)
+            time.sleep(1)
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
         self.runpath = runpath
