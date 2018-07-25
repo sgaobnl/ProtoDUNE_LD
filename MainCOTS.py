@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Mon Jul 23 15:42:46 2018
+Last modified: Wed Jul 25 17:31:09 2018
 """
 
 #defaut setting for scientific caculation
@@ -317,6 +317,15 @@ if (test_runs&0x40 != 0x0 ):
             f.write (ceruns.runtime + "\n" )
             f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
         print "time cost = %.3f seconds"%(timer()-start)
+
+        print "WIB status check start"
+        print  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        ceruns.WIB_LINK_CUR()
+        with open(monlogfile, "a+") as f:
+            for onelinkcur in ceruns.linkcurs:
+                f.write( onelinkcur + "\n") 
+        print "time cost = %.3f seconds"%(timer()-start)
+        print "Done!"
 
 if (test_runs&0x100 != 0x0 ):
     run_cnt = int(sys.argv[5])
