@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Mon Aug 27 16:55:42 2018
+Last modified: Mon Aug 27 17:51:20 2018
 """
 
 #defaut setting for scientific caculation
@@ -309,7 +309,9 @@ if (test_runs&0x40 != 0x0 ):
             runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
             print "sleep %d minutes starting from %s"%(t_min,runtime)
             print "Ctrl-C to if you want to stop the script before it finishes"
-            time.sleep(t_sleep)
+            for i in range(0, t_sleep, 2):
+                ceruns.WIB_LINK_CUR()
+                time.sleep(1)
         print "LArIAT DATA collectting during DAQ running"
         ceruns.larcfg_getdata(val=1000) 
         with open(logfile, "a+") as f:

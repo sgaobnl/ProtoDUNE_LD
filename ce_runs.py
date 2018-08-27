@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Aug 27 17:00:06 2018
+Last modified: Mon Aug 27 17:58:49 2018
 """
 
 #defaut setting for scientific caculation
@@ -585,7 +585,7 @@ class CE_RUNS:
 
                 if (femb_addr in [1,2,3]) : #FEMB1-FEMB2-FEMB3 will work at channel mapping mode
                     datamode = 3
-                else
+                else:
                     datamode = 0
 		if datamode == 3:
                     lar_fembno = (((wib_pos*4 + femb_addr)&0x0F)<<4) + datamode
