@@ -324,7 +324,8 @@ class FEMB_CONFIG:
                             break
                     if ( j >= 10 ):
                         print "SPI ERROR "
-                        sys.exit()
+                        print "SPI failed, ongoing anyway"
+                        #sys.exit()
     
                 #enable FEMB stream data to WIB
                 self.femb.write_reg_femb_checked (femb_addr, 9, 9)
@@ -345,7 +346,8 @@ class FEMB_CONFIG:
                             print "FEMB%d: Successful SPI configuration and ADC FIFO synced"%femb_addr
                         else:
                             print "ERROR: {0:16b}".format(adc_fifo_sync)
-                            sys.exit()
+                            print "SPI failed, ongoing anyway"
+                            #sys.exit()
     
                 self.femb.write_reg_wib_checked (20, 3)
                 time.sleep(0.001)
@@ -450,7 +452,8 @@ class FEMB_CONFIG:
                             break
                     if ( j >= 10 ):
                         print "SPI ERROR "
-                        sys.exit()
+                        print "SPI failed, ongoing anyway"
+                        #sys.exit()
     
                 #enable FEMB stream data to WIB
                 self.femb.write_reg_femb_checked (femb_addr, 9, 9)

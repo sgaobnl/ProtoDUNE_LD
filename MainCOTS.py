@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Wed Jul 25 17:31:09 2018
+Last modified: Mon Aug 27 16:55:42 2018
 """
 
 #defaut setting for scientific caculation
@@ -63,8 +63,9 @@ elif (ceruns.APA == "LArIAT"):
     #ceruns.path = "D:/APA40/Rawdata/" 
     #ceruns.path = "/Users/shanshangao/LArIAT/Rawdata/" 
     ceruns.path = "/home/nfs/sbnd/BNL_LD_data/LArIAT/Rawdata/" 
+    ceruns.path = "/lariat/data/users/sbnd/BNL_LD_data/LArIAT/Rawdata/"
     #ceruns.wib_ips = [  "131.225.150.203",  "131.225.150.206" ]
-    ceruns.wib_ips = [  "192.168.100.11", "192.168.100.12"]
+    ceruns.wib_ips = [  "192.168.100.12", "192.168.100.11"]
     ceruns.wib_pwr_femb = [[1,1,1,1], [1,0,0,0]]
     ceruns.femb_mask    = [[0,0,0,0], [0,0,0,0]]
 #    ceruns.bbwib_ips = [ "192.168.121.1"] 

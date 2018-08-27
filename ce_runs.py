@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Jul 23 15:10:41 2018
+Last modified: Mon Aug 27 17:00:06 2018
 """
 
 #defaut setting for scientific caculation
@@ -127,6 +127,7 @@ class CE_RUNS:
                 if ( self.femb_meas.femb_config.femb.read_reg_wib(4) != 0x03):
                     self.femb_meas.femb_config.femb.write_reg_wib_checked (4, 0x03)
             else:
+            #elif(False):
                 print "configurate PLL of WIB (%s), please wait..."%wib_ip
                 p_addr = 1
                 #step1
@@ -358,26 +359,29 @@ class CE_RUNS:
             femb_pwr = self.wib_pwr_femb[wib_pos]
             if (femb_pwr[0] == 1 ):
                 fe0_pwr = 0x31000F
+                #fe0_pwr = 0x31000B
             else:
                 fe0_pwr = 0x00000
             if (femb_pwr[1] == 1 ):
                 fe1_pwr = 0x5200F0
+                fe1_pwr = 0x5200B0
             else:
                 fe1_pwr = 0x00000
             if (femb_pwr[2] == 1 ):
                 fe2_pwr = 0x940F00
+                fe2_pwr = 0x940B00
             else:
                 fe2_pwr = 0x000000
-            
             if (femb_pwr[3] == 1 ):
                 fe3_pwr = 0x118F000
+                fe3_pwr = 0x118B000
             else:
                 fe3_pwr = 0x000000
             self.femb_meas.femb_config.femb.write_reg_wib_checked (8, 0)
             time.sleep(3)
             if ( SW == "ON"):
                 print "turn on power supply on WIB(IP=%s)"%(wib_ip)
-                pwr_value = long (0x1000000)| fe0_pwr| fe1_pwr| fe2_pwr| fe3_pwr
+                pwr_value = long (0x00000000)| fe0_pwr| fe1_pwr| fe2_pwr| fe3_pwr
                 #pwr_value = long (0xFFFE00000) | pwr_value #SBND WIB
                 self.femb_meas.femb_config.femb.write_reg_wib_checked (8, pwr_value)
                 time.sleep(5)
@@ -579,6 +583,10 @@ class CE_RUNS:
                         self.femb_meas.femb_config.femb.write_reg_wib_checked (20, 0x00)
                         time.sleep(0.1)
 
+                if (femb_addr in [1,2,3]) : #FEMB1-FEMB2-FEMB3 will work at channel mapping mode
+                    datamode = 3
+                else
+                    datamode = 0
 		if datamode == 3:
                     lar_fembno = (((wib_pos*4 + femb_addr)&0x0F)<<4) + datamode
                     self.femb_meas.femb_config.femb.write_reg_femb_checked (femb_addr, 42,lar_fembno )
