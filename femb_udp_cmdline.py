@@ -118,6 +118,7 @@ class FEMB_UDP:
                 break
             else:
                 i = i + 1
+                time.sleep(i)
                 self.femb_wrerr_cnt = self.femb_wrerr_cnt + 1
                 self.femb_wrerr_log.append([femb_addr,reg, data])
                 time.sleep(abs(i -1 + 0.001))

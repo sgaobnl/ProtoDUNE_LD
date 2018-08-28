@@ -35,9 +35,19 @@ class CE_RUNS:
 
     def WIB_UDP_CTL(self, wib_ip, WIB_UDP_EN = False):
         self.femb_meas.femb_config.femb.UDP_IP = wib_ip 
-        wib_reg_7_value = self.femb_meas.femb_config.femb.read_reg_wib (7)
         time.sleep(0.001)
         wib_reg_7_value = self.femb_meas.femb_config.femb.read_reg_wib (7)
+        
+        i = 0
+        while (wib_reg_7_value == -1):
+            i = i + 1
+            if ( i>30):
+                wib_reg_7_value = 0
+                print "can't readback wib_reg7, give it value 0x00000000"
+                break
+            time.sleep(i)
+            wib_reg_7_value = self.femb_meas.femb_config.femb.read_reg_wib (7)
+
         if (WIB_UDP_EN): #enable UDP output
             wib_reg_7_value = wib_reg_7_value & 0x00000000 #bit31 of reg 7 for disable wib udp control
         else: #disable WIB UDP output
