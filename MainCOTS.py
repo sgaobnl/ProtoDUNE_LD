@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Mon Aug 27 17:51:20 2018
+Last modified: Mon Aug 27 18:57:43 2018
 """
 
 #defaut setting for scientific caculation
@@ -303,30 +303,29 @@ if (test_runs&0x08 != 0x0 ):
 if (test_runs&0x40 != 0x0 ):
     run_cnt = int(sys.argv[5])
     for i in range(run_cnt):
-        if i > 0:
+        print "LArIAT DATA collectting during DAQ running"
+        ceruns.larcfg_getdata(val=1000) 
+
+        if i >= 0:
             t_sleep = int(sys.argv[6])
             t_min = t_sleep/60
             runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
             print "sleep %d minutes starting from %s"%(t_min,runtime)
-            print "Ctrl-C to if you want to stop the script before it finishes"
-            for i in range(0, t_sleep, 2):
-                ceruns.WIB_LINK_CUR()
-                time.sleep(1)
-        print "LArIAT DATA collectting during DAQ running"
-        ceruns.larcfg_getdata(val=1000) 
-        with open(logfile, "a+") as f:
-            f.write( "%2X: Configuration \n" %(test_runs&0x40) ) 
-            f.write (ceruns.runpath + "\n" )
-            f.write (ceruns.runtime + "\n" )
-            f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-        print "time cost = %.3f seconds"%(timer()-start)
 
-        print "WIB status check start"
-        print  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        ceruns.WIB_LINK_CUR()
-        with open(monlogfile, "a+") as f:
-            for onelinkcur in ceruns.linkcurs:
-                f.write( onelinkcur + "\n") 
+        if i >= 0:
+            for i in range(0, t_sleep, 5):
+                print "time cost = %.3f seconds"%(timer()-start)
+                with open(logfile, "a+") as f:
+                    f.write( "%2X: Configuration \n" %(test_runs&0x40) ) 
+                    f.write (ceruns.runpath + "\n" )
+                    f.write (ceruns.runtime + "\n" )
+
+                ceruns.WIB_LINK_CUR()
+                with open(monlogfile, "a+") as f:
+                    for onelinkcur in ceruns.linkcurs:
+                        f.write( onelinkcur + "\n") 
+                print "Ctrl-C to if you want to stop the script before it finishes"
+                time.sleep(3)
         print "time cost = %.3f seconds"%(timer()-start)
         print "Done!"
 
