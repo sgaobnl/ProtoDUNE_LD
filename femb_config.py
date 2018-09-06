@@ -222,11 +222,13 @@ class FEMB_CONFIG:
 #ADC for FE8
         self.femb.write_reg_femb_checked (femb_addr, 28, self.fe8_sft )
         self.femb.write_reg_femb_checked (femb_addr, 36, self.fe8_pha )
-        self.femb.write_reg_femb (femb_addr, 8, 0 )
-        self.femb.write_reg_femb (femb_addr, 8, 0 )
-        time.sleep(0.02)
-        self.femb.write_reg_femb (femb_addr, 8, 0x10 )
-        self.femb.write_reg_femb (femb_addr, 8, 0x10 )
+        self.femb.write_reg_femb (femb_addr, 8, 10000 )
+        self.femb.write_reg_femb (femb_addr, 8, 10000 )
+        self.femb.write_reg_femb (femb_addr, 8, 10000 )
+        time.sleep(0.2)
+        self.femb.write_reg_femb (femb_addr, 8, 0x10010 )
+        self.femb.write_reg_femb (femb_addr, 8, 0x10010 )
+        self.femb.write_reg_femb (femb_addr, 8, 0x10010 )
 
         time.sleep(0.2)
 
