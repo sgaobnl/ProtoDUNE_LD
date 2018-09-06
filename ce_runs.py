@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Aug 27 17:58:49 2018
+Last modified: Wed Sep  5 20:16:05 2018
 """
 
 #defaut setting for scientific caculation
@@ -437,6 +437,8 @@ class CE_RUNS:
                 if ( (ver_value &0xFFF) == self.femb_ver_id ) and (ver_value != -1) :
                     print "WIB%dFEMB%d is good"%((wib_pos+1), femb_addr)
                     self.femb_mask[wib_pos][femb_addr]  = 0
+                    tmp = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 8)
+                    print hex(tmp)
                 else:
                     self.femb_mask[wib_pos][femb_addr]  = 1
                     mask_femb.append( "WIB%d(IP%s)FEMB%d is masked"%((wib_pos+1), wib_ip, femb_addr) )
