@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Tue Aug 28 15:54:52 2018
+Last modified: Mon Sep 10 18:20:26 2018
 """
 
 #defaut setting for scientific caculation
@@ -312,19 +312,28 @@ if (test_runs&0x40 != 0x0 ):
             runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
             print "sleep %d minutes starting from %s"%(t_min,runtime)
 
-        for j in range(0, t_sleep, 5):
+        step_sec = 5
+        for j in range(0, t_sleep, step_sec):
             print "time cost = %.3f seconds"%(timer()-start)
             with open(logfile, "a+") as f:
                 f.write( "%2X: Configuration \n" %(test_runs&0x40) ) 
                 f.write (ceruns.runpath + "\n" )
                 f.write (ceruns.runtime + "\n" )
 
+#            if (j == 10):
+#                ceruns.WIB_Vset(Allon = True)
+#            if (j == 25):
+#                ceruns.WIB_Vset(Allon = False)
+
+
             ceruns.WIB_LINK_CUR()
             with open(monlogfile, "a+") as f:
                 for onelinkcur in ceruns.linkcurs:
                     f.write( onelinkcur + "\n") 
             print "Ctrl-C to if you want to stop the script before it finishes"
-            time.sleep(3)
+
+            time.sleep(step_sec-2)
+
         print "time cost = %.3f seconds"%(timer()-start)
         print "Done!"
 

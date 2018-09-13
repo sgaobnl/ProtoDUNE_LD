@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Aug 27 17:58:49 2018
+Last modified: Mon Sep 10 18:54:40 2018
 """
 
 #defaut setting for scientific caculation
@@ -198,6 +198,23 @@ class CE_RUNS:
 
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
+    def WIB_Vset(self, Allon = True):
+        for wib_addr in range(len(self.wib_ips)):
+            wib_ip = self.wib_ips[wib_addr]
+            wib_pos = wib_addr
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
+            mon_wib = "WIB%d_"%wib_pos
+            runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
+
+            if (Allon):
+                self.femb_meas.femb_config.femb.write_reg_wib_checked (8, 0xFFFFFFFF)
+            else:
+                print hex(self.wib_pwr_value[wib_pos])
+                self.femb_meas.femb_config.femb.write_reg_wib_checked (8, self.wib_pwr_value[wib_pos])
+
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
+
+ 
     def WIB_LINK_CUR(self):
         alllogs = ["\n\n"]
         monlogs = []
@@ -373,17 +390,17 @@ class CE_RUNS:
             else:
                 fe0_pwr = 0x00000
             if (femb_pwr[1] == 1 ):
-                fe1_pwr = 0x5200F0
+                #fe1_pwr = 0x5200F0
                 fe1_pwr = 0x5200B0
             else:
                 fe1_pwr = 0x00000
             if (femb_pwr[2] == 1 ):
-                fe2_pwr = 0x940F00
+                #fe2_pwr = 0x940F00
                 fe2_pwr = 0x940B00
             else:
                 fe2_pwr = 0x000000
             if (femb_pwr[3] == 1 ):
-                fe3_pwr = 0x118F000
+                #fe3_pwr = 0x118F000
                 fe3_pwr = 0x118B000
             else:
                 fe3_pwr = 0x000000
@@ -392,6 +409,8 @@ class CE_RUNS:
             if ( SW == "ON"):
                 print "turn on power supply on WIB(IP=%s)"%(wib_ip)
                 pwr_value = long (0x00000000)| fe0_pwr| fe1_pwr| fe2_pwr| fe3_pwr
+                print hex(pwr_value)
+                self.wib_pwr_value[wib_pos] = pwr_value
                 #pwr_value = long (0xFFFE00000) | pwr_value #SBND WIB
                 self.femb_meas.femb_config.femb.write_reg_wib_checked (8, pwr_value)
                 time.sleep(5)
@@ -649,6 +668,8 @@ class CE_RUNS:
                             f.write(rawdata) 
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
+                self.wib_pwr_value[wib_pos] = self.femb_meas.femb_config.femb.read_reg_wib(8)
+
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
         self.runpath = runpath
@@ -896,6 +917,7 @@ class CE_RUNS:
     def __init__(self):
         self.path = "/nfs/rscratch/bnl_ce/shanshan/Rawdata/" 
         self.wib_ips = ["10.73.137.20", "10.73.137.21", "10.73.137.22", "10.73.137.23", "10.73.137.24"]  
+        self.wib_pwr_value = [0, 0, 0, 0]  
         self.wib_version_id = 0x116
         self.femb_ver_id = 0x323
         self.wib_pwr_femb = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
