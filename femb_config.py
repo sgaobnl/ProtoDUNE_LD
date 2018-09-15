@@ -172,8 +172,7 @@ class FEMB_CONFIG:
                 print "FEMB%d: Successful SPI configuration and ADC FIFO synced"%femb_addr
                 break
             else:
-                print "ERROR: {0:16b}".format(adc_fifo_sync0)
-                print "ERROR: {0:16b}".format(adc_fifo_sync)
+                print "ERROR: {0:16b}".format(adc_fifo_sync0), "ERROR: {0:16b}".format(adc_fifo_sync)
                 for i in range(8):
                     a = adc_fifo_sync & a_cs[i]
                     if ( a != 0 ) :
@@ -188,13 +187,73 @@ class FEMB_CONFIG:
                         elif (a_cnt[i] == 4):
                             self.REG_CLKPHASE_data1  = (( self.REG_CLKPHASE_data1 & a_mark[i] ) ^  a_mark[i] ) + (self.REG_CLKPHASE_data1 & a_mark_xor) 
                         elif (a_cnt[i] >= 5):
-                            print "ADC Sync failed, exit anyway"
-                            sys.exit()
+                            print "ADC Sync failed, ongoing anyway"
+                            #sys.exit()
+                        print "New0-->" + hex(self.REG_CLKPHASE_data0) + "New0-->" + hex(self.REG_CLKPHASE_data1)
                     else:
                         pass
                 self.femb_phase(femb_addr)
 
     def config_femb(self, femb_addr, fe_adc_regs, clk_cs, pls_cs, dac_sel, fpga_dac, asic_dac, mon_cs = 0):
+        ver = self.femb.read_reg_femb (femb_addr, 0x101 ) 
+        time.sleep(0.05)
+        ver = self.femb.read_reg_femb (femb_addr, 0x101 ) 
+        time.sleep(0.05)
+        ver = self.femb.read_reg_femb (femb_addr, 0x101 ) 
+        ver = ver & 0xFFF
+        if ver == 0x323 :
+            print "femb_config.yp : FM firmware version = 323"
+            self.d14_read_step = 11
+            self.d14_read_ud   = 0
+            self.d14_idxm_step = 9
+            self.d14_idxm_ud   = 0
+            self.d14_idxl_step = 7
+            self.d14_idxl_ud   = 0
+            self.d14_idl0_step = 12 
+            self.d14_idl0_ud   = 0
+            self.d14_idl1_step = 10 
+            self.d14_idl1_ud   = 0
+            self.d14_phase_en  = 1
+
+            self.d58_read_step = 0
+            self.d58_read_ud   = 0
+            self.d58_idxm_step = 5
+            self.d58_idxm_ud   = 0
+            self.d58_idxl_step = 4
+            self.d58_idxl_ud   = 1
+            self.d58_idl0_step = 3
+            self.d58_idl0_ud   = 0
+            self.d58_idl1_step = 4
+            self.d58_idl1_ud   = 0
+            self.d58_phase_en  = 1
+        else:
+            print "femb_config.yp : FM firmware version = 325"
+            print "femb_config.yp : FM firmware version = 325"
+            self.d14_read_step = 3
+            self.d14_read_ud   = 0
+            self.d14_idxm_step = 4
+            self.d14_idxm_ud   = 0
+            self.d14_idxl_step = 3
+            self.d14_idxl_ud   = 1
+            self.d14_idl0_step = 12 
+            self.d14_idl0_ud   = 0
+            self.d14_idl1_step = 4 
+            self.d14_idl1_ud   = 0
+            self.d14_phase_en  = 1
+
+            self.d58_read_step = 2
+            self.d58_read_ud   = 0
+            self.d58_idxm_step = 4
+            self.d58_idxm_ud   = 0
+            self.d58_idxl_step = 2
+            self.d58_idxl_ud   = 1
+            self.d58_idl0_step = 19
+            self.d58_idl0_ud   = 1
+            self.d58_idl1_step = 2
+            self.d58_idl1_ud   = 0
+            self.d58_phase_en  = 1
+ 
+#
         if (clk_cs == 1):
             self.ext_clk_config_femb(femb_addr)
         time.sleep(0.05)
@@ -291,7 +350,7 @@ class FEMB_CONFIG:
                         break
                 if ( j >= 10 ):
                     print "SPI ERROR "
-                    sys.exit()
+#                    sys.exit()
 
             #enable FEMB stream data to WIB
             self.femb.write_reg_femb_checked (femb_addr, 9, 9)
