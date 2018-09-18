@@ -170,6 +170,7 @@ class FEMB_CONFIG:
             adc_fifo_sync = ( (self.femb.read_reg_femb (femb_addr,6))&0xffff0000 ) >> 16
             if (adc_fifo_sync0 == 0) and (adc_fifo_sync == 0 ) :
                 print "FEMB%d: Successful SPI configuration and ADC FIFO synced"%femb_addr
+                print hex(self.REG_CLKPHASE_data1), hex(self.REG_CLKPHASE_data0 )
                 break
             else:
                 print "ERROR: {0:16b}".format(adc_fifo_sync0), "ERROR: {0:16b}".format(adc_fifo_sync)
@@ -189,7 +190,7 @@ class FEMB_CONFIG:
                         elif (a_cnt[i] >= 5):
                             print "ADC Sync failed, ongoing anyway"
                             #sys.exit()
-                        print "New0-->" + hex(self.REG_CLKPHASE_data0) + "New0-->" + hex(self.REG_CLKPHASE_data1)
+                        print "New0: " + hex(self.REG_CLKPHASE_data0) + "New1: " + hex(self.REG_CLKPHASE_data1)
                     else:
                         pass
                 self.femb_phase(femb_addr)
@@ -227,6 +228,7 @@ class FEMB_CONFIG:
             self.d58_idl1_ud   = 0
             self.d58_phase_en  = 1
         else:
+            print "femb_config.yp : FM firmware version = 325"
             print "femb_config.yp : FM firmware version = 325"
             print "femb_config.yp : FM firmware version = 325"
             self.d14_read_step = 3
@@ -449,9 +451,9 @@ class FEMB_CONFIG:
         self.REG_LATCHLOC5_8 = 14
         self.REG_LATCHLOC5_8_data = 0x04040404
         self.REG_CLKPHASE0 = 6 
-        self.REG_CLKPHASE_data0 = 0x000000FF #LN
+        self.REG_CLKPHASE_data0 = 0x000000BF #LN
         self.REG_CLKPHASE1 = 15 
-        self.REG_CLKPHASE_data1 = 0x000000FF #LN
+        self.REG_CLKPHASE_data1 = 0x000000BF #LN
         #self.sync_chkflg =  False
         self.sync_chkflg = True 
 
