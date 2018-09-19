@@ -373,7 +373,7 @@ class FEMB_CONFIG:
                         print "FEMB%d: Successful SPI configuration and ADC FIFO synced"%femb_addr
                     else:
                         print "ERROR: {0:16b}".format(adc_fifo_sync)
-                        sys.exit()
+                        #sys.exit()
 
             self.femb.write_reg_wib (20, 3)
             self.femb.write_reg_wib (20, 3)
@@ -454,8 +454,8 @@ class FEMB_CONFIG:
         self.REG_CLKPHASE_data0 = 0x000000BF #LN
         self.REG_CLKPHASE1 = 15 
         self.REG_CLKPHASE_data1 = 0x000000BF #LN
-        #self.sync_chkflg =  False
-        self.sync_chkflg = True 
+        self.sync_chkflg =  False
+        #self.sync_chkflg = True 
 
         self.REG_EN_CALI = 16
         self.ADC_TESTPATTERN = [0x12, 0x345, 0x678, 0xf1f, 0xad, 0xc01, 0x234, 0x567, 0x89d, 0xeca, 0xff0, 0x123, 0x456, 0x789, 0xabc, 0xdef]
