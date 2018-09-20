@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Wed Sep 19 22:39:45 2018
+Last modified: Wed Sep 19 23:25:46 2018
 """
 
 #defaut setting for scientific caculation
@@ -212,7 +212,7 @@ if (test_runs&0x7F != 0x0 ):
     print "FEMB ADC offset calibration"
     print "time cost = %.3f seconds"%(timer()-start)
     #apa_oft_info = ceruns.oft_run( test_runs&0x7F ) 
-    apa_oft_info = None
+    apa_oft_info = ceruns.APA 
     with open(logfile, "a+") as f:
         f.write( "FEMB ADC offset calibration\n" ) 
         f.write (ceruns.runpath + "\n" )

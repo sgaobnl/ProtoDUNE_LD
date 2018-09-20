@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Wed Sep 19 22:49:02 2018
+Last modified: Wed Sep 19 23:25:01 2018
 """
 
 #defaut setting for scientific caculation
@@ -256,113 +256,8 @@ class CE_RUNS:
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
         return mask_femb
 
-    def oft_run(self, test_runs): 
-        run_code, val, runpath = self.save_setting(run_code="B", val=100) 
-        self.run_code = run_code
-        apa_oft_info = [[]]*20
-        for wib_addr in range(len(self.wib_ips)):
-            wib_ip = self.wib_ips[wib_addr]
-            #wib_pos = int(wib_ip[-1]) 
-            wib_pos = wib_addr
-            print "WIB%d (IP=%s)"%((wib_pos+1), wib_ip)
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
-            self.femb_on_apa ()
-            femb_on_wib = self.alive_fembs[wib_pos] 
-
-            if (test_runs == 0x40):
-                self.ceboxes = []
-                for femb_addr in femb_on_wib:
-                    while (True):
-                        try  :
-                            tmp = raw_input("CE box number (000-999) on FE slot%d: "%femb_addr)
-                            tmp = int(tmp)
-                            break
-                        except ValueError:
-                            print "Value must be in 000 to 999, please input correct CE box number..."
-                    self.ceboxes.append("CEbox" + format(tmp, '03d'))
-            else:
-                self.ceboxes = []
-
-            for femb_addr in femb_on_wib:
-                udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
-                apaloc = wib_pos*4 + femb_addr
-                femb_addr, adc_oft_regs, yuv_bias_regs = self.femb_meas.femb_oft_set(femb_addr, en_oft=True) 
-                apa_oft_info[apaloc] = [wib_ip, femb_addr, copy.deepcopy(adc_oft_regs), copy.deepcopy(yuv_bias_regs)]
-                udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
-                self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
-        timestampe =  datetime.now().strftime('%m%d%Y_%H%M%S')
-        savefile = runpath +  "APA_ADC_OFT_" + timestampe + '.bin'
-        if (os.path.isfile(savefile)): 
-            print "%s, file exist!!!"%savefile
-            sys.exit()
-        else:
-            with open(savefile, "wb") as fp:
-                pickle.dump(apa_oft_info, fp)
-        self.runpath = runpath
-        self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
-        return apa_oft_info
-
     def apa_cebox_chk(self): 
         pass
-#        cebox = []
-#        for wib_addr in range(len(self.wib_ips)):
-#            wib_ip = self.wib_ips[wib_addr]
-#            wib_pos = wib_addr
-#            print "WIB%d (IP=%s)"%((wib_pos+1), wib_ip)
-#            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
-#            self.femb_on_apa ()
-#            femb_on_wib = self.alive_fembs[wib_pos] 
-#
-#            for femb_addr in femb_on_wib:
-#                self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 13, 1)
-#                pages = []
-#                for oft in range(2):
-#                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 11, 256*(20000+oft) )
-#                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 10, 3) 
-#                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 10, 0x103) 
-#                    self.femb_meas.femb_config.femb.write_reg_femb(femb_addr, 10, 0x3) 
-#                    page = []
-#                    for i in range(16):
-#                        a = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x240 + i )
-#                        page.append(a)
-#                        print hex(a)
-#                    pages.append(page)
-#                for page in pages:
-#                    if page[0] != 0xFFFFFFFF :
-#                        CEbox_id = page[0]
-#                    if page[1] != 0xFFFFFFFF :
-#                        APA_info = page[1]
-#                print [hex(APA_info), hex(CEbox_id), wib_ip, wib_pos, femb_addr]
-#                cebox.append([APA_info, CEbox_id, wib_ip, wib_pos, femb_addr])
-#            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
-#
-#        runtime =  datetime.now().strftime('%m_%d_%Y')
-#        runpath = self.path + "Rawdata_" + runtime + "/" 
-#        try: 
-#            os.makedirs(runpath)
-#        except OSError:
-#            if os.path.exists(runpath):
-#                pass
-#
-#        savefile = runpath +  "CEbox_" + runtime + '.bin'
-#        if (os.path.isfile(savefile)): 
-#            pass
-#        else:
-#            with open(savefile, "wb") as fp:
-#                pickle.dump(cebox, fp)
-
-
-    def femb_oft_bias_regs (self, apa_oft_info, wib_ip, femb_addr):
-        adc_oft_regs = []
-        yuv_bias_regs = [] 
-        for oneinfo in apa_oft_info:
-            if oneinfo != [] :
-                if (oneinfo[0] ==wib_ip) and (oneinfo[1] ==femb_addr):
-                    adc_oft_regs = oneinfo[2]
-                    yuv_bias_regs = oneinfo[3] 
-                    break
-        return adc_oft_regs, yuv_bias_regs
 
     def femb_on_apa (self):
         apa_fembs = []
@@ -436,7 +331,6 @@ class CE_RUNS:
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
-                #adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
                 adc_oft_regs = int(apa_oft_info[3])
                 yuv_bias_regs = wib_addr
                 for sg in sgs:
@@ -463,7 +357,8 @@ class CE_RUNS:
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
-                adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
+                adc_oft_regs = int(apa_oft_info[3])
+                yuv_bias_regs = wib_addr
                 for sg in sgs:
                     for tp in tps:
                         step = "WIB" + format(wib_pos, '02d') +  "step" + str(sg) + run_code
