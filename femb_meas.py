@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Thu Sep 20 11:08:31 2018
+Last modified: Thu 20 Sep 2018 07:15:22 PM CEST
 """
 
 #defaut setting for scientific caculation
@@ -175,6 +175,6 @@ class FEMB_MEAS: #for one FEMB
         self.apamap.APA = self.APA 
 
         self.csvpath = "/Users/shanshangao/Documents/GitHub/ProtoDUNE_LD/"
-        self.csvpath = "/nfs/home/shanshan/PD_LD_CFG/"
         self.csvpath = "D:/APA/ProtoDUNE_LD_CFG/"
+        self.csvpath = "/nfs/home/shanshan/PD_LD_CFG/"
 
