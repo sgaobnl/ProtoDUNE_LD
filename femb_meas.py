@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Wed Sep 19 23:23:10 2018
+Last modified: Thu Sep 20 11:08:31 2018
 """
 
 #defaut setting for scientific caculation
@@ -69,20 +69,7 @@ class FEMB_MEAS: #for one FEMB
                 sys.exit()
         return savepath
 
-    def save_chkout(self, path, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, clk_cs=1, pls_cs = 1, dac_sel=1, \
-                    fpga_dac=1, asic_dac=0, slk0 = 0, slk1= 0, val=100*10):
-        print "FEMB_DAQ-->Quick measurement start"
-
-        savepath = self.wib_savepath (path, step)
-        if (True):
-            ai = adc_oft_regs
-            wi = yuv_bias_regs
-            fi = femb_addr
-
-            if sg == 3:
-                csvf = self.csvpath + "ProtoDUNE_SP_FEMBs_Config_fpgadac4_25.csv"
-            else:
-                csvf = self.csvpath + "ProtoDUNE_SP_FEMBs_Config_fpgadac8_14.csv"
+    def femb_regs_cfg(self, csvf, ai, wi, fi, savepath, fe_cfg=0x3B):
             fembcfgs = []
             with open(csvf, 'r') as cf:
                 i = 0
@@ -97,21 +84,48 @@ class FEMB_MEAS: #for one FEMB
                         awr_wr = int(a[6],16)
                         arb_flg =  (a[7].find("0x") >=0)
                         if (aai == ai) and (awi == wi) and (afi == fi) :
-                            fembcfgs.append([aseq, awr_addr, awr_wr, arb_flg])
+                            fembcfgs.append([aseq, awr_addr, awr_wr, arb_flg, ai, wi, fi])
                     i = i + 1
             fembcfgs = sorted(fembcfgs, key= lambda i : i[0])
-
+            fembloc =  "APA%dWIB%dFEMB%d"%(ai, wi,fi)
+            print fembloc
 
             for fembcfg in fembcfgs:
                 if fembcfg[3] :
                     self.femb_config.femb.write_reg_femb_checked (fi, fembcfg[1], fembcfg[2] )
                 else:
                     self.femb_config.femb.write_reg_femb (fi, fembcfg[1], fembcfg[2] )
+                    time.sleep(0.01)
+
+            savecfgfile = fembloc + "_" + hex(fe_cfg) + "_" + "CFG.csv"
+            print savecfgfile
+            with open(savepath + savecfgfile, 'w') as fp:
+                fp.write(",".join(["APA(1-6)", "WIB(0-4)", "FEMB(0-3)", "Wr_Seq","WR_ADDR", "WR_Value"]) + ","  + "\n" )
+                for x in fembcfgs:
+                    strx = [str(x[4]), str(x[5]), str(x[6]), str(x[0]), str(hex(x[1])), str(hex(x[2]))]
+                    fp.write(",".join( i for i in strx) + ","  + "\n")
+
+    def save_chkout(self, path, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, clk_cs=1, pls_cs = 1, dac_sel=1, \
+                    fpga_dac=1, asic_dac=0, slk0 = 0, slk1= 0, val=100*10):
+        print "FEMB_DAQ-->Quick measurement start"
+        savepath = self.wib_savepath (path, step)
+        if (True):
+            ai = adc_oft_regs
+            wi = yuv_bias_regs
+            fi = femb_addr
+
+            if sg == 3:
+                csvf = self.csvpath + "ProtoDUNE_SP_FEMBs_Config_fpgadac4_25.csv"
+                fe_cfg = 0x3F
+            else:
+                csvf = self.csvpath + "ProtoDUNE_SP_FEMBs_Config_fpgadac8_14.csv"
+                fe_cfg = 0x3B
+            self.femb_regs_cfg(csvf, ai, wi, fi, savepath, fe_cfg)
 
             for chip in range(8):
                 rawdata = ""
-                fe_cfg = int((fe_adc_regs[5])&0xFF)
-                fe_cfg_r = int('{:08b}'.format(fe_cfg)[::-1], 2)
+                #fe_cfg_r = int('{:08b}'.format(fe_cfg)[::-1], 2)
+                fe_cfg_r = fe_cfg
                 filename = savepath + step +"_FEMB" + str(femb_addr) + "CHIP" + str(chip) + "_" + format(fe_cfg_r,'02X') + "_FPGADAC" + str(self.ampl) + ".bin"
                 print filename
                 rawdata = self.femb_config.get_rawdata_packets_femb(femb_addr, chip, val)
@@ -129,28 +143,13 @@ class FEMB_MEAS: #for one FEMB
             fi = femb_addr
 
             csvf = self.csvpath + "ProtoDUNE_SP_FEMBs_Config_rms.csv"
-            fembcfgs = []
-            with open(csvf, 'r') as cf:
-                i = 0
-                for cl in cf:
-                    if (i > 0):
-                        a = cl.split(",")
-                        aai = int(a[0])
-                        awi = int(a[1])
-                        afi = int(a[2])
-                        aseq = int(a[4])
-                        awr_addr = int(a[5],16)
-                        awr_wr = int(a[6],16)
-                        arb_flg =  (a[7].find("0x") >=0)
-                        if (aai == ai) and (awi == wi) and (afi == fi) :
-                            fembcfgs.append([aseq, awr_addr, awr_wr, arb_flg])
-                    i = i + 1
-            fembcfgs = sorted(fembcfgs, key= lambda i : i[0])
+            fe_cfg = 0x3B
+            self.femb_regs_cfg(csvf, ai, wi, fi, savepath, fe_cfg)
 
             for chip in range(8):
                 rawdata = ""
-                fe_cfg = int((fe_adc_regs[5])&0xFF)
-                fe_cfg_r = int('{:08b}'.format(fe_cfg)[::-1], 2)
+                fe_cfg = 0x3B
+                fe_cfg_r = fe_cfg
                 filename = savepath+ step +"_FEMB" + str(femb_addr) + "CHIP" + str(chip) + "_" + format(fe_cfg_r,'02X') + "_RMS.bin"
                 print filename
                 rawdata = self.femb_config.get_rawdata_packets_femb(femb_addr, chip, val)
@@ -176,3 +175,6 @@ class FEMB_MEAS: #for one FEMB
         self.apamap.APA = self.APA 
 
         self.csvpath = "/Users/shanshangao/Documents/GitHub/ProtoDUNE_LD/"
+        self.csvpath = "/nfs/home/shanshan/PD_LD_CFG/"
+        self.csvpath = "D:/APA/ProtoDUNE_LD_CFG/"
+
