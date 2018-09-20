@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Tue 18 Sep 2018 10:58:39 PM CEST
+Last modified: Wed Sep 19 22:39:45 2018
 """
 
 #defaut setting for scientific caculation
@@ -210,14 +210,9 @@ if (test_runs&0x7F != 0x0 ):
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
     print "FEMB ADC offset calibration"
-
     print "time cost = %.3f seconds"%(timer()-start)
-    apa_oft_info = ceruns.oft_run( test_runs&0x7F ) 
-#    if (False):
-#        oft_file = "D:/Hibay_V3/Rawdata/Rawdata_01_13_2018/run01oft/APA_ADC_OFT_01132018_155658.bin"
-#        with open (oft_file, 'rb') as fp:
-#            apa_oft_info = pickle.load(fp)
-
+    #apa_oft_info = ceruns.oft_run( test_runs&0x7F ) 
+    apa_oft_info = None
     with open(logfile, "a+") as f:
         f.write( "FEMB ADC offset calibration\n" ) 
         f.write (ceruns.runpath + "\n" )
@@ -237,70 +232,9 @@ if (test_runs&0x10 != 0x0 ):
 if (test_runs&0x01 != 0x0 ):
     print "Noise Measurement Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    #ceruns.rms_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=1600) 
-    #ceruns.rms_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], val=1600) 
     ceruns.rms_run(apa_oft_info, sgs = [1], tps =[3], val=1600) 
     with open(logfile, "a+") as f:
         f.write( "%2X: Noise Measurement Test\n" %(test_runs&0x01) ) 
-        f.write (ceruns.runpath + "\n" )
-        f.write (ceruns.runtime + "\n" )
-        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-
-if (test_runs&0x02 != 0x0 ):
-    print "FPGA DAC Calibration Test"
-    print "time cost = %.3f seconds"%(timer()-start)
-    #ceruns.fpgadac_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=100)
-    ceruns.fpgadac_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], val=100)
-    with open(logfile, "a+") as f:
-        f.write( "%2X: FPGA DAC Calibration Test\n" %(test_runs&0x02) ) 
-        f.write (ceruns.runpath + "\n" )
-        f.write (ceruns.runtime + "\n" )
-        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-
-if (test_runs&0x04 != 0x0 ):
-    print "ASIC DAC Calibration Test"
-    print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.asicdac_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=100)
-    with open(logfile, "a+") as f:
-        f.write( "%2X: ASIC DAC Calibration Test\n" %(test_runs&0x04) ) 
-        f.write (ceruns.runpath + "\n" )
-        f.write (ceruns.runtime + "\n" )
-        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-
-if (test_runs&0x08 != 0x0 ):
-    print "Brombreg Mode Noise Measurement Test"
-    print "time cost = %.3f seconds"%(timer()-start)
-    #ceruns.brombreg_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], cycle=5) 
-    ceruns.brombreg_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], cycle=150) 
-    with open(logfile, "a+") as f:
-        f.write( "%2X: Brombreg Mode Noise Measurement Test\n" %(test_runs&0x08) ) 
-        f.write (ceruns.runpath + "\n" )
-        f.write (ceruns.runtime + "\n" )
-        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-
-if (test_runs&0x20 != 0x0 ):
-    print "Temperature Monitoring"
-    print "time cost = %.3f seconds"%(timer()-start)
-
-    if (RTD_flg == "pulse"):
-        temp_or_pluse = "pulse"
-    else:
-        temp_or_pluse = "temp"
-    ceruns.monitor_run(temp_or_pluse = temp_or_pluse) #"pulse"
-    with open(logfile, "a+") as f:
-        f.write( "%2X: Temperature Monitoring\n" %(test_runs&0x20) ) 
-        f.write (ceruns.runpath + "\n" )
-        f.write (ceruns.runtime + "\n" )
-        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-
-if (test_runs&0x40 != 0x0 ):
-    if (ceruns.APA == "CHKOUT"): 
-        print "Average Checkout"
-        print "time cost = %.3f seconds"%(timer()-start)
-        ceruns.avg_run(val = 1600, avg_cycle=300)
-
-    with open(logfile, "a+") as f:
-        f.write( "%2X: Average Checkout\n" %(test_runs&0x40) ) 
         f.write (ceruns.runpath + "\n" )
         f.write (ceruns.runtime + "\n" )
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )

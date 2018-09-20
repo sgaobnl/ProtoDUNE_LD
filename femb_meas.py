@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Apr  9 16:07:35 2018
+Last modified: Wed Sep 19 23:17:36 2018
 """
 
 #defaut setting for scientific caculation
@@ -240,37 +240,39 @@ class FEMB_MEAS: #for one FEMB
         print "FEMB_DAQ-->Quick measurement start"
 
         savepath = self.wib_savepath (path, step)
-        file_setadc_rec = savepath + step +"_FEMB" + str(femb_addr)+ str(sg) + str(tp) + "CHK_FE_ADC.txt"
-        if os.path.isfile(file_setadc_rec):
-            print "%s, file exist!!!"%file_setadc_rec
-            sys.exit()
-        else:
-            self.fe_reg.set_fe_board() # reset the registers value
-            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=0, slk0=slk0, slk1=slk1, swdac =2, dac=0 )
-            fe_regs = copy.deepcopy(self.fe_reg.REGS)
-            adc_regs = self.adc_clk_engr_config (adc_oft_regs, clk_cs = clk_cs, adc_en_gr = 1, adc_offset = 0 )
-            fe_bias_regs = self.fe_regs_bias_config(fe_regs, yuv_bias_regs ) #one FEMB
-            self.fe_adc_reg.set_board(fe_bias_regs,adc_regs)
-            fe_adc_regs = copy.deepcopy(self.fe_adc_reg.REGS)
+        if (True):
+            ai = adc_oft_regs
+            wi = yuv_bias_regs
+            fi = femb_addr
 
-            if sg == 3: #25mV/fC
-                self.ampl = 4
-            elif sg == 1: #"14_0mV_"
-                self.ampl = 8
-            elif sg == 2: #"07_8mV_":
-                self.ampl = 12
-            elif sg == 0: #"04_7mV_":
-                self.ampl = 20
+            if sg == 3:
+                csvf = self.csvpath + "ProtoDUNE_SP_FEMBs_Config_fpgadac4_25.csv"
             else:
-                self.ampl = 4
-            self.dly  = 10
-            self.reg_5_value = (self.reg_5_value&0xFFFFFF00) + (self.ampl&0xFF)
-            self.reg_5_value = (self.reg_5_value&0xFFFF00FF) + ((self.dly<<8)&0xFF00)
-            self.femb_config.femb.write_reg_femb_checked (femb_addr, 5, self.reg_5_value)
-            self.femb_config.config_femb(femb_addr, fe_adc_regs ,clk_cs, pls_cs, dac_sel, fpga_dac, asic_dac)
-            self.femb_config.config_femb_mode(femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac)
+                csvf = self.csvpath + "ProtoDUNE_SP_FEMBs_Config_fpgadac8_14.csv"
+            fembcfgs = []
+            with open(csvf, 'r') as cf:
+                i = 0
+                for cl in cf:
+                    if (i > 0):
+                        a = cl.split(",")
+                        aai = int(a[0])
+                        awi = int(a[1])
+                        afi = int(a[2])
+                        aseq = int(a[4])
+                        awr_addr = int(a[5],16)
+                        awr_wr = int(a[6],16)
+                        arb_flg =  (a[7].find("0x") >=0)
+                        if (aai == ai) and (awi == wi) and (afi == fi) :
+                            fembcfgs.append([aseq, awr_addr, awr_wr, arb_flg])
+                    i = i + 1
+            fembcfgs = sorted(fembcfgs, key= lambda i : i[0])
 
-            self.recfile_save(file_setadc_rec, step, femb_addr, fe_adc_regs) 
+
+            for fembcfg in fembcfgs:
+                if fembcfg[3] :
+                    self.femb_config.femb.write_reg_femb_checked (fi, fembcfg[1], fembcfg[2] )
+                else:
+                    self.femb_config.femb.write_reg_femb (fi, fembcfg[1], fembcfg[2] )
 
             for chip in range(8):
                 rawdata = ""
@@ -287,28 +289,29 @@ class FEMB_MEAS: #for one FEMB
                        fpga_dac=0, asic_dac=0, slk0 = 0, slk1= 0, val=1600*10):
         print "FEMB_DAQ-->RMS measurement start"
         savepath = self.wib_savepath (path, step)
-        file_setadc_rec = savepath+ step +"_FEMB" + str(femb_addr)+ str(sg) + str(tp) + "ped_FE_ADC.txt"
-        if os.path.isfile(file_setadc_rec):
-            print "%s, file exist!!!"%file_setadc_rec
-            sys.exit()
-        else:
-            self.fe_reg.set_fe_board() # reset the registers value
-            self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, smn=0, sdf=0, slk0=slk0, slk1=slk1, swdac =0, dac=0 )
-            fe_regs = copy.deepcopy(self.fe_reg.REGS)
-            adc_regs = self.adc_clk_engr_config (adc_oft_regs, clk_cs = clk_cs, adc_en_gr = 1, adc_offset = 0 )
-            fe_bias_regs = self.fe_regs_bias_config(fe_regs, yuv_bias_regs ) #one FEMB
-            self.fe_adc_reg.set_board(fe_bias_regs,adc_regs)
-            fe_adc_regs = copy.deepcopy(self.fe_adc_reg.REGS)
+        if (True):
+            ai = adc_oft_regs
+            wi = yuv_bias_regs
+            fi = femb_addr
 
-            self.ampl = 0
-            self.dly  = 10
-            self.reg_5_value = (self.reg_5_value&0xFFFFFF00) + (self.ampl&0xFF)
-            self.reg_5_value = (self.reg_5_value&0xFFFF00FF) + ((self.dly<<8)&0xFF00)
-            self.femb_config.femb.write_reg_femb_checked (femb_addr, 5, self.reg_5_value)
-            self.femb_config.config_femb(femb_addr, fe_adc_regs ,clk_cs, pls_cs, dac_sel, fpga_dac, asic_dac)
-            self.femb_config.config_femb_mode(femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac)
-
-            self.recfile_save(file_setadc_rec, step, femb_addr, fe_adc_regs) 
+            csvf = self.csvpath + "ProtoDUNE_SP_FEMBs_Config_rms.csv"
+            fembcfgs = []
+            with open(csvf, 'r') as cf:
+                i = 0
+                for cl in cf:
+                    if (i > 0):
+                        a = cl.split(",")
+                        aai = int(a[0])
+                        awi = int(a[1])
+                        afi = int(a[2])
+                        aseq = int(a[4])
+                        awr_addr = int(a[5],16)
+                        awr_wr = int(a[6],16)
+                        arb_flg =  (a[7].find("0x") >=0)
+                        if (aai == ai) and (awi == wi) and (afi == fi) :
+                            fembcfgs.append([aseq, awr_addr, awr_wr, arb_flg])
+                    i = i + 1
+            fembcfgs = sorted(fembcfgs, key= lambda i : i[0])
 
             for chip in range(8):
                 rawdata = ""
@@ -788,3 +791,4 @@ class FEMB_MEAS: #for one FEMB
         self.apamap = APA_MAP()
         self.apamap.APA = self.APA 
 
+        self.csvpath = "/Users/shanshangao/Documents/GitHub/ProtoDUNE_LD/"

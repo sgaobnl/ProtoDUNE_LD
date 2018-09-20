@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue 21 Aug 2018 06:13:57 PM CEST
+Last modified: Wed Sep 19 22:49:02 2018
 """
 
 #defaut setting for scientific caculation
@@ -436,7 +436,9 @@ class CE_RUNS:
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
-                adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
+                #adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
+                adc_oft_regs = int(apa_oft_info[3])
+                yuv_bias_regs = wib_addr
                 for sg in sgs:
                     for tp in tps:
                         step = "WIB" + format(wib_pos, '02d') +  "step" + str(sg) + run_code
@@ -470,143 +472,6 @@ class CE_RUNS:
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
-        self.runpath = runpath
-        self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
-
-    def fpgadac_run(self, apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=100): 
-        run_code, val, runpath = self.save_setting(run_code="2", val=val) 
-        self.run_code = run_code
-        for wib_addr in range(len(self.wib_ips)):
-            wib_ip = self.wib_ips[wib_addr]
-            #wib_pos = int(wib_ip[-1])
-            wib_pos = wib_addr
-            print "WIB%d (IP=%s)"%((wib_pos+1), wib_ip)
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
-            self.femb_on_apa ()
-            femb_on_wib = self.alive_fembs[wib_pos] 
-            for femb_addr in femb_on_wib:
-                udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
-                adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
-                for sg in sgs:
-                    for tp in tps:
-                        step = "WIB" + format(wib_pos, '02d') +  "step" + str(sg) + run_code
-                        self.femb_meas.fpga_dac_cali(runpath, step, femb_addr,  sg, tp, adc_oft_regs, yuv_bias_regs, clk_cs=1, pls_cs = 1, \
-                                dac_sel=1, fpga_dac=1, asic_dac=0, slk0 = self.slk0, slk1= self.slk1,  val=val)
-                udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
-                self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
-        self.runpath = runpath
-        self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
-
-
-    def asicdac_run(self, apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=100): 
-        run_code, val, runpath = self.save_setting(run_code="4", val=val) 
-        self.run_code = run_code
-        for wib_addr in range(len(self.wib_ips)):
-            wib_ip = self.wib_ips[wib_addr]
-            #wib_pos = int(wib_ip[-1]) 
-            wib_pos = wib_addr
-            print "WIB%d (IP=%s)"%((wib_pos+1), wib_ip)
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
-            self.femb_on_apa ()
-            femb_on_wib = self.alive_fembs[wib_pos] 
-            for femb_addr in femb_on_wib:
-                udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
-                adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
-                for sg in sgs:
-                    for tp in tps:
-                        step = "WIB" + format(wib_pos, '02d') +  "step" + str(sg) + run_code
-                        self.femb_meas.asic_dac_cali(runpath, step, femb_addr,  sg, tp, adc_oft_regs, yuv_bias_regs, clk_cs=1, pls_cs = 1, \
-                                dac_sel=1, fpga_dac=0, asic_dac=1, slk0 = self.slk0, slk1= self.slk1,  val=val)
-                udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
-                self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
-        self.runpath = runpath
-        self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
-
-    def brombreg_run(self, apa_oft_info, sgs = [1,3], tps =[0,1,2,3], cycle=150): 
-        run_code, val, runpath = self.save_setting(run_code="8", val=100) 
-        for wib_pos in range(len(self.wib_ips)):
-            wib_ip = self.wib_ips[wib_pos]
-            print "WIB%d (IP=%s)"%((wib_pos+1), wib_ip)
-            for wib_addr in range(len(self.wib_ips)):
-                if (wib_ip == self.wib_ips[wib_addr]):
-                    break
-            #wib_pos = int(wib_ip[-1])
-            wib_pos = wib_addr
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
-
-            self.femb_meas.femb_config.femb.write_reg_wib_checked (40, 1)
-            self.femb_meas.femb_config.femb.write_reg_wib_checked (41, 6400)
-
-            self.femb_on_apa ()
-            femb_on_wib = self.alive_fembs[wib_pos] 
-            adc_oft_regs_np = [[], [], [], []]
-            yuv_bias_regs_np = [[], [], [], []]
-            for femb_addr in femb_on_wib:
-                adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
-                adc_oft_regs_np[femb_addr] = adc_oft_regs
-                yuv_bias_regs_np[femb_addr] = yuv_bias_regs
-
-            for sg in sgs:
-                for tp in tps:
-                    step = "WIB" + format(wib_pos, '02d') +  "step" + str(sg) + run_code
-                    self.femb_meas.wib_brombreg_acq(runpath, step, femb_on_wib, sg, tp, adc_oft_regs_np, yuv_bias_regs_np, clk_cs=1, pls_cs = 1, dac_sel=0, \
-                                     fpga_dac=0, asic_dac=0, slk0 = self.slk0, slk1= self.slk1, cycle=cycle)
-
-            self.femb_meas.femb_config.femb.write_reg_wib_checked (40, 0)
-            self.femb_meas.femb_config.femb.write_reg_wib_checked (41, 0)
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
-        self.run_code = run_code
-        self.runpath = runpath
-        self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
-
-    def monitor_run(self, temp_or_pluse = "temp", chn=0): 
-        #temp_or_pluse: temp, pulse, banggap
-        run_code, val, runpath = self.save_setting(run_code="9", val=100) 
-        for tmpwib_pos in range(len(self.tmp_wib_ips)):
-            wib_ip = self.tmp_wib_ips[tmpwib_pos]
-            print "WIB%d (IP=%s)"%((tmpwib_pos+1), wib_ip)
-            for wib_addr in range(len(self.wib_ips)):
-                if (wib_ip == self.wib_ips[wib_addr]):
-                    break
-            wib_pos = wib_addr
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
-            self.femb_on_apa ()
-            femb_on_wib = self.alive_fembs[wib_pos] 
-            self.femb_meas.wib_monitor(runpath, temp_or_pluse = temp_or_pluse, chn=chn )
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
-        self.run_code = run_code
-        self.runpath = runpath
-        self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
-
-    def avg_run(self, val = 1600, avg_cycle=300): 
-        
-        run_code, val, runpath = self.save_setting(run_code="A", val=val) 
-        resultpaths = []
-        for wib_pos in range(len(self.wib_ips)):
-            wib_ip = self.wib_ips[wib_pos]
-            print "WIB (IP=%s)"%(wib_ip)
-            for wib_addr in range(len(self.wib_ips)):
-                if (wib_ip == self.wib_ips[wib_addr]):
-                    break
-            wib_pos = wib_addr
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
-            self.femb_on_apa ()
-            femb_on_wib = self.alive_fembs[wib_pos] 
-            for femb_addr in femb_on_wib:
-                sg=2
-                tp=1
-                step = self.ceboxes[femb_addr] + "WIB" + format(wib_pos, '02d') +  "step" + str(sg) + run_code
-                datapath= self.femb_meas.avg_chkout(runpath, step, femb_addr, sg=sg, tp=tp, clk_cs=1, pls_cs = 1, dac_sel=1, \
-                                          fpga_dac=1, asic_dac=0, slk0 = self.slk0, slk1= self.slk1, val=val)
-                PD_CHKOUT (datapath, step, plot_en=0x3F,  avg_cycle=avg_cycle, jumbo_flag=self.jumbo_flag )
-                resultpaths.append(datapath)
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
-        print "Please check the pdf format files in the folder below: "
-        for onepath in resultpaths:
-            print onepath
-        self.run_code = run_code
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
 

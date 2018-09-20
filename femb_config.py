@@ -404,8 +404,8 @@ class FEMB_CONFIG:
         self.femb.write_reg_wib ( 7, 0x80000000)
         self.femb.write_reg_wib ( 7, 0x80000000)
         femb_asic = asic & 0x0F
-        self.femb.write_reg_femb_checked ( femb_addr, self.REG_SEL_CH, femb_asic)
-        self.femb.write_reg_femb_checked ( femb_addr, self.REG_HS, 1)
+#useless        self.femb.write_reg_femb_checked ( femb_addr, self.REG_SEL_CH, femb_asic)
+#useless        self.femb.write_reg_femb_checked ( femb_addr, self.REG_HS, 1)
         wib_asic =  ( ((femb_addr << 16)&0x000F0000) + ((femb_asic << 8) &0xFF00) )
         self.femb.write_reg_wib (  7, wib_asic | 0x80000000)
         self.femb.write_reg_wib (  7, wib_asic | 0x80000000)
