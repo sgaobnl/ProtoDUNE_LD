@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon 04 Jun 2018 04:39:56 PM CEST
+Last modified: Tue 21 Aug 2018 06:13:57 PM CEST
 """
 
 #defaut setting for scientific caculation
@@ -54,9 +54,14 @@ class CE_RUNS:
             ver_value = self.femb_meas.femb_config.femb.read_reg_wib (0x100)
             ver_value = self.femb_meas.femb_config.femb.read_reg_wib (0xFF)
             ver_value = self.femb_meas.femb_config.femb.read_reg_wib (0xFF)
-
-            if ( (ver_value&0x0FFF) == self.wib_version_id) and (ver_value != -1) :
-                print "WIB(%s) passed self check!"%(wib_ip)
+            print type(ver_value)
+            if (ver_value != None):
+                if ( (ver_value&0x0FF0) == (self.wib_version_id&0x0FF0)) and (ver_value != -1) :
+                    print "WIB(%s) passed self check!"%(wib_ip)
+                else:
+                    print "WIB%s fails, mask this WIB!!!"%wib_ip
+                    wib_ips_removed.append(wib_ip)
+                    continue
             else:
                 print "WIB%s fails, mask this WIB!!!"%wib_ip
                 wib_ips_removed.append(wib_ip)
@@ -79,6 +84,10 @@ class CE_RUNS:
         for wib_ip in wib_ips_removed:
                 self.wib_ips.remove(wib_ip)
         print self.wib_ips
+        if ( len(self.wib_ips) == 0 ):
+            print "there is no WIB avaiable, check 48V power suppy or FW version(BNL FW only)" 
+            print "Exit annyway"
+            sys.exit()
 
     def WIB_LINK_CUR(self):
         logs = []
@@ -208,7 +217,7 @@ class CE_RUNS:
                 ver_value = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x101)
                 ver_value = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x101)
                 print "WIB%dFEMB%d firmware version: %X"%((wib_pos+1), femb_addr, ver_value )
-                if ( (ver_value &0xFFF) == self.femb_ver_id ) and (ver_value != -1) :
+                if ( (ver_value &0xFFF) == self.femb_ver_id ) or ( (ver_value &0xFFFF) == self.femb_ver_id2 ) and (ver_value != -1) :
                     print "WIB%dFEMB%d is good"%((wib_pos+1), femb_addr)
                     self.femb_mask[wib_pos][femb_addr]  = 0
                 else:
@@ -606,6 +615,7 @@ class CE_RUNS:
         self.wib_ips = ["10.73.137.20", "10.73.137.21", "10.73.137.22", "10.73.137.23", "10.73.137.24"]  
         self.wib_version_id = 0x116
         self.femb_ver_id = 0x323
+        self.femb_ver_id2 = 0x325C
         self.wib_pwr_femb = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
         self.femb_mask    = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
         self.alive_fembs =  [[0,1,2,3],[0,1,2,3],[0,1,2,3],[0,1,2,3],[0,1,2,3]]

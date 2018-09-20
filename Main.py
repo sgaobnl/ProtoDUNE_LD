@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Sat Jun  9 19:43:10 2018
+Last modified: Tue 18 Sep 2018 10:58:39 PM CEST
 """
 
 #defaut setting for scientific caculation
@@ -36,7 +36,7 @@ test_runs = int(sys.argv[2],16)
 RTD_flg = (sys.argv[3] == "True")
 os_cs = sys.argv[4]
 
-ceruns.wib_version_id = 0x116
+ceruns.wib_version_id = 0x119
 ceruns.femb_ver_id = 0x323
 rawpath = set_path(os=os_cs)
 
@@ -63,6 +63,7 @@ elif ( (ceruns.APA == "Coldbox") or \
         ceruns.path = rawpath + "/APA2/" 
     elif (ceruns.APA == "APA3"): 
         ceruns.wib_ips = ["10.73.137.36", "10.73.137.37", "10.73.137.38", "10.73.137.39", "10.73.137.40"]  
+#        ceruns.wib_ips = [ "10.73.137.39"]  
         ceruns.path = rawpath + "/APA3/" 
     elif (ceruns.APA == "APA4"): 
         ceruns.wib_ips = ["10.73.137.41", "10.73.137.42", "10.73.137.43", "10.73.137.44", "10.73.137.45"]  
@@ -197,6 +198,7 @@ if (test_runs&0x7F != 0x0 ):
     rtd_temp = " "
     rundate =  datetime.now().strftime('%m_%d_%Y')
     runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    print runtime
     with open(logfile, "a+") as f:
         f.write( "Begin\n") 
         f.write(runtime + "\n") 
@@ -225,7 +227,7 @@ if (test_runs&0x7F != 0x0 ):
 if (test_runs&0x10 != 0x0 ):
     print "Quick Checkout Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.qc_run(apa_oft_info, sgs=[3], tps =[0,1,2,3], val = 100) 
+    ceruns.qc_run(apa_oft_info, sgs=[1,3], tps =[3], val = 100) 
     with open(logfile, "a+") as f:
         f.write( "%2X: Quick Checkout Test\n" %(test_runs&0x10) ) 
         f.write (ceruns.runpath + "\n" )
@@ -236,7 +238,8 @@ if (test_runs&0x01 != 0x0 ):
     print "Noise Measurement Test"
     print "time cost = %.3f seconds"%(timer()-start)
     #ceruns.rms_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=1600) 
-    ceruns.rms_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], val=1600) 
+    #ceruns.rms_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], val=1600) 
+    ceruns.rms_run(apa_oft_info, sgs = [1], tps =[3], val=1600) 
     with open(logfile, "a+") as f:
         f.write( "%2X: Noise Measurement Test\n" %(test_runs&0x01) ) 
         f.write (ceruns.runpath + "\n" )

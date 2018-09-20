@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Mon 04 Jun 2018 04:46:19 PM CEST
+Last modified: Wed 19 Sep 2018 04:48:17 AM CEST
 """
 
 import os
@@ -22,18 +22,25 @@ from femb_udp_cmdline import FEMB_UDP
 wib= FEMB_UDP()
 
 logs = []
-for lastip in ["31", "32", "33", "34", "35"]:
-#for lastip in [ wib_lastbyte,]:
+for lastip in ["36","37","38","39","40",]:
+#for lastip in range(255):
+    lastip = str(lastip)
     wib.UDP_IP = "10.73.137." +  lastip
     runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
     logs.append ( runtime )
     version = wib.read_reg_wib(0xFF)
-    if ((version &0xFFF) == 0x116) and (version != -1) :
+    print type(version)
+    print hex(version)
+    if ((version &0xFF0) == 0x110) and (version != -1) :
         logs.append ( wib.UDP_IP +": Addr(0xFF) =  " + format(version, "08X") )
+        print "BNL FW is successfully load!"
         print wib.UDP_IP , hex(version)
         tmp1 = wib.read_reg_wib(0x100)
         logs.append ( "Addr(0x100) = " + format(tmp1, "08X") ) 
         
+#        wib.write_reg_wib(8, 0xFFFFFFFF)
+        wib.write_reg_wib(8, 0x00000000)
+#        time.sleep(5)
         wib.write_reg_wib(18, 0x100)
         for addr in [32,33,34,35,36,37,38,39]:
             b =  wib.read_reg_wib(addr)
@@ -112,7 +119,7 @@ for lastip in ["31", "32", "33", "34", "35"]:
     else:
         print "WIB (%s)  doesn't exist or wrong firmware version!)"%(wib.UDP_IP)
 
-logfile =    "/nfs/rscratch/bnl_ce/shanshan/Rawdata/APA2/" + "/WIB_lins_chk.log"
+logfile =    "/nfs/rscratch/bnl_ce/shanshan/Rawdata/APA3/" + "/WIB_lins_chk.log"
 with open(logfile, "a+") as f:
     f.write( "Begin\n" ) 
     f.write( "WIB LINKs check\n" ) 
