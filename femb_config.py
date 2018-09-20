@@ -16,13 +16,13 @@ class FEMB_CONFIG:
 
         self.femb.write_reg_femb_checked (femb_addr, self.REG_EN_CALI, tp_sel&0x0000ffff)
 
-        self.femb.write_reg_femb_checked (femb_addr, 18, 0x11)
+        self.femb.write_reg_femb_checked (femb_addr, 18, 0b11)
         if (pls_cs == 0 ):
-            pls_cs_value = 0x11 #disable all
+            pls_cs_value = 0b11 #disable all
         elif (pls_cs == 1 ): #internal pls
-            pls_cs_value = 0x10 
+            pls_cs_value = 0b10 
         elif (pls_cs == 2 ): #external pls
-            pls_cs_value = 0x01 
+            pls_cs_value = 0b01 
         self.femb.write_reg_femb_checked (femb_addr, 18, pls_cs_value)
 
     def ext_clk_reg_wr_femb(self, femb_addr, reg_addr, addr_data):
