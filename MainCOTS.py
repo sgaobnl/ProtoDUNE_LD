@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Mon Sep 10 18:20:26 2018
+Last modified: 10/16/2018 10:47:53 AM
 """
 
 #defaut setting for scientific caculation
@@ -57,16 +57,15 @@ if (ceruns.APA == "APA40"):
     ceruns.femb_meas.femb_config.phase_set = phase_set
 elif (ceruns.APA == "LArIAT"):
     print ceruns.APA
-    ceruns.wib_version_id = 0x104
+    ceruns.wib_version_id = 0x112
     ceruns.femb_ver_id = 0x405
     #ceruns.path = "D:/APA40/Rawdata/" 
     #ceruns.path = "D:/APA40/Rawdata/" 
     #ceruns.path = "/Users/shanshangao/LArIAT/Rawdata/" 
-    ceruns.path = "/home/nfs/sbnd/BNL_LD_data/LArIAT/Rawdata/" 
-    ceruns.path = "/lariat/data/users/sbnd/BNL_LD_data/LArIAT/Rawdata/"
+    ceruns.path = "D:/APA7_ICEBERG/Screen_rawdata/" 
+    ceruns.wib_ips = [  "192.168.121.1"  ]
     #ceruns.wib_ips = [  "131.225.150.203",  "131.225.150.206" ]
-    ceruns.wib_ips = [  "192.168.100.12", "192.168.100.11"]
-    ceruns.wib_pwr_femb = [[1,1,1,1], [1,0,0,0]]
+    ceruns.wib_pwr_femb = [[1,0,0,0], [0,0,0,0]]
     ceruns.femb_mask    = [[0,0,0,0], [0,0,0,0]]
 #    ceruns.bbwib_ips = [ "192.168.121.1"] 
 #   ceruns.tmp_wib_ips = ["192.168.121.1"] 
@@ -291,7 +290,7 @@ if (test_runs&0x08 != 0x0 ):
     dac_sel = 1 #1 DAC on FEMB, 0 DAC on WIB(don't use)
 
     datamode = 3
-    ceruns.larcfg_run(apa_oft_info, sgs = sgs, tps =tps, pls_cs=pls_source, dac_sel=dac_sel, fpgadac_en=fpgadac_en, asicdac_en=asicdac_en, vdac = vdac, val = 100, mbb=mbb, datamode=datamode) 
+    ceruns.larcfg_run(apa_oft_info, sgs = sgs, tps =tps, pls_cs=pls_source, dac_sel=dac_sel, fpgadac_en=fpgadac_en, asicdac_en=asicdac_en, vdac = vdac, val = 1000, mbb=mbb, datamode=datamode) 
 
     with open(logfile, "a+") as f:
         f.write( "%2X: Configuration \n" %(test_runs&0x08) ) 
@@ -303,39 +302,21 @@ if (test_runs&0x08 != 0x0 ):
 if (test_runs&0x40 != 0x0 ):
     run_cnt = int(sys.argv[5])
     for i in range(run_cnt):
-        print "LArIAT DATA collectting during DAQ running"
-        ceruns.larcfg_getdata(val=1000) 
-
-        if i >= 0:
+        if i > 0:
             t_sleep = int(sys.argv[6])
             t_min = t_sleep/60
             runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
             print "sleep %d minutes starting from %s"%(t_min,runtime)
-
-        step_sec = 5
-        for j in range(0, t_sleep, step_sec):
-            print "time cost = %.3f seconds"%(timer()-start)
-            with open(logfile, "a+") as f:
-                f.write( "%2X: Configuration \n" %(test_runs&0x40) ) 
-                f.write (ceruns.runpath + "\n" )
-                f.write (ceruns.runtime + "\n" )
-
-#            if (j == 10):
-#                ceruns.WIB_Vset(Allon = True)
-#            if (j == 25):
-#                ceruns.WIB_Vset(Allon = False)
-
-
-            ceruns.WIB_LINK_CUR()
-            with open(monlogfile, "a+") as f:
-                for onelinkcur in ceruns.linkcurs:
-                    f.write( onelinkcur + "\n") 
             print "Ctrl-C to if you want to stop the script before it finishes"
-
-            time.sleep(step_sec-2)
-
+            time.sleep(t_sleep)
+        print "LArIAT DATA collectting during DAQ running"
+        ceruns.larcfg_getdata(val=1000) 
+        with open(logfile, "a+") as f:
+            f.write( "%2X: Configuration \n" %(test_runs&0x40) ) 
+            f.write (ceruns.runpath + "\n" )
+            f.write (ceruns.runtime + "\n" )
+            f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
         print "time cost = %.3f seconds"%(timer()-start)
-        print "Done!"
 
 if (test_runs&0x100 != 0x0 ):
     run_cnt = int(sys.argv[5])

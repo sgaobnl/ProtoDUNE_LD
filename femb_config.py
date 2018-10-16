@@ -322,9 +322,8 @@ class FEMB_CONFIG:
                             j = j + 1
                         else:
                             break
-                    if ( j >= 10 ):
-                        print "SPI ERROR "
-                        print "SPI failed, ongoing anyway"
+                    #if ( j >= 10 ):
+                        #print "SPI ERROR "
                         #sys.exit()
     
                 #enable FEMB stream data to WIB
@@ -346,12 +345,13 @@ class FEMB_CONFIG:
                             print "FEMB%d: Successful SPI configuration and ADC FIFO synced"%femb_addr
                         else:
                             print "ERROR: {0:16b}".format(adc_fifo_sync)
-                            print "SPI failed, ongoing anyway"
-                            #sys.exit()
+                            sys.exit()
     
-                self.femb.write_reg_wib_checked (20, 3)
+                self.femb.write_reg_wib (20, 3)
+                self.femb.write_reg_wib (20, 3)
                 time.sleep(0.001)
-                self.femb.write_reg_wib_checked (20, 0)
+                self.femb.write_reg_wib (20, 0)
+                self.femb.write_reg_wib (20, 0)
                 time.sleep(0.001)
                 k = k + 1
     
@@ -450,19 +450,20 @@ class FEMB_CONFIG:
                             j = j + 1
                         else:
                             break
-                    if ( j >= 10 ):
-                        print "SPI ERROR "
-                        print "SPI failed, ongoing anyway"
-                        #sys.exit()
+#                    if ( j >= 10 ):
+#                        print "SPI ERROR "
+#                        sys.exit()
     
                 #enable FEMB stream data to WIB
                 self.femb.write_reg_femb_checked (femb_addr, 9, 9)
                 self.femb.write_reg_femb_checked (femb_addr, 9, 9)
                 time.sleep(0.1)
     
-                self.femb.write_reg_wib_checked (20, 3)
+                self.femb.write_reg_wib (20, 3)
+                self.femb.write_reg_wib (20, 3)
                 time.sleep(0.001)
-                self.femb.write_reg_wib_checked (20, 0)
+                self.femb.write_reg_wib (20, 0)
+                self.femb.write_reg_wib (20, 0)
                 time.sleep(0.001)
                 k = k + 1
     
