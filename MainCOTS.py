@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: 10/16/2018 2:48:26 PM
+Last modified: 10/16/2018 2:51:18 PM
 """
 
 #defaut setting for scientific caculation
@@ -196,14 +196,15 @@ if (test_runs&0x7F != 0x0 ):
     print "FEMB ADC offset calibration"
     print "time cost = %.3f seconds"%(timer()-start)
 
-    if (test_runs&0x7F == 0x40):
-#    if (True):
-        #oft_file = "./APA_ADC_OFT_06202018_121405.bin"
-        oft_file = "./APA_ADC_OFT_06272018_222333.bin"
-        with open (oft_file, 'rb') as fp:
-            apa_oft_info = pickle.load(fp)
-    else:
-        apa_oft_info = ceruns.oft_run( ) 
+    apa_oft_info = ceruns.oft_run( ) 
+#    if (test_runs&0x7F == 0x40):
+##    if (True):
+#        #oft_file = "./APA_ADC_OFT_06202018_121405.bin"
+#        oft_file = "./APA_ADC_OFT_06272018_222333.bin"
+#        with open (oft_file, 'rb') as fp:
+#            apa_oft_info = pickle.load(fp)
+#    else:
+#        apa_oft_info = ceruns.oft_run( ) 
 
     with open(logfile, "a+") as f:
         f.write( "FEMB ADC offset calibration\n" ) 
