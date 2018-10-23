@@ -10,7 +10,7 @@ class FE_ASIC_REG_MAPPING:
         chn_reg_bool = []
         for j in range(8):
             chn_reg_bool.append ( bool( (chn_reg>>j)%2 ) )
-        start_pos = (8*16+16)*chip + (16-chn)*8
+        start_pos =8+ (8*16+16)*chip + (16-chn)*8
         self.REGS[start_pos-8 : start_pos] = chn_reg_bool
 
 
@@ -29,8 +29,8 @@ class FE_ASIC_REG_MAPPING:
         for j in range(8):
             global_reg_bool.append ( bool( (dac_reg>>j)%2 ) )
 
-        start_pos = (8*16+16)*chip + 16*8
-        self.REGS[start_pos : start_pos+16] = global_reg_bool
+        start_pos = (8*16+16)*chip + 16*8 + 8
+        self.REGS[start_pos : start_pos+8] = global_reg_bool[0:8]
 
 
 ####sec_chip sets registers of a whole chip, registers of the other chips remains as before
