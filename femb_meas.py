@@ -493,11 +493,11 @@ class FEMB_MEAS: #for one FEMB
             if sg == 0: #4.7mV/fC
                 dac_value_np = range(1,64,1)
             elif sg == 2: #7.8mV/fC
-                dac_value_np = range(1,32,1)
+                dac_value_np = range(1,64,1)
             elif sg == 1: #14mV/fC
-                dac_value_np = range(1,14,1)
+                dac_value_np = range(1,32,1)
             elif sg == 3: #25mV/fC
-                dac_value_np = range(1,10,1)
+                dac_value_np = range(1,20,1)
 
             for dac in dac_value_np:
                 self.ampl = dac 
@@ -600,9 +600,9 @@ class FEMB_MEAS: #for one FEMB
             elif sg == 2: #7.8mV/fC
                 dac_value_np = range(2,32,1)
             elif sg == 1: #14mV/fC
-                dac_value_np = range(2,12,1)
+                dac_value_np = range(2,32,1)
             elif sg == 3: #25mV/fC
-                dac_value_np = range(2,10,1)
+                dac_value_np = range(2,20,1)
     
             for dac in dac_value_np:
                 self.fe_reg.set_fe_board() # reset the registers value
