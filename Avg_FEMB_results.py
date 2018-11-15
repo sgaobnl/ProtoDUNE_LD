@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Wed Mar  7 15:13:42 2018
+Last modified: Thu Nov 15 16:58:08 2018
 """
 
 #defaut setting for scientific caculation
@@ -33,6 +33,11 @@ def Avg_FEMB_results(datapath, step, jumbo_flag = True, feed_freq = 500, avg_cyc
         
     for root1, dirs1, rawfiles in os.walk(datapath):
         break
+    rawfiles_t = []
+    for t in rawfiles:
+        if (t.find(".bin")>0):
+            rawfiles_t.append(t)
+    rawfiles = sorted(rawfiles_t) #so to sort raw data files by chip number
 
     from apa_mapping import APA_MAP
     apa = APA_MAP()
