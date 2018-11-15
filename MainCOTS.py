@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: 11/13/2018 12:09:00 PM
+Last modified: 11/15/2018 5:03:08 PM
 """
 
 #defaut setting for scientific caculation
@@ -59,19 +59,11 @@ elif (ceruns.APA == "LArIAT"):
     print ceruns.APA
     ceruns.wib_version_id = 0x108
     ceruns.femb_ver_id = 0x501
-    #ceruns.path = "D:/APA40/Rawdata/" 
-    #ceruns.path = "D:/APA40/Rawdata/" 
-    #ceruns.path = "/Users/shanshangao/LArIAT/Rawdata/" 
-    ceruns.path = "D:/junbin/Rawdata/" 
+    ceruns.path = "D:/SBND_40APA/Rawdata/" 
     ceruns.wib_ips = [  "192.168.121.1"  ]
     #ceruns.wib_ips = [  "131.225.150.203",  "131.225.150.206" ]
-    ceruns.wib_pwr_femb = [[1,0,0,0], [0,0,0,0]]
+    ceruns.wib_pwr_femb = [[0,1,0,0], [0,0,0,0]]
     ceruns.femb_mask    = [[0,0,0,0], [0,0,0,0]]
-#    ceruns.bbwib_ips = [ "192.168.121.1"] 
-#   ceruns.tmp_wib_ips = ["192.168.121.1"] 
-#   ceruns.avg_wib_ips = ["192.168.121.1"] 
-#   ceruns.avg_wib_pwr_femb = [[1,1,1,1]]
-#   ceruns.avg_femb_on_wib = [0] 
     ceruns.jumbo_flag = jumbo_flag
     ceruns.COTSADC = True
     ceruns.femb_meas.femb_config.phase_set = phase_set
@@ -248,7 +240,7 @@ if (test_runs&0x10 != 0x0 ):
 if (test_runs&0x01 != 0x0 ):
     print "Noise Measurement Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.rms_run(apa_oft_info, sgs = [1,2], tps =[0,1,2,3], val=1600) 
+    ceruns.rms_run(apa_oft_info, sgs = [0,1,2,3], tps =[0,1,2,3], val=1600) 
     with open(logfile, "a+") as f:
         f.write( "%2X: Noise Measurement Test\n" %(test_runs&0x01) ) 
         f.write (ceruns.runpath + "\n" )
@@ -258,7 +250,7 @@ if (test_runs&0x01 != 0x0 ):
 if (test_runs&0x02 != 0x0 ):
     print "FPGA DAC Calibration Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.fpgadac_run(apa_oft_info, sgs = [1,2], tps =[0,1,2,3], val=100)
+    ceruns.fpgadac_run(apa_oft_info, sgs = [0,1,2,3], tps =[0,1,2,3], val=100)
     with open(logfile, "a+") as f:
         f.write( "%2X: FPGA DAC Calibration Test\n" %(test_runs&0x02) ) 
         f.write (ceruns.runpath + "\n" )
