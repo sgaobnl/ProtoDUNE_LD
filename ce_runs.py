@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: 10/16/2018 2:08:11 PM
+Last modified: 10/23/2018 11:33:51 AM
 """
 
 #defaut setting for scientific caculation
@@ -401,18 +401,18 @@ class CE_RUNS:
             else:
                 fe0_pwr = 0x00000
             if (femb_pwr[1] == 1 ):
-                #fe1_pwr = 0x5200F0
-                fe1_pwr = 0x5200B0
+                fe1_pwr = 0x5200F0
+                #fe1_pwr = 0x5200B0
             else:
                 fe1_pwr = 0x00000
             if (femb_pwr[2] == 1 ):
-                #fe2_pwr = 0x940F00
-                fe2_pwr = 0x940B00
+                fe2_pwr = 0x940F00
+                #fe2_pwr = 0x940B00
             else:
                 fe2_pwr = 0x000000
             if (femb_pwr[3] == 1 ):
-                #fe3_pwr = 0x118F000
-                fe3_pwr = 0x118B000
+                fe3_pwr = 0x118F000
+                #fe3_pwr = 0x118B000
             else:
                 fe3_pwr = 0x000000
             self.femb_meas.femb_config.femb.write_reg_wib_checked (8, 0)

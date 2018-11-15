@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: 10/16/2018 2:51:18 PM
+Last modified: 10/23/2018 11:34:55 AM
 """
 
 #defaut setting for scientific caculation
@@ -57,7 +57,7 @@ if (ceruns.APA == "APA40"):
     ceruns.femb_meas.femb_config.phase_set = phase_set
 elif (ceruns.APA == "LArIAT"):
     print ceruns.APA
-    ceruns.wib_version_id = 0x112
+    ceruns.wib_version_id = 0x104
     ceruns.femb_ver_id = 0x405
     #ceruns.path = "D:/APA40/Rawdata/" 
     #ceruns.path = "D:/APA40/Rawdata/" 
