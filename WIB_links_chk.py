@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Mon Jul 23 14:29:33 2018
+Last modified: 8/28/2018 11:05:35 AM
 """
 
 #defaut setting for scientific caculation
@@ -29,20 +29,43 @@ from femb_udp_cmdline import FEMB_UDP
 wib= FEMB_UDP()
 
 logs = []
+#for lastip in ["209"]:
+#    wib.write_reg_wib(1, 0x0)
+#    time.sleep(0.1)
+#    wib.write_reg_wib(1, 0x2)
+#    time.sleep(0.1)
+#    wib.write_reg_wib(1, 0x8)
+#    time.sleep(1)
+#    wib.write_reg_wib(2, 0xF)
+#    wib.write_reg_wib(1, 0x8)
+#    time.sleep(0.1)
+#    wib.write_reg_wib(1, 0x0)
 
-for lastip in ["11", "12"]:
-    wib.UDP_IP = "192.168.100." +  lastip
+
+for lastip in ["1"]:
+    wib.UDP_IP = "192.168.121." +  lastip
     runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
     logs.append ( "BNL_check_time >> " + runtime )
     print ( "BNL_check_time >> " + runtime )
     version = wib.read_reg_wib(0xFF)
-    print version
+    print hex(version)
+#    wib.write_reg_wib(20, 0x0)
+#    time.sleep(0.1)
+#    wib.write_reg_wib(20, 0x2)
+#    time.sleep(0.1)
+#    wib.write_reg_wib(20, 0x0)
+#    wib.write_reg_wib(9, 0x20)
+#    time.sleep(0.1)
+#    wib.write_reg_wib(20, 0x0)
+#    time.sleep(0.1)
 
+    #wib.write_reg_wib(8, 0x0)
+    time.sleep(5)
     if lastip == "203":
         wibno = 0
     else:
         wibno = 1
-
+    wibno = 0
     if ((version &0xFFF) == 0x104) and (version != -1) :
         logs.append (  "BNL_WIB%d_IP >> "%wibno +wib.UDP_IP  )
         print (  "BNL_WIB%d_IP >> "%wibno +wib.UDP_IP  )
@@ -138,18 +161,18 @@ for lastip in ["11", "12"]:
     else:
         print "WIB (%s)  doesn't exist or wrong firmware version!)"%(wib.UDP_IP)
 
-logfile =    "/home/nfs/sbnd/BNL_LD_data" + "/WIB_lins_chk.log"
-with open(logfile, "a+") as f:
-    f.write( "####Begin\n" ) 
-    f.write( "####WIB LINKs and Votages and Currents Checkout\n" ) 
-    f.write( runtime + "\n" )
-    for onelog in logs:
-        f.write( "%s\n"%onelog ) 
-    f.write ("####There are %d times WIB UDP Registers Write Error"%wib.wib_wrerr_cnt )
-    f.write ("####There are %d times FEMB UDP Registers Write Error"%wib.femb_wrerr_cnt )
-    f.write ("####There are %d times UDP timeouts"%wib.udp_timeout_cnt )
-    f.write ("####There are %d times UDP High Speed links timeouts"%wib.udp_hstimeout_cnt )
-    f.write( "####End\n") 
-    f.write( "\n") 
+#logfile =    "/daqdata/sbnd/BNL_LD_data" + "/WIB_lins_chk.log"
+#with open(logfile, "a+") as f:
+#    f.write( "####Begin\n" ) 
+#    f.write( "####WIB LINKs and Votages and Currents Checkout\n" ) 
+#    f.write( runtime + "\n" )
+#    for onelog in logs:
+#        f.write( "%s\n"%onelog ) 
+#    f.write ("####There are %d times WIB UDP Registers Write Error"%wib.wib_wrerr_cnt )
+#    f.write ("####There are %d times FEMB UDP Registers Write Error"%wib.femb_wrerr_cnt )
+#    f.write ("####There are %d times UDP timeouts"%wib.udp_timeout_cnt )
+#    f.write ("####There are %d times UDP High Speed links timeouts"%wib.udp_hstimeout_cnt )
+#    f.write( "####End\n") 
+#    f.write( "\n") 
 
 

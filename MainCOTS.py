@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: 10/16/2018 10:47:53 AM
+Last modified: 11/13/2018 12:09:00 PM
 """
 
 #defaut setting for scientific caculation
@@ -50,19 +50,19 @@ if (ceruns.APA == "APA40"):
     ceruns.bbwib_ips = [ "192.168.121.1"] 
     ceruns.tmp_wib_ips = ["192.168.121.1"] 
     ceruns.avg_wib_ips = ["192.168.121.1"] 
-    ceruns.avg_wib_pwr_femb = [[1,1,1,0]]
+    ceruns.avg_wib_pwr_femb = [[1,1,1,1]]
     ceruns.avg_femb_on_wib = [0] 
     ceruns.jumbo_flag = True
     ceruns.COTSADC = True
     ceruns.femb_meas.femb_config.phase_set = phase_set
 elif (ceruns.APA == "LArIAT"):
     print ceruns.APA
-    ceruns.wib_version_id = 0x112
-    ceruns.femb_ver_id = 0x405
+    ceruns.wib_version_id = 0x108
+    ceruns.femb_ver_id = 0x501
     #ceruns.path = "D:/APA40/Rawdata/" 
     #ceruns.path = "D:/APA40/Rawdata/" 
     #ceruns.path = "/Users/shanshangao/LArIAT/Rawdata/" 
-    ceruns.path = "D:/APA7_ICEBERG/Screen_rawdata/" 
+    ceruns.path = "D:/junbin/Rawdata/" 
     ceruns.wib_ips = [  "192.168.121.1"  ]
     #ceruns.wib_ips = [  "131.225.150.203",  "131.225.150.206" ]
     ceruns.wib_pwr_femb = [[1,0,0,0], [0,0,0,0]]
@@ -92,7 +92,7 @@ elif (ceruns.APA == "CHKOUT"):
     ceruns.path = "D:/PD_CHKOUT/Rawdata/" 
     ceruns.wib_ips = [ "192.168.121.1" ]
     ceruns.avg_wib_ips = ["192.168.121.1"] 
-    ceruns.avg_wib_pwr_femb = [[1,0,0,0]]
+    ceruns.avg_wib_pwr_femb = [[1,1,1,1]]
     ceruns.avg_femb_on_wib = [0] 
     ceruns.jumbo_flag = True
 
@@ -238,7 +238,7 @@ if (test_runs&0x20 != 0x0 ):
 if (test_runs&0x10 != 0x0 ):
     print "Quick Checkout Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.qc_run(apa_oft_info, sgs=[1,3], tps =[0,1,2,3], val = 100) 
+    ceruns.qc_run(apa_oft_info, sgs=[1,2], tps =[0,1,2,3], val = 100) 
     with open(logfile, "a+") as f:
         f.write( "%2X: Quick Checkout Test\n" %(test_runs&0x10) ) 
         f.write (ceruns.runpath + "\n" )
@@ -248,7 +248,7 @@ if (test_runs&0x10 != 0x0 ):
 if (test_runs&0x01 != 0x0 ):
     print "Noise Measurement Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.rms_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=1600) 
+    ceruns.rms_run(apa_oft_info, sgs = [1,2], tps =[0,1,2,3], val=1600) 
     with open(logfile, "a+") as f:
         f.write( "%2X: Noise Measurement Test\n" %(test_runs&0x01) ) 
         f.write (ceruns.runpath + "\n" )
@@ -258,7 +258,7 @@ if (test_runs&0x01 != 0x0 ):
 if (test_runs&0x02 != 0x0 ):
     print "FPGA DAC Calibration Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.fpgadac_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], val=100)
+    ceruns.fpgadac_run(apa_oft_info, sgs = [1,2], tps =[0,1,2,3], val=100)
     with open(logfile, "a+") as f:
         f.write( "%2X: FPGA DAC Calibration Test\n" %(test_runs&0x02) ) 
         f.write (ceruns.runpath + "\n" )
@@ -268,7 +268,7 @@ if (test_runs&0x02 != 0x0 ):
 if (test_runs&0x04 != 0x0 ):
     print "ASIC DAC Calibration Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.asicdac_run(apa_oft_info, sgs = [1], tps =[0,1,2,3], val=100)
+    ceruns.asicdac_run(apa_oft_info, sgs = [1,2], tps =[0,1,2,3], val=100)
     with open(logfile, "a+") as f:
         f.write( "%2X: ASIC DAC Calibration Test\n" %(test_runs&0x04) ) 
         f.write (ceruns.runpath + "\n" )

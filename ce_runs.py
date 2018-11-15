@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Sep 10 18:54:40 2018
+Last modified: 2018/11/13 12:10:59
 """
 
 #defaut setting for scientific caculation
@@ -35,19 +35,9 @@ class CE_RUNS:
 
     def WIB_UDP_CTL(self, wib_ip, WIB_UDP_EN = False):
         self.femb_meas.femb_config.femb.UDP_IP = wib_ip 
+        wib_reg_7_value = self.femb_meas.femb_config.femb.read_reg_wib (7)
         time.sleep(0.001)
         wib_reg_7_value = self.femb_meas.femb_config.femb.read_reg_wib (7)
-        
-        i = 0
-        while (wib_reg_7_value == -1):
-            i = i + 1
-            if ( i>30):
-                wib_reg_7_value = 0
-                print "can't readback wib_reg7, give it value 0x00000000"
-                break
-            time.sleep(i)
-            wib_reg_7_value = self.femb_meas.femb_config.femb.read_reg_wib (7)
-
         if (WIB_UDP_EN): #enable UDP output
             wib_reg_7_value = wib_reg_7_value & 0x00000000 #bit31 of reg 7 for disable wib udp control
         else: #disable WIB UDP output
@@ -120,75 +110,88 @@ class CE_RUNS:
         for wib_ip in self.wib_ips:
             lol_flg = False
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
-            for i in range(5):
-                print "check PLL status, please wait..."
-                time.sleep(1)
-                self.femb_meas.femb_config.femb.UDP_IP = wib_ip
-                ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
-                ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
-                lol = (ver_value & 0x10000)>>16
-                lolXAXB = (ver_value & 0x20000)>>17
-                INTR = (ver_value & 0x40000)>>18
-                if (lol == 1):
-                    lol_flg = True
-                    break
-            if (lol_flg):
-                print "PLL of WIB (%s) has locked"%wib_ip
-                if ( self.femb_meas.femb_config.femb.read_reg_wib(4) != 0x03):
-                    self.femb_meas.femb_config.femb.write_reg_wib_checked (4, 0x03)
-            else:
-            #elif(False):
-                print "configurate PLL of WIB (%s), please wait..."%wib_ip
-                p_addr = 1
-                #step1
-                page4 = adrs_h[0]
-                self.WIB_PLL_wr( wib_ip, p_addr, page4)
-                self.WIB_PLL_wr( wib_ip, adrs_l[0], datass[0])
-                #step2
-                page4 = adrs_h[1]
-                self.WIB_PLL_wr( wib_ip, p_addr, page4)
-                self.WIB_PLL_wr( wib_ip, adrs_l[1], datass[1])
-                #step3
-                page4 = adrs_h[2]
-                self.WIB_PLL_wr( wib_ip, p_addr, page4)
-                self.WIB_PLL_wr( wib_ip, adrs_l[2], datass[2])
-                time.sleep(0.5)
-                #step4
-                for cnt in range(len(adrs_h)):
-                    if (page4 == adrs_h[cnt]):
-                        tmpadr = adrs_l[2]
-                        self.WIB_PLL_wr(wib_ip, adrs_l[cnt], datass[cnt])
-                    else:
-                        page4 = adrs_h[cnt]
-                        self.WIB_PLL_wr( wib_ip, p_addr, page4)
-                        self.WIB_PLL_wr(wib_ip, adrs_l[cnt], datass[cnt])
+#            for i in range(5):
+#                print "check PLL status, please wait..."
+#                time.sleep(1)
+#                self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+#                ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
+#                ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
+#                lol = (ver_value & 0x10000)>>16
+#                lolXAXB = (ver_value & 0x20000)>>17
+#                INTR = (ver_value & 0x40000)>>18
+#                if (lol == 1):
+#                    lol_flg = True
+#                    break
+#            if (lol_flg):
+#                print "PLL of WIB (%s) has locked"%wib_ip
+#                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+#                time.sleep(0.01)
+#                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+#                time.sleep(0.01)
+#                self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+                       #    sys.exit()
+            self.femb_meas.femb_config.femb.write_reg_wib (4, 0x08)
+            time.sleep(0.01)
+            self.femb_meas.femb_config.femb.write_reg_wib (4, 0x08)
+            time.sleep(0.01)
+            self.femb_meas.femb_config.femb.write_reg_wib (4, 0x08)
+            time.sleep(0.01)
 
-                for i in range(10):
-                    time.sleep(2)
-                    print "check PLL status, please wait..."
-                    self.femb_meas.femb_config.femb.UDP_IP = wib_ip
-                    ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
-                    time.sleep(0.01)
-                    ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
-                    lol = (ver_value & 0x10000)>>16
-                    lolXAXB = (ver_value & 0x20000)>>17
-                    INTR = (ver_value & 0x40000)>>18
-                    if (lol == 1):
-                        print "PLL of WIB(%s) is locked"%wib_ip
-                        self.femb_meas.femb_config.femb.write_reg_wib_checked (4, 0x03)
-                        break
-                    if (i ==9):
-                        print "Fail to configurate PLL of WIB(%s), please check if MBB is on or 16MHz from dAQ"%wib_ip
-                        print "Exit anyway"
-                        sys.exit()
-                        #int_cs = raw_input("Do you want use internal clock of WIB(Y/N) :  ")
-                        #if (int_cs == "Y"):
-                        #    #use internal clk from WIB
-                        #    self.femb_meas.femb_config.femb.write_reg_wib_checked (0x4, 8)
-                        #    break
-                        #else:
-                        #    print "Exit!!!"
-                        #    sys.exit()
+            #else:
+            #    print "configurate PLL of WIB (%s), please wait..."%wib_ip
+            #    p_addr = 1
+            #    #step1
+            #    page4 = adrs_h[0]
+            #    self.WIB_PLL_wr( wib_ip, p_addr, page4)
+            #    self.WIB_PLL_wr( wib_ip, adrs_l[0], datass[0])
+            #    #step2
+            #    page4 = adrs_h[1]
+            #    self.WIB_PLL_wr( wib_ip, p_addr, page4)
+            #    self.WIB_PLL_wr( wib_ip, adrs_l[1], datass[1])
+            #    #step3
+            #    page4 = adrs_h[2]
+            #    self.WIB_PLL_wr( wib_ip, p_addr, page4)
+            #    self.WIB_PLL_wr( wib_ip, adrs_l[2], datass[2])
+            #    time.sleep(0.5)
+            #    #step4
+            #    for cnt in range(len(adrs_h)):
+            #        if (page4 == adrs_h[cnt]):
+            #            tmpadr = adrs_l[2]
+            #            self.WIB_PLL_wr(wib_ip, adrs_l[cnt], datass[cnt])
+            #        else:
+            #            page4 = adrs_h[cnt]
+            #            self.WIB_PLL_wr( wib_ip, p_addr, page4)
+            #            self.WIB_PLL_wr(wib_ip, adrs_l[cnt], datass[cnt])
+
+            #    for i in range(10):
+            #        time.sleep(3)
+            #        print "check PLL status, please wait..."
+            #        self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+            #        ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
+            #        ver_value = self.femb_meas.femb_config.femb.read_reg_wib (12)
+            #        lol = (ver_value & 0x10000)>>16
+            #        lolXAXB = (ver_value & 0x20000)>>17
+            #        INTR = (ver_value & 0x40000)>>18
+            #        if (lol == 1):
+            #            print "PLL of WIB(%s) is locked"%wib_ip
+            #            self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+            #            time.sleep(0.01)
+            #            self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+            #            time.sleep(0.01)
+            #            self.femb_meas.femb_config.femb.write_reg_wib (4, 0x03)
+            #            break
+            #        if (i ==9):
+            #            print "Fail to configurate PLL of WIB(%s), please check if MBB is on or 16MHz from dAQ"%wib_ip
+            #            print "Exit anyway"
+            #            sys.exit()
+            #            #int_cs = raw_input("Do you want use internal clock of WIB(Y/N) :  ")
+            #            #if (int_cs == "Y"):
+            #            #    #use internal clk from WIB
+            #            #    self.femb_meas.femb_config.femb.write_reg_wib_checked (0x4, 8)
+            #            #    break
+            #            #else:
+            #            #    print "Exit!!!"
+            #            #    sys.exit()
 #            self.femb_meas.femb_config.femb.write_reg_wib (4, 0x08)
 #            time.sleep(0.01)
 #            self.femb_meas.femb_config.femb.write_reg_wib (4, 0x08)
@@ -198,23 +201,6 @@ class CE_RUNS:
 
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
-    def WIB_Vset(self, Allon = True):
-        for wib_addr in range(len(self.wib_ips)):
-            wib_ip = self.wib_ips[wib_addr]
-            wib_pos = wib_addr
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
-            mon_wib = "WIB%d_"%wib_pos
-            runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
-
-            if (Allon):
-                self.femb_meas.femb_config.femb.write_reg_wib_checked (8, 0xFFFFFFFF)
-            else:
-                print hex(self.wib_pwr_value[wib_pos])
-                self.femb_meas.femb_config.femb.write_reg_wib_checked (8, self.wib_pwr_value[wib_pos])
-
-            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
-
- 
     def WIB_LINK_CUR(self):
         alllogs = ["\n\n"]
         monlogs = []
@@ -386,31 +372,26 @@ class CE_RUNS:
             femb_pwr = self.wib_pwr_femb[wib_pos]
             if (femb_pwr[0] == 1 ):
                 fe0_pwr = 0x31000F
-                #fe0_pwr = 0x31000B
             else:
                 fe0_pwr = 0x00000
             if (femb_pwr[1] == 1 ):
-                #fe1_pwr = 0x5200F0
-                fe1_pwr = 0x5200B0
+                fe1_pwr = 0x5200F0
             else:
                 fe1_pwr = 0x00000
             if (femb_pwr[2] == 1 ):
-                #fe2_pwr = 0x940F00
-                fe2_pwr = 0x940B00
+                fe2_pwr = 0x940F00
             else:
                 fe2_pwr = 0x000000
+            
             if (femb_pwr[3] == 1 ):
-                #fe3_pwr = 0x118F000
-                fe3_pwr = 0x118B000
+                fe3_pwr = 0x118F000
             else:
                 fe3_pwr = 0x000000
             self.femb_meas.femb_config.femb.write_reg_wib_checked (8, 0)
             time.sleep(3)
             if ( SW == "ON"):
                 print "turn on power supply on WIB(IP=%s)"%(wib_ip)
-                pwr_value = long (0x00000000)| fe0_pwr| fe1_pwr| fe2_pwr| fe3_pwr
-                print hex(pwr_value)
-                self.wib_pwr_value[wib_pos] = pwr_value
+                pwr_value = long (0x1000000)| fe0_pwr| fe1_pwr| fe2_pwr| fe3_pwr
                 #pwr_value = long (0xFFFE00000) | pwr_value #SBND WIB
                 self.femb_meas.femb_config.femb.write_reg_wib_checked (8, pwr_value)
                 time.sleep(5)
@@ -598,48 +579,60 @@ class CE_RUNS:
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
                 for sg in sgs:
+                    print "sg = %d"%sg
                     for tp in tps:
                         step = "WIB" + format(wib_pos, '02d') + "step" + str(sg) + run_code
                         self.femb_meas.lar_cfg(runpath, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, \
                                                pls_cs = pls_cs, dac_sel=dac_sel, fpga_dac_en=fpgadac_en, \
                                                asic_dac_en=asicdac_en, dac_val = vdac, slk0 = self.slk0, slk1= self.slk1, val=val, wib_addr=wib_addr)
-                        #sync nevis daq
-                        self.femb_meas.femb_config.femb.UDP_IP = wib_ip
-                        self.femb_meas.femb_config.femb.write_reg_wib_checked (20, 0x00)
-                        time.sleep(0.1)
-                        self.femb_meas.femb_config.femb.write_reg_wib_checked (20, 0x02)
-                        time.sleep(1)
-                        self.femb_meas.femb_config.femb.write_reg_wib_checked (20, 0x00)
-                        time.sleep(0.1)
+#                        #sync nevis daq
+#                        self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#                        time.sleep(0.1)
+#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+#                        time.sleep(1)
+#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 
-                if (femb_addr in [1,2,3]) : #FEMB1-FEMB2-FEMB3 will work at channel mapping mode
-                    datamode = 3
-                else:
-                    datamode = 0
 		if datamode == 3:
                     lar_fembno = (((wib_pos*4 + femb_addr)&0x0F)<<4) + datamode
                     self.femb_meas.femb_config.femb.write_reg_femb_checked (femb_addr, 42,lar_fembno )
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
 
+#            #sync nevis daq
+#            self.femb_meas.femb_config.femb.UDP_IP = wib_ip
+#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#            time.sleep(0.1)
+#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+#            time.sleep(1)
+#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+#            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
-        if (mbb_en):
-            self.mbb_run(mbb)
+#        if (mbb_en):
+#            self.mbb_run(mbb)
 
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             wib_pos = wib_addr
             #sync nevis daq
-            time.sleep(1)
+            time.sleep(2)
             self.femb_meas.femb_config.femb.UDP_IP = wib_ip
-            self.femb_meas.femb_config.femb.write_reg_wib_checked (20, 0x00)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             time.sleep(0.1)
-            self.femb_meas.femb_config.femb.write_reg_wib_checked (20, 0x02)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x02)
             time.sleep(1)
-            self.femb_meas.femb_config.femb.write_reg_wib_checked (20, 0x00)
-            time.sleep(1)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
+            self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
         self.runpath = runpath
@@ -668,8 +661,6 @@ class CE_RUNS:
                             f.write(rawdata) 
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
-                self.wib_pwr_value[wib_pos] = self.femb_meas.femb_config.femb.read_reg_wib(8)
-
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
         self.runpath = runpath
@@ -917,7 +908,6 @@ class CE_RUNS:
     def __init__(self):
         self.path = "/nfs/rscratch/bnl_ce/shanshan/Rawdata/" 
         self.wib_ips = ["10.73.137.20", "10.73.137.21", "10.73.137.22", "10.73.137.23", "10.73.137.24"]  
-        self.wib_pwr_value = [0, 0, 0, 0]  
         self.wib_version_id = 0x116
         self.femb_ver_id = 0x323
         self.wib_pwr_femb = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
@@ -953,6 +943,5 @@ class CE_RUNS:
         self.femb_meas = FEMB_MEAS()
         self.COTSADC = False
         self.pllfile = "./Si5344-RevD-SBND_V3.txt"
-        #self.mbb_ip = "131.225.150.209"
-        self.mbb_ip = "192.168.100.13"
+        self.mbb_ip = "131.225.150.209"
             
