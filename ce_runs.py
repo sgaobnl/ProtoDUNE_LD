@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: 2018/11/13 12:10:59
+Last modified: 11/16/2018 6:29:35 PM
 """
 
 #defaut setting for scientific caculation
@@ -41,6 +41,7 @@ class CE_RUNS:
         if (WIB_UDP_EN): #enable UDP output
             wib_reg_7_value = wib_reg_7_value & 0x00000000 #bit31 of reg 7 for disable wib udp control
         else: #disable WIB UDP output
+            #wib_reg_7_value = wib_reg_7_value | 0x80000000 #bit31 of reg 7 for disable wib udp control
             wib_reg_7_value = wib_reg_7_value | 0x80000000 #bit31 of reg 7 for disable wib udp control
         self.femb_meas.femb_config.femb.write_reg_wib_checked (7, wib_reg_7_value)
         #self.femb_meas.femb_config.femb.write_reg_wib_checked (40, 0)
@@ -434,7 +435,7 @@ class CE_RUNS:
                 ver_value = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x101)
                 ver_value = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x101)
                 print "WIB%dFEMB%d firmware version: %X"%((wib_pos+1), femb_addr, ver_value )
-                if ( (ver_value &0xFFF) == self.femb_ver_id ) and (ver_value != -1) :
+                if ( (ver_value &0xFFF) > 0x400 ) and (ver_value != -1) :
                     print "WIB%dFEMB%d is good"%((wib_pos+1), femb_addr)
                     self.femb_mask[wib_pos][femb_addr]  = 0
                 else:

@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: 10/16/2018 11:26:11 AM
+Last modified: 11/16/2018 11:47:07 AM
 """
 
 #defaut setting for scientific caculation
@@ -203,7 +203,7 @@ class APA_MAP:
         return apa_yuv, apa_y, apa_u, apa_v
 
     def __init__(self):
-        self.APA = 'LArIAT'
+        self.APA = 'APA40'
         self.femb = 3
         self.path = "./Screen_Mapping_10162018.xlsx" #if the mapping file changes, self.mapping_rd ( ) need to run once to to generate new *.map file 
         self.fpmap = "./LArIAT_pin_mapping.map"

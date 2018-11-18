@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: 11/15/2018 5:03:08 PM
+Last modified: 11/17/2018 2:51:13 PM
 """
 
 #defaut setting for scientific caculation
@@ -41,9 +41,10 @@ phase_set = int(sys.argv[4])
 
 if (ceruns.APA == "APA40"):
     print ceruns.APA
-    ceruns.wib_version_id = 0x101
+    ceruns.wib_version_id = 0x108
     ceruns.femb_ver_id = 0x405
-    ceruns.path = "D:/APA40/Rawdata/" 
+    #ceruns.path = "D:/APA40/Rawdata/" 
+    ceruns.path = "D:/SBND_40APA/Rawdata/" 
     ceruns.wib_ips = [  "192.168.121.1"  ]
     ceruns.wib_pwr_femb = [[1,1,1,1],]
     ceruns.femb_mask    = [[0,0,0,0]]
@@ -62,7 +63,7 @@ elif (ceruns.APA == "LArIAT"):
     ceruns.path = "D:/SBND_40APA/Rawdata/" 
     ceruns.wib_ips = [  "192.168.121.1"  ]
     #ceruns.wib_ips = [  "131.225.150.203",  "131.225.150.206" ]
-    ceruns.wib_pwr_femb = [[0,1,0,0], [0,0,0,0]]
+    ceruns.wib_pwr_femb = [[1,1,1,1], [0,0,0,0]]
     ceruns.femb_mask    = [[0,0,0,0], [0,0,0,0]]
     ceruns.jumbo_flag = jumbo_flag
     ceruns.COTSADC = True
