@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Sep 10 18:54:40 2018
+Last modified: Tue Jan  8 16:26:50 2019
 """
 
 #defaut setting for scientific caculation
@@ -116,7 +116,7 @@ class CE_RUNS:
                     adr = int(line[2:tmp],16)
                     adrs_h.append((adr&0xFF00)>>8)
                     adrs_l.append((adr&0xFF))
-                    datass.append((int(line[tmp+3:-2],16))&0xFF)
+                    datass.append((int(line[tmp+3:tmp+5],16))&0xFF)
         for wib_ip in self.wib_ips:
             lol_flg = False
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
@@ -154,7 +154,7 @@ class CE_RUNS:
                 self.WIB_PLL_wr( wib_ip, adrs_l[2], datass[2])
                 time.sleep(0.5)
                 #step4
-                for cnt in range(len(adrs_h)):
+                for cnt in range(3, len(adrs_h),1):
                     if (page4 == adrs_h[cnt]):
                         tmpadr = adrs_l[2]
                         self.WIB_PLL_wr(wib_ip, adrs_l[cnt], datass[cnt])
