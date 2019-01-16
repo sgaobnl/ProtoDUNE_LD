@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: 11/17/2018 2:51:13 PM
+Last modified: 11/20/2018 7:53:32 PM
 """
 
 #defaut setting for scientific caculation
@@ -261,7 +261,7 @@ if (test_runs&0x02 != 0x0 ):
 if (test_runs&0x04 != 0x0 ):
     print "ASIC DAC Calibration Test"
     print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.asicdac_run(apa_oft_info, sgs = [1,2], tps =[0,1,2,3], val=100)
+    ceruns.asicdac_run(apa_oft_info, sgs = [0,1,2,3], tps =[0,1,2,3], val=100)
     with open(logfile, "a+") as f:
         f.write( "%2X: ASIC DAC Calibration Test\n" %(test_runs&0x04) ) 
         f.write (ceruns.runpath + "\n" )

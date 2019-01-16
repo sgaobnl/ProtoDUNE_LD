@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: 11/16/2018 6:29:35 PM
+Last modified: 11/20/2018 6:43:47 PM
 """
 
 #defaut setting for scientific caculation
@@ -57,7 +57,8 @@ class CE_RUNS:
             ver_value = self.femb_meas.femb_config.femb.read_reg_wib (0xFF)
             ver_value = self.femb_meas.femb_config.femb.read_reg_wib (0xFF)
 
-            if ( (ver_value&0x0FFF) == self.wib_version_id) and (ver_value != -1) :
+            #if ( (ver_value&0x0FFF) == self.wib_version_id) and (ver_value != -1) :
+            if ( (ver_value&0x0FFF) > 0x100) and (ver_value != -1) :
                 print "WIB(%s) passed self check!"%(wib_ip)
             else:
                 print "WIB%s fails, mask this WIB!!!"%wib_ip
