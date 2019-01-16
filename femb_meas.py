@@ -160,7 +160,9 @@ class FEMB_MEAS: #for one FEMB
                         pedvalue = int(np.mean(np_tmp_data))
                         mean_chns.append(pedvalue)
                 oft_mean_chns.append(mean_chns)
-    
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x00)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x10, 0x00)
+            time.sleep(1)    
         ##################################################################################
             adc_oft_class.set_adc_board()
         
@@ -361,6 +363,9 @@ class FEMB_MEAS: #for one FEMB
                 if rawdata != None:
                     with open(filename,"wb") as f:
                         f.write(rawdata) 
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x00)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x10, 0x00)
+            time.sleep(1)
 
     def save_rms_noise(self, path, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, clk_cs=1, pls_cs = 1, dac_sel=0, \
                        fpga_dac=0, asic_dac=0, slk0 = 0, slk1= 0, val=1600*10):
@@ -384,6 +389,9 @@ class FEMB_MEAS: #for one FEMB
             self.reg_5_value = (self.reg_5_value&0xFFFFFF00) + (self.ampl&0xFF)
             self.reg_5_value = (self.reg_5_value&0xFFFF00FF) + ((self.dly<<8)&0xFF00)
             self.femb_config.femb.write_reg_femb_checked (femb_addr, 5, self.reg_5_value)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x00)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x10, 0x00)
+            time.sleep(1)
             self.femb_config.config_femb(femb_addr, fe_adc_regs ,clk_cs, pls_cs, dac_sel, fpga_dac, asic_dac)
             self.femb_config.config_femb_mode(femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac)
 
@@ -531,6 +539,9 @@ class FEMB_MEAS: #for one FEMB
                     if rawdata != None:
                         with open(filename,"wb") as f:
                             f.write(rawdata) 
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x00)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x10, 0x00)
+            time.sleep(1)    
 
     def asic_dac_cali(self, path, step, femb_addr,  sg, tp, adc_oft_regs, yuv_bias_regs, clk_cs=1, pls_cs = 1, dac_sel=1, \
                       fpga_dac=0, asic_dac=1, slk0 = 0, slk1= 0,  val=100):
@@ -649,6 +660,9 @@ class FEMB_MEAS: #for one FEMB
                         if (rawdata != None ):
                             with open(filename,"wb") as f:
                                 f.write(rawdata)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x00)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x10, 0x00)
+            time.sleep(1)    
 
     #brombreg mode read one WIB, not one FEMB
     def wib_brombreg_acq(self, path, step, femb_on_wib, sg, tp, adc_oft_regs_np, yuv_bias_regs_np, clk_cs=1, pls_cs = 1, dac_sel=0, \
@@ -848,6 +862,9 @@ class FEMB_MEAS: #for one FEMB
                 if rawdata != None:
                     with open(filename,"wb") as f:
                         f.write(rawdata) 
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x00)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x10, 0x00)
+            time.sleep(1)    
 
     def __init__(self):
         self.freq = 500

@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: 11/20/2018 7:53:32 PM
+Last modified: 1/16/2019 3:38:50 PM
 """
 
 #defaut setting for scientific caculation
@@ -204,40 +204,6 @@ if (test_runs&0x7F != 0x0 ):
         f.write (ceruns.runtime + "\n" )
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
-if (test_runs&0x20 != 0x0 ):
-    print "LArIAT Configuration"
-    sgs = [int(sys.argv[5])]
-    tps = [int(sys.argv[6])]
-    pls_source = (int(sys.argv[7]))&0x3
-    dac_source = int(sys.argv[8],16)
-    fpgadac_en = (dac_source  & 0x80)>>7
-    asicdac_en = (dac_source  & 0x40)>>6
-    vdac = dac_source  & 0x3F
-    ceruns.slk0 = (int(sys.argv[9]))&0x01
-    ceruns.slk1 = (int(sys.argv[9]))&0x02
-    mbb = (int(sys.argv[10],16))&0x1FF
-    dac_sel = 1 #1 DAC on FEMB, 0 DAC on WIB(don't use)
-    datamode = 0
- 
-    ceruns.larcfg_run(apa_oft_info, sgs = sgs, tps =tps, pls_cs=pls_source, dac_sel=dac_sel, fpgadac_en=fpgadac_en, asicdac_en=asicdac_en, vdac = vdac, val = 100, mbb=mbb, datamode=datamode) 
-
-    with open(logfile, "a+") as f:
-        f.write( "%2X: Configuration \n" %(test_runs&0x20) ) 
-        f.write (ceruns.runpath + "\n" )
-        f.write (ceruns.runtime + "\n" )
-        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-    print "time cost = %.3f seconds"%(timer()-start)
-
-if (test_runs&0x10 != 0x0 ):
-    print "Quick Checkout Test"
-    print "time cost = %.3f seconds"%(timer()-start)
-    ceruns.qc_run(apa_oft_info, sgs=[1,2], tps =[0,1,2,3], val = 100) 
-    with open(logfile, "a+") as f:
-        f.write( "%2X: Quick Checkout Test\n" %(test_runs&0x10) ) 
-        f.write (ceruns.runpath + "\n" )
-        f.write (ceruns.runtime + "\n" )
-        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-
 if (test_runs&0x01 != 0x0 ):
     print "Noise Measurement Test"
     print "time cost = %.3f seconds"%(timer()-start)
@@ -268,7 +234,17 @@ if (test_runs&0x04 != 0x0 ):
         f.write (ceruns.runtime + "\n" )
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
-if (test_runs&0x08 != 0x0 ):
+if (test_runs&0x10 != 0x0 ):
+    print "Quick Checkout Test"
+    print "time cost = %.3f seconds"%(timer()-start)
+    ceruns.qc_run(apa_oft_info, sgs=[1,2], tps =[0,1,2,3], val = 100) 
+    with open(logfile, "a+") as f:
+        f.write( "%2X: Quick Checkout Test\n" %(test_runs&0x10) ) 
+        f.write (ceruns.runpath + "\n" )
+        f.write (ceruns.runtime + "\n" )
+        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+
+if (test_runs&0x20 != 0x0 ):
     print "LArIAT Configuration"
     sgs = [int(sys.argv[5])]
     tps = [int(sys.argv[6])]
@@ -281,12 +257,12 @@ if (test_runs&0x08 != 0x0 ):
     ceruns.slk1 = (int(sys.argv[9]))&0x02
     mbb = (int(sys.argv[10],16))&0x1FF
     dac_sel = 1 #1 DAC on FEMB, 0 DAC on WIB(don't use)
-
-    datamode = 3
-    ceruns.larcfg_run(apa_oft_info, sgs = sgs, tps =tps, pls_cs=pls_source, dac_sel=dac_sel, fpgadac_en=fpgadac_en, asicdac_en=asicdac_en, vdac = vdac, val = 1000, mbb=mbb, datamode=datamode) 
+    datamode = 0
+ 
+    ceruns.larcfg_run(apa_oft_info, sgs = sgs, tps =tps, pls_cs=pls_source, dac_sel=dac_sel, fpgadac_en=fpgadac_en, asicdac_en=asicdac_en, vdac = vdac, val = 100, mbb=mbb, datamode=datamode) 
 
     with open(logfile, "a+") as f:
-        f.write( "%2X: Configuration \n" %(test_runs&0x08) ) 
+        f.write( "%2X: Configuration \n" %(test_runs&0x20) ) 
         f.write (ceruns.runpath + "\n" )
         f.write (ceruns.runtime + "\n" )
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
