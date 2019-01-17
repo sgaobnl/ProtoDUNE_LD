@@ -160,7 +160,7 @@ class FEMB_MEAS: #for one FEMB
                         pedvalue = int(np.mean(np_tmp_data))
                         mean_chns.append(pedvalue)
                 oft_mean_chns.append(mean_chns)
-            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x00)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x03)
             self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x10, 0x00)
             time.sleep(1)    
         ##################################################################################
@@ -363,7 +363,7 @@ class FEMB_MEAS: #for one FEMB
                 if rawdata != None:
                     with open(filename,"wb") as f:
                         f.write(rawdata) 
-            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x00)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x03)
             self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x10, 0x00)
             time.sleep(1)
 
@@ -389,7 +389,7 @@ class FEMB_MEAS: #for one FEMB
             self.reg_5_value = (self.reg_5_value&0xFFFFFF00) + (self.ampl&0xFF)
             self.reg_5_value = (self.reg_5_value&0xFFFF00FF) + ((self.dly<<8)&0xFF00)
             self.femb_config.femb.write_reg_femb_checked (femb_addr, 5, self.reg_5_value)
-            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x00)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x03)
             self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x10, 0x00)
             time.sleep(1)
             self.femb_config.config_femb(femb_addr, fe_adc_regs ,clk_cs, pls_cs, dac_sel, fpga_dac, asic_dac)
@@ -539,7 +539,7 @@ class FEMB_MEAS: #for one FEMB
                     if rawdata != None:
                         with open(filename,"wb") as f:
                             f.write(rawdata) 
-            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x00)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x03)
             self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x10, 0x00)
             time.sleep(1)    
 
@@ -660,7 +660,7 @@ class FEMB_MEAS: #for one FEMB
                         if (rawdata != None ):
                             with open(filename,"wb") as f:
                                 f.write(rawdata)
-            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x00)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x03)
             self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x10, 0x00)
             time.sleep(1)    
 
@@ -862,7 +862,7 @@ class FEMB_MEAS: #for one FEMB
                 if rawdata != None:
                     with open(filename,"wb") as f:
                         f.write(rawdata) 
-            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x00)
+            self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x12, 0x03)
             self.femb_config.femb.write_reg_femb_checked (femb_addr, 0x10, 0x00)
             time.sleep(1)    
 
