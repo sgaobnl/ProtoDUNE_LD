@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Fri Jul  6 18:56:03 2018
+Last modified: Thu May  9 14:48:02 2019
 """
 
 #defaut setting for scientific caculation
@@ -32,8 +32,8 @@ logs = []
 
 for i in range(1):
     #for lastip in ["209"]:
-    for lastip in ["13"]:
-        wib.UDP_IP = "192.168.100." +  lastip
+    for lastip in ["11"]:
+        wib.UDP_IP = "192.168.121." +  lastip
         #wib.UDP_IP = "131.225.150." +  lastip
         print wib.UDP_IP
         time.sleep(1)
