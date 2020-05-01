@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: 1/8/2019 3:56:40 PM
+Last modified: 5/1/2020 3:20:13 PM
 """
 
 #defaut setting for scientific caculation
@@ -639,7 +639,7 @@ class CE_RUNS:
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
-            self.femb_meas.wib_monitor(runpath, temp_or_pluse = temp_or_pluse, chn=chn )
+            self.femb_meas.wib_monitor(runpath )
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
         self.run_code = run_code
         self.runpath = runpath
@@ -683,7 +683,7 @@ class CE_RUNS:
         self.wib_pwr_femb = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
         self.femb_mask    = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
         self.alive_fembs =  [[0,1,2,3],[0,1,2,3],[0,1,2,3],[0,1,2,3],[0,1,2,3]]
-        self.tmp_wib_ips = ["10.73.137.24"] 
+        self.tmp_wib_ips = ["192.168.121.1"] 
         self.jumbo_flag = True
         self.runpath = ""
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
@@ -705,5 +705,5 @@ class CE_RUNS:
         self.femb_meas = FEMB_MEAS()
 
         self.pllfile = "./Si5344_RevD_PD_WIB_100Mhz.txt"
-        self.EXTCLK_FLG = True
+        self.EXTCLK_FLG = False
 

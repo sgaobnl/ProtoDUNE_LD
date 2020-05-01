@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: Sat Jun  9 19:43:10 2018
+Last modified: 5/1/2020 3:01:44 PM
 """
 
 #defaut setting for scientific caculation
@@ -36,7 +36,7 @@ test_runs = int(sys.argv[2],16)
 RTD_flg = (sys.argv[3] == "True")
 os_cs = sys.argv[4]
 
-ceruns.wib_version_id = 0x116
+ceruns.wib_version_id = 0x120
 ceruns.femb_ver_id = 0x323
 rawpath = set_path(os=os_cs)
 

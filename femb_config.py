@@ -451,9 +451,9 @@ class FEMB_CONFIG:
         self.REG_LATCHLOC5_8 = 14
         self.REG_LATCHLOC5_8_data = 0x04040404
         self.REG_CLKPHASE0 = 6 
-        self.REG_CLKPHASE_data0 = 0x000000BF #LN
+        self.REG_CLKPHASE_data0 = 0x000000FF #LN
         self.REG_CLKPHASE1 = 15 
-        self.REG_CLKPHASE_data1 = 0x000000BF #LN
+        self.REG_CLKPHASE_data1 = 0x000000FF #LN
         self.sync_chkflg =  False
         #self.sync_chkflg = True 
 
