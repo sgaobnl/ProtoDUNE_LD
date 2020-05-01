@@ -491,13 +491,13 @@ class FEMB_MEAS: #for one FEMB
             self.ext_dly_search(femb_addr, pls_cs, dac_sel, fpga_dac, asic_dac )
 
             if sg == 0: #4.7mV/fC
-                dac_value_np = range(1,64,1)
+                dac_value_np = range(1,16,1)
             elif sg == 2: #7.8mV/fC
-                dac_value_np = range(1,32,1)
+                dac_value_np = range(1,16,1)
             elif sg == 1: #14mV/fC
-                dac_value_np = range(1,14,1)
+                dac_value_np = range(1,16,1)
             elif sg == 3: #25mV/fC
-                dac_value_np = range(1,10,1)
+                dac_value_np = range(1,16,1)
 
             for dac in dac_value_np:
                 self.ampl = dac 

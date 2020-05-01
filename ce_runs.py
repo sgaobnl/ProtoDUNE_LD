@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Tue Jan  8 16:26:50 2019
+Last modified: 9/27/2019 11:11:03 AM
 """
 
 #defaut setting for scientific caculation
@@ -86,7 +86,12 @@ class CE_RUNS:
             #self.femb_meas.femb_config.femb.write_reg_wib_checked (41, 0)
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
-        self.WIB_PLL_cfg( )
+#        self.WIB_PLL_cfg( )
+        self.femb_meas.femb_config.femb.write_reg_wib (4, 0x08)
+        time.sleep(0.01)
+        self.femb_meas.femb_config.femb.write_reg_wib (4, 0x08)
+        time.sleep(0.01)
+
         for wib_ip in wib_ips_removed:
                 self.wib_ips.remove(wib_ip)
         print self.wib_ips
@@ -751,6 +756,7 @@ class CE_RUNS:
             wib_pos = wib_addr
             print "WIB%d (IP=%s)"%((wib_pos+1), wib_ip)
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
@@ -765,6 +771,7 @@ class CE_RUNS:
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
 
@@ -775,6 +782,7 @@ class CE_RUNS:
             wib_ip = self.wib_ips[wib_addr]
             wib_pos = wib_addr
             print "WIB%d (IP=%s)"%((wib_pos+1), wib_ip)
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
@@ -789,6 +797,7 @@ class CE_RUNS:
                                 dac_sel=1, fpga_dac=1, asic_dac=0, slk0 = self.slk0, slk1= self.slk1,  val=val)
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
