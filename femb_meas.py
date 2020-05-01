@@ -30,6 +30,7 @@ import sys
 import os
 import copy
 import math
+import pickle
 from apa_mapping import APA_MAP
 
 class FEMB_MEAS: #for one FEMB
@@ -622,89 +623,108 @@ class FEMB_MEAS: #for one FEMB
             fe_cfg_r = int('{:08b}'.format(fe_cfg)[::-1], 2)
         self.femb_config.femb.get_rawdata_packets_bromberg(path=path, step=step, fe_cfg_r=fe_cfg_r, fembs_np=fembs_np , cycle=cycle)
 
+    def FEMB_MON(self,femb_addr=0):
+        self.UDP.write_reg_wib (38, 0)
+        self.UDP.write_reg_wib (38, 1)
+        self.UDP.write_reg_wib (38, 0)
+        self.UDP.write_reg_wib (38, 1)
+        self.UDP.write_reg_wib (38, 0)
+        self.UDP.write_reg_wib (38, 1)
+        self.UDP.write_reg_wib (38, 0)
+        rinc = int (femb_addr // 2)
+        rloc =  int (femb_addr % 2)
+        tmp = self.UDP.read_reg_wib (38+rinc)
+        mondac_v = (tmp&0x0000FFFF) if rloc == 1 else ((tmp>>16)&0x0000FFFF)
+        return mondac_v
+
     #for one WIB operation
-    def wib_monitor(self, runpath, temp_or_pluse = "pulse", chn=0 ):
+    def wib_monitor(self, runpath):
+        mon_paras = []
         clk_cs = 1
         adc_en_gr = 1
+
         pls_cs = 1
         dac_sel = 1
-        pa_cs0 = 0
-        pa_cs1 = 0
+
         adc_oft = 0
         fpga_dac = 0
         asic_dac = 1
-        sg = 1 #7.8mV/fC
-        tp = 1 #3us
-        dac = 30
+        dac = 00
         fembs_np = [0,1,2,3]
 
-        for monitor_out in [temp_or_pluse]:
+        for monitor_out in ["pulse",  "bandgap", "temp"]:
             tvalue_np = []
-            for chip in range(8):
-                for femb_addr in fembs_np:
-                    val = 25 
-                    if (not(self.jumbo_flag)):
-                        self.femb_config.femb.write_reg_wib_checked (0x1F, 0x1FB)
-                        val = val*8
-                    else:
-                        self.femb_config.femb.write_reg_wib_checked (0x1F, 0xEFB)
-                    self.fe_reg.set_fe_board() # reset the registers value
+            if (monitor_out == "pulse"):
+                chns = 16
+                sncs =[0,1] 
+                tps = [0,1,2,3] 
+                gs =[0,1,2,3]
+                slk0s = [0,1]
+                slk1s = [0,1]
+                sdfs = [0,1]
+            else:
+                chns = 1
+                sncs =[1] 
+                tps = [1] 
+                gs =[1]
+                slk0s = [0,1]
+                slk1s = [0,1]
+                sdfs = [0,1]
+ 
+            for femb_addr in fembs_np:
+                for chip in range(8):
+                    for chn in range(chns):
+                        for snc in sncs:
+                            for tp in tps:
+                                for sg in gs:
+                                    for slk0 in slk0s:
+                                        for slk1 in slk1s:
+                                            for sdf in sdfs:
+                                                val = 25 
+                                                if (not(self.jumbo_flag)):
+                                                    self.femb_config.femb.write_reg_wib_checked (0x1F, 0x1FB)
+                                                    val = val*8
+                                                else:
+                                                    self.femb_config.femb.write_reg_wib_checked (0x1F, 0xEFB)
+                                                self.fe_reg.set_fe_board() # reset the registers value
+                    
+                                                #set registers for FEMB
+                                                self.fe_reg.set_fe_board(sg=sg, st=tp, sts=0, snc=snc, smn=0, sdf=sdf, slk0=slk0, slk1=slk1, swdac =1, dac=dac )
+                                                #set global registers for FE
+                                                if (monitor_out == "pulse" ):
+                                                    self.fe_reg.set_fechip_global(chip=chip, slk0=slk0, stb1 = 0, stb = 0, slk1=slk1, swdac=1, dac=dac)
+                                                elif (monitor_out == "bandgap" ):
+                                                    self.fe_reg.set_fechip_global(chip=chip, slk0=slk0, stb1 = 1, stb = 1, slk1=slk1, swdac=1, dac=dac)
+                                                else:
+                                                    self.fe_reg.set_fechip_global(chip=chip, slk0=slk0, stb1 = 0, stb = 1, slk1=slk1, swdac=1, dac=dac)
+                                                #set chn registers for FE
+                                                self.fe_reg.set_fechn_reg(chip=chip, chn=chn, sts=0, snc=snc, sg=sg, st=tp, smn=1, sdf=sdf )
+                                                fe_regs = copy.deepcopy(self.fe_reg.REGS)
+                    
+                                                self.adc_reg.set_adc_board(clk0=1,f0 =0) #external clk
+                                                adc_clk_regs = copy.deepcopy(self.adc_reg.REGS)
+                                                self.adc_reg.set_adc_board(d=adc_oft, engr=adc_en_gr)
+                                                adc_engr_regs = copy.deepcopy(self.adc_reg.REGS)
+                                                adc_regs = []
+                                                for tmpi in range(len(adc_clk_regs)):
+                                                    adc_regs.append(adc_clk_regs[tmpi] | adc_engr_regs[tmpi])
+                                                self.fe_adc_reg.set_board(fe_regs,adc_regs)
+                                                fe_adc_regs = copy.deepcopy (self.fe_adc_reg.REGS)
+                    
+                                                mon_cs = 1
+                                                self.dly  = 10
+                                                self.ampl = 0
+                                                self.reg_5_value = (self.reg_5_value&0xFFFFFF00) + (self.ampl&0xFF)
+                                                self.reg_5_value = (self.reg_5_value&0xFFFF00FF) + ((self.dly<<8)&0xFF00)
+                                                self.femb_config.femb.write_reg_femb_checked (femb_addr, 5, self.reg_5_value)
+                                                self.femb_config.config_femb(femb_addr, fe_adc_regs, clk_cs, pls_cs, dac_sel, fpga_dac, asic_dac, mon_cs = mon_cs)
+                                                self.femb_config.config_femb_mode(femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac, mon_cs=mon_cs)
 
-                    #set registers for FEMB
-                    self.fe_reg.set_fe_board(sg=sg, st=tp, sts=1, snc=1, smn=0, sdf=0, slk0=0, slk1=0, swdac =1, dac=dac )
-                    #set global registers for FE
-                    if (monitor_out == "pulse" ):
-                        self.fe_reg.set_fechip_global(chip=chip, slk0=0, stb1 = 0, stb = 0, slk1=0, swdac=1, dac=dac)
-                    elif (monitor_out == "bandgap" ):
-                        self.fe_reg.set_fechip_global(chip=chip, slk0=0, stb1 = 1, stb = 1, slk1=0, swdac=1, dac=dac)
-                    else:
-                        self.fe_reg.set_fechip_global(chip=chip, slk0=0, stb1 = 0, stb = 1, slk1=0, swdac=1, dac=dac)
-                    #set chn registers for FE
-                    self.fe_reg.set_fechn_reg(chip=chip, chn=0, sts=1, snc=1, sg=sg, st=tp, smn=1, sdf=0 )
-                    fe_regs = copy.deepcopy(self.fe_reg.REGS)
 
-                    self.adc_reg.set_adc_board(clk0=1,f0 =0) #external clk
-                    adc_clk_regs = copy.deepcopy(self.adc_reg.REGS)
-                    self.adc_reg.set_adc_board(d=adc_oft, engr=adc_en_gr)
-                    adc_engr_regs = copy.deepcopy(self.adc_reg.REGS)
-                    adc_regs = []
-                    for tmpi in range(len(adc_clk_regs)):
-                        adc_regs.append(adc_clk_regs[tmpi] | adc_engr_regs[tmpi])
-                    self.fe_adc_reg.set_board(fe_regs,adc_regs)
-                    fe_adc_regs = copy.deepcopy (self.fe_adc_reg.REGS)
+                                                mondac_v = self.FEMB_MON(femb_addr)
 
-                    mon_cs = 1
-                    self.dly  = 10
-                    self.ampl = 0
-                    self.reg_5_value = (self.reg_5_value&0xFFFFFF00) + (self.ampl&0xFF)
-                    self.reg_5_value = (self.reg_5_value&0xFFFF00FF) + ((self.dly<<8)&0xFF00)
-                    self.femb_config.femb.write_reg_femb_checked (femb_addr, 5, self.reg_5_value)
-                    self.femb_config.config_femb(femb_addr, fe_adc_regs, clk_cs, pls_cs, dac_sel, fpga_dac, asic_dac, mon_cs = mon_cs)
-                    self.femb_config.config_femb_mode(femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac, mon_cs=mon_cs)
-                    print "Temperature minitoring of FEMB%d, chip%d is ON"%(femb_addr, chip)
-
-                while(True):
-                    if (monitor_out == "pulse" ):
-                        scopeyorn = raw_input ( "Any key and \"return\" to next chip --> chip%s"%str(chip+1) )
-                        tvalue = "pulse monitoring"
-                        break
-                    else:
-                        scopeyorn = raw_input ("Reset Scope Statistics and take a snap shot(y or n)")
-                        if (scopeyorn =='y'):
-                            pass
-                        else:
-                            time.sleep(0.1)
-                            continue
-                        print "Please type in votage values(mV) from FEMB0 to FEMB3 "
-                        tvalue = raw_input("format \'0000, 0000, 0000, 0000\' -->")
-                        tvalue = "chip" + str(chip) + "," + tvalue + ","
-                        tyorn = raw_input ("%s mV are corrent?(y or n)"%(tvalue))
-                        if (tyorn =='y'):
-                            break
-                        else:
-                            time.sleep(0.1)
-                            continue
-                tvalue_np.append(tvalue)
+                                                mon_para = [monitor_out, femb_addr, chip, chn, snc, tp, sg, slk0, slk1, sdf, mondac_v]
+                                                mon_paras.append(mon_para)
 
         runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -717,8 +737,45 @@ class FEMB_MEAS: #for one FEMB
             f.write("CHIP#,"+"FEMB0,"+"FEMB1,"+"FEMB2,"+"FEMB3,"+"\n") 
             for tvalue in tvalue_np: 
                 f.write(tvalue + "\n") 
-            f.write("\n") 
-            f.write("\n") 
+
+                                                print "Temperature minitoring of FEMB%d, chip%d is ON"%(femb_addr, chip)
+
+#                while(True):
+#                    if (monitor_out == "pulse" ):
+#                        scopeyorn = raw_input ( "Any key and \"return\" to next chip --> chip%s"%str(chip+1) )
+#                        tvalue = "pulse monitoring"
+#                        break
+#                    else:
+#                        scopeyorn = raw_input ("Reset Scope Statistics and take a snap shot(y or n)")
+#                        if (scopeyorn =='y'):
+#                            pass
+#                        else:
+#                            time.sleep(0.1)
+#                            continue
+#                        print "Please type in votage values(mV) from FEMB0 to FEMB3 "
+#                        tvalue = raw_input("format \'0000, 0000, 0000, 0000\' -->")
+#                        tvalue = "chip" + str(chip) + "," + tvalue + ","
+#                        tyorn = raw_input ("%s mV are corrent?(y or n)"%(tvalue))
+#                        if (tyorn =='y'):
+#                            break
+#                        else:
+#                            time.sleep(0.1)
+#                            continue
+#                tvalue_np.append(tvalue)
+#
+#        runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+#
+#        if (monitor_out == "bandgap" ):
+#            readmefile = runpath + "/" + "Bandgap_record.txt"
+#        else:
+#            readmefile = runpath + "/" + "Temperature_record.txt"
+#        with open(readmefile, "a") as f:
+#            f.write(runtime + ",\n") 
+#            f.write("CHIP#,"+"FEMB0,"+"FEMB1,"+"FEMB2,"+"FEMB3,"+"\n") 
+#            for tvalue in tvalue_np: 
+#                f.write(tvalue + "\n") 
+#            f.write("\n") 
+#            f.write("\n") 
         return None
 
     def avg_chkout(self, path, step, femb_addr, sg=2, tp=1, clk_cs=1, pls_cs = 1, dac_sel=1, \

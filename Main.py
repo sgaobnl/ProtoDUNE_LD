@@ -283,6 +283,7 @@ if (test_runs&0x20 != 0x0 ):
         temp_or_pluse = "pulse"
     else:
         temp_or_pluse = "temp"
+    temp_or_pluse = "pulse"
     ceruns.monitor_run(temp_or_pluse = temp_or_pluse) #"pulse"
     with open(logfile, "a+") as f:
         f.write( "%2X: Temperature Monitoring\n" %(test_runs&0x20) ) 
