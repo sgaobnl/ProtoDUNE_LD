@@ -16,6 +16,9 @@ Last modified: 5/2/2020 1:28:45 AM
 #import scipy as sp
 #import pylab as pl
 
+import matplotlib
+matplotlib.use('Agg')
+
 import struct
 import time
 from datetime import datetime

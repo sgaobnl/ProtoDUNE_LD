@@ -337,13 +337,14 @@ class CE_RUNS:
             if (test_runs == 0x40):
                 self.ceboxes = []
                 for femb_addr in femb_on_wib:
-                    while (True):
-                        try  :
-                            tmp = raw_input("CE box number (000-999) on FE slot%d: "%femb_addr)
-                            tmp = int(tmp)
-                            break
-                        except ValueError:
-                            print "Value must be in 000 to 999, please input correct CE box number..."
+                    #while (True):
+                    #    try  :
+                    #        tmp = raw_input("CE box number (000-999) on FE slot%d: "%femb_addr)
+                    #        tmp = int(tmp)
+                    #        break
+                    #    except ValueError:
+                    #        print "Value must be in 000 to 999, please input correct CE box number..."
+                    tmp = femb_addr
                     self.ceboxes.append("CEbox" + format(tmp, '03d'))
             else:
                 self.ceboxes = []
