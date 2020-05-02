@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: Mon Apr  9 16:07:35 2018
+Last modified: 5/1/2020 9:04:53 PM
 """
 
 #defaut setting for scientific caculation
@@ -624,16 +624,16 @@ class FEMB_MEAS: #for one FEMB
         self.femb_config.femb.get_rawdata_packets_bromberg(path=path, step=step, fe_cfg_r=fe_cfg_r, fembs_np=fembs_np , cycle=cycle)
 
     def FEMB_MON(self,femb_addr=0):
-        self.UDP.write_reg_wib (38, 0)
-        self.UDP.write_reg_wib (38, 1)
-        self.UDP.write_reg_wib (38, 0)
-        self.UDP.write_reg_wib (38, 1)
-        self.UDP.write_reg_wib (38, 0)
-        self.UDP.write_reg_wib (38, 1)
-        self.UDP.write_reg_wib (38, 0)
+        self.femb_config.femb.write_reg_wib (38, 0)
+        self.femb_config.femb.write_reg_wib (38, 1)
+        self.femb_config.femb.write_reg_wib (38, 0)
+        self.femb_config.femb.write_reg_wib (38, 1)
+        self.femb_config.femb.write_reg_wib (38, 0)
+        self.femb_config.femb.write_reg_wib (38, 1)
+        self.femb_config.femb.write_reg_wib (38, 0)
         rinc = int (femb_addr // 2)
         rloc =  int (femb_addr % 2)
-        tmp = self.UDP.read_reg_wib (38+rinc)
+        tmp = self.femb_config.femb.read_reg_wib (38+rinc)
         mondac_v = (tmp&0x0000FFFF) if rloc == 1 else ((tmp>>16)&0x0000FFFF)
         return mondac_v
 
