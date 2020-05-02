@@ -197,9 +197,9 @@ class FEMB_CONFIG:
 
     def config_femb(self, femb_addr, fe_adc_regs, clk_cs, pls_cs, dac_sel, fpga_dac, asic_dac, mon_cs = 0):
         ver = self.femb.read_reg_femb (femb_addr, 0x101 ) 
-        time.sleep(0.05)
+        time.sleep(0.001)
         ver = self.femb.read_reg_femb (femb_addr, 0x101 ) 
-        time.sleep(0.05)
+        time.sleep(0.001)
         ver = self.femb.read_reg_femb (femb_addr, 0x101 ) 
         ver = ver & 0xFFF
         if ver == 0x323 :
@@ -258,7 +258,7 @@ class FEMB_CONFIG:
 #
         if (clk_cs == 1):
             self.ext_clk_config_femb(femb_addr)
-        time.sleep(0.05)
+        time.sleep(0.01)
 #time stamp reset
         self.femb.write_reg_femb (femb_addr, 0, 4)
         self.femb.write_reg_femb (femb_addr, 0, 4)
@@ -357,7 +357,7 @@ class FEMB_CONFIG:
             #enable FEMB stream data to WIB
             self.femb.write_reg_femb_checked (femb_addr, 9, 9)
             self.femb.write_reg_femb_checked (femb_addr, 9, 9)
-            time.sleep(0.1)
+            time.sleep(0.01)
 #            #soft reset
 #            self.femb.write_reg_femb (femb_addr, self.REG_ASIC_RESET, 4)
 #            self.femb.write_reg_femb (femb_addr, self.REG_ASIC_RESET, 4)

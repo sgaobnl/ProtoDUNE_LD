@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: 5/2/2020 12:36:53 AM
+Last modified: 5/2/2020 1:28:45 AM
 """
 
 #defaut setting for scientific caculation
@@ -628,6 +628,7 @@ class FEMB_MEAS: #for one FEMB
         self.femb_config.femb.get_rawdata_packets_bromberg(path=path, step=step, fe_cfg_r=fe_cfg_r, fembs_np=fembs_np , cycle=cycle)
 
     def FEMB_MON(self,femb_addr=0):
+        time.sleep(0.5)
         self.femb_config.femb.write_reg_wib (38, 0)
         self.femb_config.femb.write_reg_wib (38, 1)
         self.femb_config.femb.write_reg_wib (38, 0)
@@ -657,7 +658,7 @@ class FEMB_MEAS: #for one FEMB
         fembs_np = femb_on_wib #[0,1,2,3]
         #fembs_np = [0]
 
-        for monitor_out in ["pulse",  "bandgap", "temp"]:
+        for monitor_out in ["pulse",  "bandgap", "temperature"]:
             tvalue_np = []
             if (monitor_out == "pulse"):
                 chns = 16
@@ -741,13 +742,15 @@ class FEMB_MEAS: #for one FEMB
                                                 mon_para = [monitor_out, femb_addr, chip, chn, snc, tp, sg, slk0, slk1, sdf, mondac_v]
                                                 print( [monitor_out, femb_addr, chip, chn, snc, tp, sg, slk0, slk1, sdf, mondac_v] )
                                                 mon_paras.append(mon_para)
-                                                paras.append(mon_para)
                                                 plt_chns.append(chip*16 + chn)
                                                 plt_mons.append(mondac_v)
-                                        if (snc ==0 ):
-                                            snc_str = "BL = 200 mV"
+                                        if "pulse" in monitor_out:
+                                            if (snc ==0 ):
+                                                snc_str = "BL = 200 mV"
+                                            else:
+                                                snc_str = "BL = 900 mV"
                                         else:
-                                            snc_str = "BL = 900 mV"
+                                            snc_str = monitor_out
 
                                         if slk0 == 0:
                                             if slk1 == 0: 
@@ -783,12 +786,14 @@ class FEMB_MEAS: #for one FEMB
                                         elif (tp == 3):
                                             tp_str = "2.0 us, "
  
-                                        plt.plot(plt_chns, plt_mons, label = snc_str)
+                                        plt.plot(plt_chns, plt_mons, marker = '.', label = snc_str)
                                     plt.title("FEMB%d"%femb_addr + sg_str + tp_str + sdf_str + Leak_Cur)
                                     plt.xlabel ("Channel no.")
                                     plt.ylabel ("MONITOR ADC output / bit")
+                                    plt.ylim ((0,2**14))
+                                    plt.legend()
                                     plt.grid()
-                                    plt.savefig(runpath + "/MON_slk0%d_slk1%d_sdf%d_sg%d_tp%d_femb%d"%(slk0, slk1, sdf, sg, tp, femb_addr))
+                                    plt.savefig(runpath + "/%s_slk0%d_slk1%d_sdf%d_sg%d_tp%d_femb%d"%(monitor_out, slk0, slk1, sdf, sg, tp, femb_addr))
                                     plt.close()
 
 

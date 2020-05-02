@@ -106,14 +106,11 @@ class FEMB_UDP:
     def write_reg_femb_checked (self, femb_addr, reg , data ):
         i = 0
         while (i < 10 ):
-            time.sleep(0.001)
             self.write_reg_femb(femb_addr, reg , data )
             self.femb_wr_cnt = self.femb_wr_cnt + 1
             time.sleep(0.001)
             rdata = self.read_reg_femb(femb_addr,  reg)
-            time.sleep(0.001)
             rdata = self.read_reg_femb(femb_addr,  reg)
-            time.sleep(0.001)
             if (data == rdata ):
                 break
             else:

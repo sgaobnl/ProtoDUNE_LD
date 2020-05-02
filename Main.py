@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: 5/1/2020 3:01:44 PM
+Last modified: 5/2/2020 1:16:04 AM
 """
 
 #defaut setting for scientific caculation
@@ -295,7 +295,7 @@ if (test_runs&0x40 != 0x0 ):
     if (ceruns.APA == "CHKOUT"): 
         print "Average Checkout"
         print "time cost = %.3f seconds"%(timer()-start)
-        ceruns.avg_run(val = 1600, avg_cycle=300)
+        ceruns.avg_run(val = 500, avg_cycle=50)
 
     with open(logfile, "a+") as f:
         f.write( "%2X: Average Checkout\n" %(test_runs&0x40) ) 
