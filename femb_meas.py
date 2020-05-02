@@ -32,6 +32,10 @@ import copy
 import math
 import pickle
 from apa_mapping import APA_MAP
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+import matplotlib.patches as mpatches
+
 
 class FEMB_MEAS: #for one FEMB
     def FEMB_STREAM_CTL(self, switch=True, one_femb_stream_en=False):
@@ -683,8 +687,12 @@ class FEMB_MEAS: #for one FEMB
                    for sdf in sdfs:
                         for sg in gs:
                             for tp in tps:
-                                for snc in sncs:
-                                    for femb_addr in fembs_np:
+                                for femb_addr in fembs_np:
+                                    fig = plt.figure(figsize=(12,8))
+                                    plt.rcParams.update({'font.size': 14})
+                                    for snc in sncs:
+                                        plt_chns = []
+                                        plt_mons = []
                                         for chip in range(8):
                                             for chn in range(chns):
                                                 val = 25 
@@ -730,7 +738,56 @@ class FEMB_MEAS: #for one FEMB
                                                 mondac_v = self.FEMB_MON(femb_addr)
 
                                                 mon_para = [monitor_out, femb_addr, chip, chn, snc, tp, sg, slk0, slk1, sdf, mondac_v]
-                                                mon_paras.append(mon_para)
+                                                paras.append(mon_para)
+                                                plt_chns.append(chip*16 + chn)
+                                                plt_mons.append(mondac_v)
+                                        if (snc ==0 ):
+                                            snc_str = "BL = 200 mV"
+                                        else:
+                                            snc_str = "BL = 900 mV"
+
+                                        if slk0 == 0:
+                                            if slk1 == 0: 
+                                                Leak_Cur = "Leak_Cur = 500pA, "
+                                            else:
+                                                Leak_Cur = "Leak_Cur = 5000pA, "
+                                        else:
+                                            if slk1 == 0: 
+                                                Leak_Cur = "Leak_Cur = 100pA, "
+                                            else:
+                                                Leak_Cur = "Leak_Cur = 1000pA, "
+
+                                        if sdf == 0:
+                                            sdf_str = "Buf OFF, "
+                                        else:
+                                            sdf_str = "Buf ON, "
+
+                                        if sg == 0:
+                                            sg_str = "4.7 mV/fC, "
+                                        elif sg == 1:
+                                            sg_str = "14.0 mV/fC, "
+                                        elif sg == 2:
+                                            sg_str = "7.8 mV/fC, "
+                                        else:
+                                            sg_str = "25.0 mV/fC, "
+
+                                        if (tp == 0):
+                                            tp_str = "1.0 us, "
+                                        elif (tp == 1):
+                                            tp_str = "3.0 us, "
+                                        elif (tp == 2):
+                                            tp_str = "0.5 us, "
+                                        elif (tp == 3):
+                                            tp_str = "2.0 us, "
+ 
+                                        plt.plot(plt_chns, plt_mons, label = snc_str)
+                                    plt.title("FEMB%d"%femb_addr + sg_str + tp_str + sdf_str + Leak_Cur)
+                                    plt.xlabel ("Channel no.")
+                                    plt.ylabel ("MONITOR ADC output / bit")
+                                    plt.grid()
+                                    plt.savefig(runpath + "/MON_slk0%d_slk1%d_sdf%d_sg%d_tp%d_femb%d"%(slk0, slk1, sdf, sg, tp, femb_addr))
+                                    plt.close()
+
 
         runtime = int(time.time()) 
         monfile = runpath + "/" + "mon_record_" + str(runtime) +".pickle"
