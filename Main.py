@@ -189,7 +189,7 @@ with open(logfile, "a+") as f:
     f.write( "\n") 
 
 if (test_runs&0x7F != 0x0 ):
-    if (RTD_flg == True):
+    if (RTD_flg == True) and (test_runs == 0x40  ):
         print "Please Input WIB position (eg. APA1(Crate1)-WIB1 ) "
         test_note = raw_input("Please input: ")
         #test_note = "Continuate test..."
