@@ -190,9 +190,9 @@ with open(logfile, "a+") as f:
 
 if (test_runs&0x7F != 0x0 ):
     if (RTD_flg == True):
-        print "Please write a sentence to describe the test purpose: "
-        #test_note = raw_input("Please input: ")
-        test_note = "Continuate test..."
+        print "Please Input WIB position (eg. APA1(Crate1)-WIB1 ) "
+        test_note = raw_input("Please input: ")
+        #test_note = "Continuate test..."
     else:
         test_note = "Continuate test..."
     rtd_temp = " "
