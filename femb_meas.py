@@ -657,29 +657,36 @@ class FEMB_MEAS: #for one FEMB
             if (monitor_out == "pulse"):
                 chns = 16
                 sncs =[0,1] 
-                tps = [0,1,2,3] 
-                gs =[0,1,2,3]
-                slk0s = [0,1]
-                slk1s = [0,1]
-                sdfs = [0,1]
+            #    tps = [0,1,2,3] 
+                tps = [3] 
+            #    gs =[0,1,2,3]
+                gs =[1]
+            #    slk0s = [0,1]
+                slk0s = [0]
+            #    slk1s = [0,1]
+                slk1s = [0]
+            #    sdfs = [0,1]
+                sdfs = [0]
             else:
                 chns = 1
-                sncs =[1] 
-                tps = [1] 
+                sncs =[0] 
+                tps = [3] 
                 gs =[1]
-                slk0s = [0,1]
-                slk1s = [0,1]
-                sdfs = [0,1]
- 
-            for femb_addr in fembs_np:
-                for chip in range(8):
-                    for chn in range(chns):
-                        for snc in sncs:
+            #    slk0s = [0,1]
+                slk0s = [0]
+            #    slk1s = [0,1]
+                slk1s = [0]
+            #    sdfs = [0,1]
+                sdfs = [0]
+            for slk0 in slk0s:
+               for slk1 in slk1s:
+                   for sdf in sdfs:
+                        for sg in gs:
                             for tp in tps:
-                                for sg in gs:
-                                    for slk0 in slk0s:
-                                        for slk1 in slk1s:
-                                            for sdf in sdfs:
+                                for snc in sncs:
+                                    for femb_addr in fembs_np:
+                                        for chip in range(8):
+                                            for chn in range(chns):
                                                 val = 25 
                                                 if (not(self.jumbo_flag)):
                                                     self.femb_config.femb.write_reg_wib_checked (0x1F, 0x1FB)
@@ -720,62 +727,16 @@ class FEMB_MEAS: #for one FEMB
                                                 self.femb_config.config_femb(femb_addr, fe_adc_regs, clk_cs, pls_cs, dac_sel, fpga_dac, asic_dac, mon_cs = mon_cs)
                                                 self.femb_config.config_femb_mode(femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac, mon_cs=mon_cs)
 
-
                                                 mondac_v = self.FEMB_MON(femb_addr)
 
                                                 mon_para = [monitor_out, femb_addr, chip, chn, snc, tp, sg, slk0, slk1, sdf, mondac_v]
                                                 mon_paras.append(mon_para)
 
-        runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        runtime = int(time.time()) 
+        monfile = runpath + "/" + "mon_record_" + str(runtime) +".pickle"
 
-        if (monitor_out == "bandgap" ):
-            readmefile = runpath + "/" + "Bandgap_record.txt"
-        else:
-            readmefile = runpath + "/" + "Temperature_record.txt"
-        with open(readmefile, "a") as f:
-            f.write(runtime + ",\n") 
-            f.write("CHIP#,"+"FEMB0,"+"FEMB1,"+"FEMB2,"+"FEMB3,"+"\n") 
-            for tvalue in tvalue_np: 
-                f.write(tvalue + "\n") 
-
-                                                print "Temperature minitoring of FEMB%d, chip%d is ON"%(femb_addr, chip)
-
-#                while(True):
-#                    if (monitor_out == "pulse" ):
-#                        scopeyorn = raw_input ( "Any key and \"return\" to next chip --> chip%s"%str(chip+1) )
-#                        tvalue = "pulse monitoring"
-#                        break
-#                    else:
-#                        scopeyorn = raw_input ("Reset Scope Statistics and take a snap shot(y or n)")
-#                        if (scopeyorn =='y'):
-#                            pass
-#                        else:
-#                            time.sleep(0.1)
-#                            continue
-#                        print "Please type in votage values(mV) from FEMB0 to FEMB3 "
-#                        tvalue = raw_input("format \'0000, 0000, 0000, 0000\' -->")
-#                        tvalue = "chip" + str(chip) + "," + tvalue + ","
-#                        tyorn = raw_input ("%s mV are corrent?(y or n)"%(tvalue))
-#                        if (tyorn =='y'):
-#                            break
-#                        else:
-#                            time.sleep(0.1)
-#                            continue
-#                tvalue_np.append(tvalue)
-#
-#        runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-#
-#        if (monitor_out == "bandgap" ):
-#            readmefile = runpath + "/" + "Bandgap_record.txt"
-#        else:
-#            readmefile = runpath + "/" + "Temperature_record.txt"
-#        with open(readmefile, "a") as f:
-#            f.write(runtime + ",\n") 
-#            f.write("CHIP#,"+"FEMB0,"+"FEMB1,"+"FEMB2,"+"FEMB3,"+"\n") 
-#            for tvalue in tvalue_np: 
-#                f.write(tvalue + "\n") 
-#            f.write("\n") 
-#            f.write("\n") 
+        with open(monfile, "wb") as fp:
+            pickle.dump(mon_paras, fp)
         return None
 
     def avg_chkout(self, path, step, femb_addr, sg=2, tp=1, clk_cs=1, pls_cs = 1, dac_sel=1, \
