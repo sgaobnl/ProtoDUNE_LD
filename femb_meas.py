@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: 5/1/2020 9:04:53 PM
+Last modified: 5/1/2020 11:57:46 PM
 """
 
 #defaut setting for scientific caculation
@@ -638,7 +638,7 @@ class FEMB_MEAS: #for one FEMB
         return mondac_v
 
     #for one WIB operation
-    def wib_monitor(self, runpath):
+    def wib_monitor(self, runpath, femb_on_wib):
         mon_paras = []
         clk_cs = 1
         adc_en_gr = 1
@@ -650,7 +650,8 @@ class FEMB_MEAS: #for one FEMB
         fpga_dac = 0
         asic_dac = 1
         dac = 00
-        fembs_np = [0,1,2,3]
+        fembs_np = femb_on_wib #[0,1,2,3]
+        #fembs_np = [0]
 
         for monitor_out in ["pulse",  "bandgap", "temp"]:
             tvalue_np = []
@@ -730,6 +731,7 @@ class FEMB_MEAS: #for one FEMB
                                                 mondac_v = self.FEMB_MON(femb_addr)
 
                                                 mon_para = [monitor_out, femb_addr, chip, chn, snc, tp, sg, slk0, slk1, sdf, mondac_v]
+                                                print( [monitor_out, femb_addr, chip, chn, snc, tp, sg, slk0, slk1, sdf, mondac_v] )
                                                 mon_paras.append(mon_para)
 
         runtime = int(time.time()) 

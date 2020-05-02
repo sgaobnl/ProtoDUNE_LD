@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: 5/1/2020 3:20:13 PM
+Last modified: 5/1/2020 11:56:17 PM
 """
 
 #defaut setting for scientific caculation
@@ -639,7 +639,7 @@ class CE_RUNS:
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
-            self.femb_meas.wib_monitor(runpath )
+            self.femb_meas.wib_monitor(runpath , femb_on_wib)
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
         self.run_code = run_code
         self.runpath = runpath
