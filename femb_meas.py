@@ -665,7 +665,7 @@ class FEMB_MEAS: #for one FEMB
 
 
     #for one WIB operation
-    def wib_monitor_spot(self, runpath, femb_on_wib=[1], fembchns = [14, 15, 16*3 + 4, 16*3 + 5]]):
+    def wib_monitor_spot(self, runpath, femb_on_wib=[1], fembchns = [14, 15, 16*3 + 4, 16*3 + 5]):
         mon_paras = []
         clk_cs = 1
         adc_en_gr = 1

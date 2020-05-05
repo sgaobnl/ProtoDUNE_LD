@@ -265,32 +265,35 @@ if (test_runs&0x04 != 0x0 ):
         f.write (ceruns.runtime + "\n" )
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
-if (test_runs&0x08 != 0x0 ):
-    print "Brombreg Mode Noise Measurement Test"
-    print "time cost = %.3f seconds"%(timer()-start)
-    #ceruns.brombreg_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], cycle=5) 
-    ceruns.brombreg_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], cycle=150) 
-    with open(logfile, "a+") as f:
-        f.write( "%2X: Brombreg Mode Noise Measurement Test\n" %(test_runs&0x08) ) 
-        f.write (ceruns.runpath + "\n" )
-        f.write (ceruns.runtime + "\n" )
-        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+#if (test_runs&0x08 != 0x0 ):
+#    print "Brombreg Mode Noise Measurement Test"
+#    print "time cost = %.3f seconds"%(timer()-start)
+#    #ceruns.brombreg_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], cycle=5) 
+#    ceruns.brombreg_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], cycle=150) 
+#    with open(logfile, "a+") as f:
+#        f.write( "%2X: Brombreg Mode Noise Measurement Test\n" %(test_runs&0x08) ) 
+#        f.write (ceruns.runpath + "\n" )
+#        f.write (ceruns.runtime + "\n" )
+#        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
 if (test_runs&0x20 != 0x0 ):
-    print "Temperature Monitoring"
+    print "Monitoring"
     print "time cost = %.3f seconds"%(timer()-start)
-
-    if (RTD_flg == "pulse"):
-        temp_or_pluse = "pulse"
-    else:
-        temp_or_pluse = "temp"
-    temp_or_pluse = "pulse"
-    ceruns.monitor_run(temp_or_pluse = temp_or_pluse) #"pulse"
+    ceruns.monitor_run() #"pulse"
     with open(logfile, "a+") as f:
-        f.write( "%2X: Temperature Monitoring\n" %(test_runs&0x20) ) 
+        f.write( "%2X: Monitoring\n" %(test_runs&0x20) ) 
         f.write (ceruns.runpath + "\n" )
         f.write (ceruns.runtime + "\n" )
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+
+if (test_runs&0x08 != 0x0 ):
+    print "SPOT Monitoring"
+    ceruns.monitor_run_spot(femb_cs=[1], fembchn_cs=[14,15,16*3+4,16*3+5]) #"pulse"
+    with open(logfile, "a+") as f:
+        f.write (ceruns.runpath + "\n" )
+        f.write (ceruns.runtime + "\n" )
+        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+
 
 if (test_runs&0x40 != 0x0 ):
     if (ceruns.APA == "CHKOUT"): 
