@@ -718,7 +718,14 @@ class FEMB_MEAS: #for one FEMB
                                                 else:
                                                     self.fe_reg.set_fechip_global(chip=chip, slk0=slk0, stb1 = 0, stb = 1, slk1=slk1, swdac=1, dac=dac)
                                                 #set chn registers for FE
-                                                self.fe_reg.set_fechn_reg(chip=chip, chn=chn, sts=0, snc=snc, sg=sg, st=tp, smn=1, sdf=sdf )
+                                                if (chip == femb_addr):
+                                                    if (snc == 0):
+                                                        self.fe_reg.set_fechn_reg(chip=chip, chn=chn, sts=0, snc=1, sg=sg, st=tp, smn=1, sdf=sdf )
+                                                    else:
+                                                        self.fe_reg.set_fechn_reg(chip=chip, chn=chn, sts=0, snc=0, sg=sg, st=tp, smn=1, sdf=sdf )
+                                                else:
+                                                    self.fe_reg.set_fechn_reg(chip=chip, chn=chn, sts=0, snc=snc, sg=sg, st=tp, smn=1, sdf=sdf )
+                                                #self.fe_reg.set_fechn_reg(chip=chip, chn=chn, sts=0, snc=snc, sg=sg, st=tp, smn=1, sdf=sdf )
                                                 fe_regs = copy.deepcopy(self.fe_reg.REGS)
                     
                                                 self.adc_reg.set_adc_board(clk0=1,f0 =0) #external clk
