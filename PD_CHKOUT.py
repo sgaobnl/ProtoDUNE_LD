@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Sun Feb 25 20:01:01 2018
+Last modified: 8/19/2020 10:01:14 AM
 """
 import matplotlib
 matplotlib.use('Agg')
@@ -82,7 +82,7 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
         total_chn = len(chn_np)
         title = "Pulse Waveform Overlap of %d after averaging with %d cycles"%( total_chn, cycle)
         ylabel = "ADC output /bin"
-        print "Pulse Waveform--> %d channels in total"%(total_chn)
+        print ("Pulse Waveform--> %d channels in total"%(total_chn))
         for chn in chn_np:
             y_np = np.array(chn_avg_noped[chn])
             y_max = np.max(y_np)
@@ -108,10 +108,10 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
         ax = plt
     
         total_chn = len(chn_np)
-        print total_chn
+        print (total_chn)
         title = "Pulse Waveform Overlap of %d after averaging with %d cycles"%( total_chn, cycle)
         ylabel = "ADC output /bin"
-        print "Pulse Waveform-->%d channels in total"%(total_chn)
+        print ("Pulse Waveform-->%d channels in total"%(total_chn))
         for chn in chn_np:
             y_np = np.array(chn_avg_data[chn])
             y_max = np.max(y_np)
@@ -143,7 +143,7 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
         title = "Pedestal Measurement "
         ylabel = "ADC output /bin"
         total_chn = len(chn_np)
-        print "Pedestal Measurement-->%d channels in total"%(total_chn)
+        print ("Pedestal Measurement-->%d channels in total"%(total_chn))
         for i in range(1):
             if ( i == 0 ):
                 color = 'r'
@@ -183,7 +183,7 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
         title = "Noise Measurement" 
         ylabel = "RMS noise / ADC bin"
         total_chn = len(chn_np)
-        print "Noise Measurement-->%d channels in total"%(total_chn)
+        print ("Noise Measurement-->%d channels in total"%(total_chn))
         for i in range(2):
             if ( i == 0 ):
                 color = 'r'
@@ -225,7 +225,7 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
         title = "Pulse Amplitude "
         ylabel = "ADC output /bin"
         total_chn = len(chn_np)
-        print "Pulse Amplitude--> %d channels in total"%(total_chn)
+        print ("Pulse Amplitude--> %d channels in total"%(total_chn))
         for i in range(2):
             if ( i == 0 ):
                 color = 'r'
@@ -261,7 +261,7 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
         total_chn = len(chn_np)
         title = "Pulse Waveform Overlap of %d (without averaging) "%(total_chn)
         ylabel = "ADC output /bin"
-        print "Pulse Waveform-->%d channels in total"%(total_chn)
+        print ("Pulse Waveform-->%d channels in total"%(total_chn))
         for chn in chn_np:
             y_np = np.array(chn_wave[chn])
             smps_np = np.arange(len(chn_wave[chn])) 

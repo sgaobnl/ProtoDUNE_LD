@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Tue Jun 19 09:57:33 2018
+Last modified: 8/19/2020 10:01:52 AM
 """
 
 #defaut setting for scientific caculation
@@ -59,7 +59,7 @@ def Avg_FEMB_results(datapath, step, jumbo_flag = False, feed_freq = 500, avg_cy
 
                 chn_data, feed_loc, chn_peakp, chn_peakn = raw_convertor_peak(raw_data, smps, jumbo_flag)
 
-                print "%s, Next chip..., Wait a while"%rawfilep
+                print ("%s, Next chip..., Wait a while"%rawfilep)
 
                 for chn in range(16):
                     fembchn = chip*16+chn
@@ -122,9 +122,9 @@ def Avg_FEMB_results(datapath, step, jumbo_flag = False, feed_freq = 500, avg_cy
                     npeak_oft_feed = pulsemin_data_loc[0][0]
 
             else:
-                print "%s, file doesn't exist!!!"%rawfilep
+                print ("%s, file doesn't exist!!!"%rawfilep)
                 exit()
-    print "time passed = %d"% (timer()-start)
+    print ("time passed = %d"% (timer()-start))
 
     return alldata
 

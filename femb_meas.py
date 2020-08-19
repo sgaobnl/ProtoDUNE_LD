@@ -58,7 +58,7 @@ class FEMB_MEAS: #for one FEMB
     def yuv_bias_set (self, femb_addr):
         yuv_bias_class = FE_ASIC_REG_MAPPING()
         yuv_bias_class.set_fe_board()
-        print "set bias for FEMB%d"%femb_addr
+        print ("set bias for FEMB%d"%femb_addr)
         for chip in range (8):
             chip_means = []
             for chn in range (16):
@@ -107,9 +107,9 @@ class FEMB_MEAS: #for one FEMB
                 val = val
 
             oft_mean_chns = []
-            print "Pedestal configuration starts..."
+            print ("Pedestal configuration starts...")
             for adc_oft in range(4):
-                print "FEMB%d, EN_GR = 1, ADC_Offset = %d"%(femb_addr, adc_oft)
+                print ("FEMB%d, EN_GR = 1, ADC_Offset = %d"%(femb_addr, adc_oft))
                 self.fe_reg.set_fe_board() # reset the registers value
                 self.fe_reg.set_fe_board (sts=0,sg=sg, st=tp, smn=0, sdf=1, slk0=0, slk1=0, swdac =0, dac=0)
                 fe_regs = copy.deepcopy(self.fe_reg.REGS)
@@ -236,18 +236,18 @@ class FEMB_MEAS: #for one FEMB
             try: 
                 os.makedirs(savepath)
             except OSError:
-                print "femb_meas.py: Cann't create a folder, exit"
+                print ("femb_meas.py: Cann't create a folder, exit")
                 sys.exit()
         return savepath
 
     def lar_cfg(self, path, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, \
                     pls_cs = 1, dac_sel=1, fpga_dac_en=1, asic_dac_en=0, dac_val = 6, slk0 = 0, slk1= 0, val=100*10, wib_addr = 0):
-        print "FEMB_DAQ-->Configuration start"
+        print ("FEMB_DAQ-->Configuration start")
 
         savepath = self.wib_savepath (path, step)
         file_setadc_rec = savepath + step +"_FEMB" + str(femb_addr)+ str(sg) + str(tp) + "CHK_FE_ADC.txt"
         if os.path.isfile(file_setadc_rec):
-            print "%s, file exist!!!"%file_setadc_rec
+            print ("%s, file exist!!!"%file_setadc_rec)
             sys.exit()
         else:
             self.fe_reg.set_fe_board() # reset the registers value
@@ -310,7 +310,7 @@ class FEMB_MEAS: #for one FEMB
                 fe_cfg = int((fe_adc_regs[5])&0xFF)
                 fe_cfg_r = int('{:08b}'.format(fe_cfg)[::-1], 2)
                 filename = savepath + step +"_FEMB" + str(femb_addr) + "CHIP" + str(chip) + "_" + format(fe_cfg_r,'02X') + "_CFG" + str(self.ampl) + ".bin"
-                print filename
+                print (filename)
                 rawdata = self.femb_config.get_rawdata_packets_femb(femb_addr, chip, val)
                 if rawdata != None:
                     with open(filename,"wb") as f:
@@ -318,12 +318,12 @@ class FEMB_MEAS: #for one FEMB
 
     def save_chkout(self, path, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, clk_cs=1, pls_cs = 1, dac_sel=1, \
                     fpga_dac=1, asic_dac=0, slk0 = 0, slk1= 0, val=100*10):
-        print "FEMB_DAQ-->Quick measurement start"
+        print ("FEMB_DAQ-->Quick measurement start")
 
         savepath = self.wib_savepath (path, step)
         file_setadc_rec = savepath + step +"_FEMB" + str(femb_addr)+ str(sg) + str(tp) + "CHK_FE_ADC.txt"
         if os.path.isfile(file_setadc_rec):
-            print "%s, file exist!!!"%file_setadc_rec
+            print ("%s, file exist!!!"%file_setadc_rec)
             sys.exit()
         else:
             self.fe_reg.set_fe_board() # reset the registers value
@@ -358,7 +358,7 @@ class FEMB_MEAS: #for one FEMB
                 fe_cfg = int((fe_adc_regs[5])&0xFF)
                 fe_cfg_r = int('{:08b}'.format(fe_cfg)[::-1], 2)
                 filename = savepath + step +"_FEMB" + str(femb_addr) + "CHIP" + str(chip) + "_" + format(fe_cfg_r,'02X') + "_FPGADAC" + str(self.ampl) + ".bin"
-                print filename
+                print (filename)
                 rawdata = self.femb_config.get_rawdata_packets_femb(femb_addr, chip, val)
                 if rawdata != None:
                     with open(filename,"wb") as f:
@@ -369,11 +369,11 @@ class FEMB_MEAS: #for one FEMB
 
     def save_rms_noise(self, path, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, clk_cs=1, pls_cs = 1, dac_sel=0, \
                        fpga_dac=0, asic_dac=0, slk0 = 0, slk1= 0, val=1600*10):
-        print "FEMB_DAQ-->RMS measurement start"
+        print ("FEMB_DAQ-->RMS measurement start")
         savepath = self.wib_savepath (path, step)
         file_setadc_rec = savepath+ step +"_FEMB" + str(femb_addr)+ str(sg) + str(tp) + "ped_FE_ADC.txt"
         if os.path.isfile(file_setadc_rec):
-            print "%s, file exist!!!"%file_setadc_rec
+            print ("%s, file exist!!!"%file_setadc_rec)
             sys.exit()
         else:
             self.fe_reg.set_fe_board() # reset the registers value
@@ -402,14 +402,14 @@ class FEMB_MEAS: #for one FEMB
                 fe_cfg = int((fe_adc_regs[5])&0xFF)
                 fe_cfg_r = int('{:08b}'.format(fe_cfg)[::-1], 2)
                 filename = savepath+ step +"_FEMB" + str(femb_addr) + "CHIP" + str(chip) + "_" + format(fe_cfg_r,'02X') + "_RMS.bin"
-                print filename
+                print (filename)
                 rawdata = self.femb_config.get_rawdata_packets_femb(femb_addr, chip, val)
                 if rawdata != None:
                     with open(filename,"wb") as f:
                         f.write(rawdata) 
 
     def ext_dly_search(self, femb_addr, pls_cs = 1, dac_sel=1, fpga_dac=1, asic_dac=0):
-        print "FEMB_DAQ-->Start to find proper DLY to locate the peak of shaper"
+        print ("FEMB_DAQ-->Start to find proper DLY to locate the peak of shaper")
         #set proper ampl, which will let ADC value fall between 0x7ff and 0xb00
         ampl = 1
         while ( ampl < 32 ): 
@@ -443,7 +443,7 @@ class FEMB_MEAS: #for one FEMB
             if ( math.isnan(peaksmean)):
                 peaksmean = 0
             else:
-                print "FPGA DAC = %d gets maximum amplitude  = %d"%(ampl, peaksmean)
+                print ("FPGA DAC = %d gets maximum amplitude  = %d"%(ampl, peaksmean))
             if (peaksmean > 1000 ):
                 break
             else:
@@ -488,17 +488,17 @@ class FEMB_MEAS: #for one FEMB
         self.femb_config.femb.write_reg_femb_checked (femb_addr, 5, self.reg_5_value)
         self.femb_config.config_femb_mode(femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac)
 
-        print "FEMB_DAQ-->Dly search"
-        print "FEMB_DAQ-->Best DLY for current configuration is: %d"%self.dly
+        print ("FEMB_DAQ-->Dly search")
+        print ("FEMB_DAQ-->Best DLY for current configuration is: %d"%self.dly)
 
     def fpga_dac_cali(self, path, step, femb_addr,  sg, tp, adc_oft_regs, yuv_bias_regs, clk_cs=1, pls_cs = 1, dac_sel=1, \
                       fpga_dac=1, asic_dac=0, slk0 = 0, slk1= 0,  val=100):
-        print "FEMB_DAQ-->Calibration measurement with FPGA \"DAC\" starts"
+        print ("FEMB_DAQ-->Calibration measurement with FPGA \"DAC\" starts")
         savepath = self.wib_savepath (path, step)
 
         file_setadc_rec = savepath  + step +"_FEMB" + str(femb_addr)+ str(sg) + str(tp) + "FPGADAC_FE_ADC.txt"
         if os.path.isfile(file_setadc_rec):
-            print "%s, file exist!!!"%file_setadc_rec
+            print ("%s, file exist!!!"%file_setadc_rec)
             sys.exit()
         else:
             self.fe_reg.set_fe_board() # reset the registers value
@@ -534,7 +534,7 @@ class FEMB_MEAS: #for one FEMB
                     fe_cfg = int((fe_adc_regs[5])&0xFF)
                     fe_cfg_r = int('{:08b}'.format(fe_cfg)[::-1], 2)
                     filename = savepath  + step +"_FEMB" + str(femb_addr) + "CHIP" + str(chip) + "_" + format(fe_cfg_r,'02X') + "_FPGADAC" + format(dac,'02X')+ ".bin"
-                    print filename
+                    print (filename)
                     rawdata = self.femb_config.get_rawdata_packets_femb(femb_addr, chip, val)
                     if rawdata != None:
                         with open(filename,"wb") as f:
@@ -545,11 +545,11 @@ class FEMB_MEAS: #for one FEMB
 
     def asic_dac_cali(self, path, step, femb_addr,  sg, tp, adc_oft_regs, yuv_bias_regs, clk_cs=1, pls_cs = 1, dac_sel=1, \
                       fpga_dac=0, asic_dac=1, slk0 = 0, slk1= 0,  val=100):
-        print "FEMB_DAQ-->Calibration measurement with ASIC \"DAC\" starts"
+        print ("FEMB_DAQ-->Calibration measurement with ASIC \"DAC\" starts")
         savepath = self.wib_savepath (path, step)
         file_setadc_rec = savepath + step +"_FEMB" + str(femb_addr)+ str(sg) + str(tp) + "ASICDAC_FE_ADC.txt"
         if os.path.isfile(file_setadc_rec):
-            print "%s, file exist!!!"%file_setadc_rec
+            print ("%s, file exist!!!"%file_setadc_rec)
             sys.exit()
         else:
             for dac in range(3,64,1):
@@ -584,7 +584,7 @@ class FEMB_MEAS: #for one FEMB
                 if ( math.isnan(peaksmean)):
                     peaksmean = 0
                 else:
-                    print "ASIC DAC = %d gets maximum amplitude = %d"%(dac, peaksmean)
+                    print ("ASIC DAC = %d gets maximum amplitude = %d"%(dac, peaksmean))
                 if (peaksmean > 1000 ):
                     break
     
@@ -619,8 +619,8 @@ class FEMB_MEAS: #for one FEMB
             self.reg_5_value = (self.reg_5_value&0xFFFF00FF) + ((self.dly<<8)&0xFF00)
             self.femb_config.femb.write_reg_femb_checked (femb_addr, 5, self.reg_5_value)
             self.femb_config.config_femb_mode(femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac)
-            print "FEMB_DAQ-->Dly search"
-            print "FEMB_DAQ-->Best DLY for current configuration is: %d"%self.dly
+            print ("FEMB_DAQ-->Dly search")
+            print ("FEMB_DAQ-->Best DLY for current configuration is: %d"%self.dly)
 
             if sg == 0: #4.7mV/fC
                 dac_value_np = range(0,64,1)
@@ -651,9 +651,9 @@ class FEMB_MEAS: #for one FEMB
                     fe_cfg = int((self.fe_adc_reg.REGS[5])&0xFF)
                     fe_cfg_r = int('{:08b}'.format(fe_cfg)[::-1], 2)
                     filename = savepath + step +"_FEMB" + str(femb_addr) + "CHIP" + str(chip) + "_" + format(fe_cfg_r,'02X') + "_ASICDAC" + format(dac,'02X')+ ".bin"
-                    print filename
+                    print (filename)
                     if os.path.isfile(filename):
-                        print "%s, file exist!!!"%filename
+                        print ("%s, file exist!!!"%filename)
                         sys.exit()
                     else:
                         rawdata = self.femb_config.get_rawdata_packets_femb(femb_addr, chip, val)
@@ -669,12 +669,13 @@ class FEMB_MEAS: #for one FEMB
                       fpga_dac=0, asic_dac=0, slk0 = 0, slk1= 0, cycle=150):
         savepath = self.wib_savepath (path, step)
         fembs_np = femb_on_wib #[0,1,2,3]
-        print "Brombreg starts, please wait"
+        print ("Brombreg starts, please wait")
 
         if (not(self.jumbo_flag)):
             self.femb_config.femb.write_reg_wib_checked (0x1F, 0x1FB)
         else:
-            self.femb_config.femb.write_reg_wib_checked (0x1F, 0xEFB)
+            #self.femb_config.femb.write_reg_wib_checked (0x1F, 0xEFB - 35)
+            self.femb_config.femb.write_reg_wib_checked (0x1F, 0xEFB )
 
         for femb_addr in fembs_np:
             self.fe_reg.set_fe_board() # reset the registers value
@@ -702,7 +703,7 @@ class FEMB_MEAS: #for one FEMB
 
             file_setadc_rec = savepath + step +"_FEMB" + str(femb_addr)+ str(sg) + str(tp) + "BB_FE_ADC.txt"
             if os.path.isfile(file_setadc_rec):
-                print "%s, file exist!!!"%file_setadc_rec
+                print ("%s, file exist!!!"%file_setadc_rec)
                 sys.exit()
             else:
                 self.femb_config.femb.write_reg_femb_checked (femb_addr, 5, self.reg_5_value)
@@ -774,7 +775,7 @@ class FEMB_MEAS: #for one FEMB
                     self.femb_config.femb.write_reg_femb_checked (femb_addr, 5, self.reg_5_value)
                     self.femb_config.config_femb(femb_addr, fe_adc_regs, clk_cs, pls_cs, dac_sel, fpga_dac, asic_dac, mon_cs = mon_cs)
                     self.femb_config.config_femb_mode(femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac, mon_cs=mon_cs)
-                    print "Temperature minitoring of FEMB%d, chip%d is ON"%(femb_addr, chip)
+                    print ("Temperature minitoring of FEMB%d, chip%d is ON"%(femb_addr, chip))
 
                 while(True):
                     if (monitor_out == "pulse" ):
@@ -788,7 +789,7 @@ class FEMB_MEAS: #for one FEMB
                         else:
                             time.sleep(0.1)
                             continue
-                        print "Please type in votage values(mV) from FEMB0 to FEMB3 "
+                        print ("Please type in votage values(mV) from FEMB0 to FEMB3 ")
                         tvalue = raw_input("format \'0000, 0000, 0000, 0000\' -->")
                         tvalue = "chip" + str(chip) + "," + tvalue + ","
                         tyorn = raw_input ("%s mV are corrent?(y or n)"%(tvalue))
@@ -816,11 +817,11 @@ class FEMB_MEAS: #for one FEMB
 
     def avg_chkout(self, path, step, femb_addr, sg=2, tp=1, clk_cs=1, pls_cs = 1, dac_sel=1, \
                     fpga_dac=1, asic_dac=0, slk0 = 0, slk1= 0, val=1600):
-        print "FEMB_DAQ-->Avergae Check out"
+        print ("FEMB_DAQ-->Avergae Check out")
         savepath = self.wib_savepath (path, step)
         file_setadc_rec = savepath + step +"_FEMB" + str(femb_addr)+ str(sg) + str(tp) + "Avg_FE_ADC.txt"
         if os.path.isfile(file_setadc_rec):
-            print "%s, file exist!!!"%file_setadc_rec
+            print ("%s, file exist!!!"%file_setadc_rec)
             sys.exit()
         else:
             self.fe_reg.set_fe_board() # reset the registers value
@@ -857,7 +858,7 @@ class FEMB_MEAS: #for one FEMB
                 fe_cfg = int((fe_adc_regs[5])&0xFF)
                 fe_cfg_r = int('{:08b}'.format(fe_cfg)[::-1], 2)
                 filename = savepath + step +"_FEMB" + str(femb_addr) + "CHIP" + str(chip) + "_" + format(fe_cfg_r,'02X') + "_FPGADAC" + str(self.ampl) + ".bin"
-                print filename
+                print (filename)
                 rawdata = self.femb_config.get_rawdata_packets_femb(femb_addr, chip, val)
                 if rawdata != None:
                     with open(filename,"wb") as f:

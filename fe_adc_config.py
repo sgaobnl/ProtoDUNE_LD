@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/11/2018 10:15:08 AM
-Last modified: 2/22/2018 2:40:14 PM
+Last modified: 8/19/2020 10:22:30 AM
 """
 
 #defaut setting for scientific caculation
@@ -33,13 +33,13 @@ class FE_ADC_MAPPING:
                     chip_regs.append(onebit)
                 len32 = len(chip_regs)//32
                 if (len32 != 9):
-                    print "ERROR FE and ADC register mapping"
+                    print ("ERROR FE and ADC register mapping")
                 else:
                     for i in range(len32):
                         bits32 = chip_regs[i*32: (i+1)*32]
                         self.REGS[chip*len32 + i ] = (sum(v<<j for j, v in enumerate(bits32)))
         else:
-            print "COTS ADC chips are in used"
+            print ("COTS ADC chips are in used")
             self.REGS = [0x00000000]*(8+1)*4
             for chip in [0,2,4,6]:
                 chip_bits_len = 8*(16+2)
@@ -52,12 +52,12 @@ class FE_ADC_MAPPING:
                     chip_regs.append(onebit)
                 len32 = len(chip_regs)//32
                 if (len32 != 9):
-                    print "ERROR FE register mapping"
+                    print ("ERROR FE register mapping")
                 else:
                     for i in range(len32):
                         if ( i*32 <= len(chip_regs) ):
                             bits32 = chip_regs[i*32: (i+1)*32]
-                            self.REGS[chip/2*len32 + i ] = (sum(v<<j for j, v in enumerate(bits32)))
+                            self.REGS[int(chip/2*len32) + i ] = (sum(v<<j for j, v in enumerate(bits32)))
     #__INIT__#
     def __init__(self):
         #self.REGS = [0x00000000]*(8+1)*8

@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 1/13/2018 3:05:03 PM
-Last modified: 1/16/2019 3:38:50 PM
+Last modified: 8/19/2020 9:43:43 AM
 """
 
 #defaut setting for scientific caculation
@@ -40,7 +40,7 @@ jumbo_flag = (sys.argv[3] == "True")
 phase_set = int(sys.argv[4])
 
 if (ceruns.APA == "APA40"):
-    print ceruns.APA
+    print( ceruns.APA)
     ceruns.wib_version_id = 0x108
     ceruns.femb_ver_id = 0x405
     #ceruns.path = "D:/APA40/Rawdata/" 
@@ -57,7 +57,7 @@ if (ceruns.APA == "APA40"):
     ceruns.COTSADC = True
     ceruns.femb_meas.femb_config.phase_set = phase_set
 elif (ceruns.APA == "LArIAT"):
-    print ceruns.APA
+    print( ceruns.APA)
     ceruns.wib_version_id = 0x108
     ceruns.femb_ver_id = 0x501
     ceruns.path = "D:/SBND_40APA/Rawdata/" 
@@ -69,7 +69,7 @@ elif (ceruns.APA == "LArIAT"):
     ceruns.COTSADC = True
     ceruns.femb_meas.femb_config.phase_set = phase_set
 elif (ceruns.APA == "ProtoDUNE"): 
-    print ceruns.APA
+    print( ceruns.APA)
     ceruns.path = "/nfs/rscratch/bnl_ce/shanshan/Rawdata/APA3/" 
     ceruns.wib_ips = ["10.73.137.20", "10.73.137.21", "10.73.137.22", "10.73.137.23", "10.73.137.24"]  
     ceruns.wib_pwr_femb = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
@@ -81,7 +81,7 @@ elif (ceruns.APA == "ProtoDUNE"):
     ceruns.avg_wib_pwr_femb = [[1,0,0,0]]
     ceruns.avg_femb_on_wib = [0]
 elif (ceruns.APA == "CHKOUT"): 
-    print ceruns.APA
+    print( ceruns.APA)
     ceruns.path = "D:/PD_CHKOUT/Rawdata/" 
     ceruns.wib_ips = [ "192.168.121.1" ]
     ceruns.avg_wib_ips = ["192.168.121.1"] 
@@ -96,7 +96,7 @@ else:
     try: 
         os.makedirs(ceruns.path)
     except OSError:
-        print "Can't create a folder, exit"
+        print ("Can't create a folder, exit")
         sys.exit()
 
 logfile = ceruns.path +  ceruns.APA + "_readme.log"
@@ -104,13 +104,13 @@ monlogfile = ceruns.path +  ceruns.APA + "_monitor.log"
 
 #if (test_runs != 0x100 ):
 if (True ):
-    print "WIEC self check"
-    print "time cost = %.3f seconds"%(timer()-start)
+    print ("WIEC self check")
+    print ("time cost = %.3f seconds"%(timer()-start))
     ceruns.WIB_self_chk()
 
 if (test_runs == 0x0 ):
-    print "Power FEMBs ON"
-    print "time cost = %.3f seconds"%(timer()-start)
+    print ("Power FEMBs ON")
+    print ("time cost = %.3f seconds"%(timer()-start))
 
     ceruns.FEMBs_PWR_SW(SW = "ON")
     with open(logfile, "a+") as f:
@@ -151,9 +151,9 @@ if (test_runs == 0x0 ):
         f.write( "\n") 
 
 if (test_runs != 0x100 ):
-    print "FEMBs self-check"
+    print ("FEMBs self-check")
     mask_femb = ceruns.FEMBs_Self_CHK()
-    print ceruns.COTSADC
+    print (ceruns.COTSADC)
 
     with open(logfile, "a+") as f:
         f.write( "Begin\n") 
@@ -169,7 +169,7 @@ if (test_runs != 0x100 ):
 
 if (test_runs&0x7F != 0x0 ):
     if (False):
-        print "Please write a sentence to describe the test purpose: "
+        print ("Please write a sentence to describe the test purpose: ")
         test_note = raw_input("Please input: ")
     else:
         test_note = "Continuate test..."
@@ -186,8 +186,8 @@ if (test_runs&0x7F != 0x0 ):
         f.write("RTDs: %s"%rtd_temp + "\n")  
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
-    print "FEMB ADC offset calibration"
-    print "time cost = %.3f seconds"%(timer()-start)
+    print ("FEMB ADC offset calibration")
+    print ("time cost = %.3f seconds"%(timer()-start))
 
     if (test_runs&0x7F == 0x40):
 #    if (True):
@@ -205,9 +205,10 @@ if (test_runs&0x7F != 0x0 ):
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
 if (test_runs&0x01 != 0x0 ):
-    print "Noise Measurement Test"
-    print "time cost = %.3f seconds"%(timer()-start)
+    print ("Noise Measurement Test")
+    print ("time cost = %.3f seconds"%(timer()-start))
     ceruns.rms_run(apa_oft_info, sgs = [0,1,2,3], tps =[0,1,2,3], val=1600) 
+    #ceruns.rms_run(apa_oft_info, sgs = [3], tps =[3], val=1600) 
     with open(logfile, "a+") as f:
         f.write( "%2X: Noise Measurement Test\n" %(test_runs&0x01) ) 
         f.write (ceruns.runpath + "\n" )
@@ -215,8 +216,8 @@ if (test_runs&0x01 != 0x0 ):
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
 if (test_runs&0x02 != 0x0 ):
-    print "FPGA DAC Calibration Test"
-    print "time cost = %.3f seconds"%(timer()-start)
+    print ("FPGA DAC Calibration Test")
+    print ("time cost = %.3f seconds"%(timer()-start))
     ceruns.fpgadac_run(apa_oft_info, sgs = [0,1,2,3], tps =[0,1,2,3], val=100)
     with open(logfile, "a+") as f:
         f.write( "%2X: FPGA DAC Calibration Test\n" %(test_runs&0x02) ) 
@@ -225,8 +226,8 @@ if (test_runs&0x02 != 0x0 ):
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
 if (test_runs&0x04 != 0x0 ):
-    print "ASIC DAC Calibration Test"
-    print "time cost = %.3f seconds"%(timer()-start)
+    print ("ASIC DAC Calibration Test")
+    print ("time cost = %.3f seconds"%(timer()-start))
     ceruns.asicdac_run(apa_oft_info, sgs = [0,1,2,3], tps =[0,1,2,3], val=100)
     with open(logfile, "a+") as f:
         f.write( "%2X: ASIC DAC Calibration Test\n" %(test_runs&0x04) ) 
@@ -234,9 +235,20 @@ if (test_runs&0x04 != 0x0 ):
         f.write (ceruns.runtime + "\n" )
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
+if (test_runs&0x08 != 0x0 ):
+    print ("Brombreg Mode Noise Measurement Test")
+    print ("time cost = %.3f seconds"%(timer()-start))
+    #ceruns.brombreg_run(apa_oft_info, sgs = [1,3], tps =[0,1,2,3], cycle=5) 
+    ceruns.brombreg_run(apa_oft_info, sgs = [3], tps =[0,1,2,3], cycle=150) 
+    with open(logfile, "a+") as f:
+        f.write( "%2X: Brombreg Mode Noise Measurement Test\n" %(test_runs&0x08) ) 
+        f.write (ceruns.runpath + "\n" )
+        f.write (ceruns.runtime + "\n" )
+        f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
+
 if (test_runs&0x10 != 0x0 ):
-    print "Quick Checkout Test"
-    print "time cost = %.3f seconds"%(timer()-start)
+    print ("Quick Checkout Test")
+    print ("time cost = %.3f seconds"%(timer()-start))
     ceruns.qc_run(apa_oft_info, sgs=[1,2], tps =[0,1,2,3], val = 100) 
     with open(logfile, "a+") as f:
         f.write( "%2X: Quick Checkout Test\n" %(test_runs&0x10) ) 
@@ -245,7 +257,7 @@ if (test_runs&0x10 != 0x0 ):
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
 
 if (test_runs&0x20 != 0x0 ):
-    print "LArIAT Configuration"
+    print ("LArIAT Configuration")
     sgs = [int(sys.argv[5])]
     tps = [int(sys.argv[6])]
     pls_source = (int(sys.argv[7]))&0x3
@@ -266,7 +278,7 @@ if (test_runs&0x20 != 0x0 ):
         f.write (ceruns.runpath + "\n" )
         f.write (ceruns.runtime + "\n" )
         f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-    print "time cost = %.3f seconds"%(timer()-start)
+    print ("time cost = %.3f seconds"%(timer()-start))
 
 if (test_runs&0x40 != 0x0 ):
     run_cnt = int(sys.argv[5])
@@ -275,17 +287,17 @@ if (test_runs&0x40 != 0x0 ):
             t_sleep = int(sys.argv[6])
             t_min = t_sleep/60
             runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
-            print "sleep %d minutes starting from %s"%(t_min,runtime)
-            print "Ctrl-C to if you want to stop the script before it finishes"
+            print ("sleep %d minutes starting from %s"%(t_min,runtime))
+            print ("Ctrl-C to if you want to stop the script before it finishes")
             time.sleep(t_sleep)
-        print "LArIAT DATA collectting during DAQ running"
+        print ("LArIAT DATA collectting during DAQ running")
         ceruns.larcfg_getdata(val=1000) 
         with open(logfile, "a+") as f:
             f.write( "%2X: Configuration \n" %(test_runs&0x40) ) 
             f.write (ceruns.runpath + "\n" )
             f.write (ceruns.runtime + "\n" )
             f.write ("Alive FEMBs: " + str(ceruns.alive_fembs) + "\n" )
-        print "time cost = %.3f seconds"%(timer()-start)
+        print ("time cost = %.3f seconds"%(timer()-start))
 
 if (test_runs&0x100 != 0x0 ):
     run_cnt = int(sys.argv[5])
@@ -294,20 +306,20 @@ if (test_runs&0x100 != 0x0 ):
             t_sleep = int(sys.argv[6])
             t_min = t_sleep/60
             runtime =  datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
-            print "sleep %d minutes starting from %s"%(t_min,runtime)
-            print "Ctrl-C to if you want to stop the script before it finishes"
+            print ("sleep %d minutes starting from %s"%(t_min,runtime))
+            print ("Ctrl-C to if you want to stop the script before it finishes")
             time.sleep(t_sleep)
-        print "WIB status check start"
-        print  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print ("WIB status check start")
+        print ( datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         ceruns.WIB_LINK_CUR()
         with open(monlogfile, "a+") as f:
             for onelinkcur in ceruns.linkcurs:
                 f.write( onelinkcur + "\n") 
-        print "Done!"
+        print ("Done!")
 
 if (test_runs&0x80 != 0x0 ):
-    print "Turn FEMBs OFF"
-    print "time cost = %.3f seconds"%(timer()-start)
+    print ("Turn FEMBs OFF")
+    print ("time cost = %.3f seconds"%(timer()-start))
     ceruns.FEMBs_PWR_SW(SW = "OFF")
     with open(logfile, "a+") as f:
         f.write( "Begin\n") 
@@ -349,6 +361,6 @@ if (test_runs&0x7F != 0x0 ):
         f.write( "End\n") 
         f.write( "\n") 
 
-print "Well Done"
+print ("Well Done")
 
 

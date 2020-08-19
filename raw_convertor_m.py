@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Fri Jun  8 14:43:24 2018
+Last modified: 8/19/2020 10:00:02 AM
 """
 
 #defaut setting for scientific caculation
@@ -50,9 +50,9 @@ def raw_convertor_feedloc(raw_data, smps, jumbo_flag = False):
             j = j + 1
     
     if ( len(k) != 0 ):
-        print "raw_convertor_m.py: There are defective packages start at %d"%k[0] 
+        print ("raw_convertor_m.py: There are defective packages start at %d"%k[0] )
     if j != 0 :
-        print "raw_convertor_m.py: drop %d packages"%(j)
+        print ("raw_convertor_m.py: drop %d packages"%(j))
 
     tmpa = pkg_index[0]
     tmpb = pkg_index[-1]
@@ -75,8 +75,8 @@ def raw_convertor_feedloc(raw_data, smps, jumbo_flag = False):
         missed_pkgs = missed_pkgs + add1 -1
 
     if (missed_pkgs > 0 ):
-        print "raw_convertor_m.py: missing udp pkgs = %d, total pkgs = %d "%(missed_pkgs, pkg_sum)
-        print "raw_convertor_m.py: missing %.8f%% udp packages"%(100.0*missed_pkgs/pkg_sum)
+        print ("raw_convertor_m.py: missing udp pkgs = %d, total pkgs = %d "%(missed_pkgs, pkg_sum))
+        print ("raw_convertor_m.py: missing %.8f%% udp packages"%(100.0*missed_pkgs/pkg_sum))
     else:
         pass
 

@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: 11/20/2018 6:43:47 PM
+Last modified: 8/19/2020 10:35:27 AM
 """
 
 #defaut setting for scientific caculation
@@ -59,9 +59,9 @@ class CE_RUNS:
 
             #if ( (ver_value&0x0FFF) == self.wib_version_id) and (ver_value != -1) :
             if ( (ver_value&0x0FFF) > 0x100) and (ver_value != -1) :
-                print "WIB(%s) passed self check!"%(wib_ip)
+                print ("WIB(%s) passed self check!"%(wib_ip))
             else:
-                print "WIB%s fails, mask this WIB!!!"%wib_ip
+                print ("WIB%s fails, mask this WIB!!!"%wib_ip)
                 wib_ips_removed.append(wib_ip)
                 continue
     
@@ -81,7 +81,7 @@ class CE_RUNS:
         self.WIB_PLL_cfg( )
         for wib_ip in wib_ips_removed:
                 self.wib_ips.remove(wib_ip)
-        print self.wib_ips
+        print (self.wib_ips)
 
     def WIB_PLL_wr(self, wib_ip, addr, din):
         self.femb_meas.femb_config.femb.UDP_IP = wib_ip
@@ -360,11 +360,11 @@ class CE_RUNS:
                 wib_ip = self.wib_ips[wib_addr]
                 self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
                 wib_pos = wib_addr
-                self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
-                self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
+#                self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
+#                self.femb_meas.femb_config.femb.write_reg_wib(0, 0xF)
                 self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
                 time.sleep(10)
-            print "WIBs are reset"
+            print ("WIBs are reset")
             self.WIB_self_chk()
 
         for wib_addr in range(len(self.wib_ips)):
@@ -392,15 +392,15 @@ class CE_RUNS:
             self.femb_meas.femb_config.femb.write_reg_wib_checked (8, 0)
             time.sleep(3)
             if ( SW == "ON"):
-                print "turn on power supply on WIB(IP=%s)"%(wib_ip)
-                pwr_value = long (0x1000000)| fe0_pwr| fe1_pwr| fe2_pwr| fe3_pwr
+                print ("turn on power supply on WIB(IP=%s)"%(wib_ip))
+                pwr_value = int (0x1000000)| fe0_pwr| fe1_pwr| fe2_pwr| fe3_pwr
                 #pwr_value = long (0xFFFE00000) | pwr_value #SBND WIB
                 self.femb_meas.femb_config.femb.write_reg_wib_checked (8, pwr_value)
                 time.sleep(5)
-                print "All FEMBs have been turned on"
+                print ("All FEMBs have been turned on")
                 time.sleep(5)
             else:
-                print "All FEMBs have been turned off"
+                print ("All FEMBs have been turned off")
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
 
         self.WIB_LINK_CUR( )
@@ -413,10 +413,10 @@ class CE_RUNS:
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
 
         if (self.COTSADC):
-            print "COTS ADC in use"
+            print ("COTS ADC in use")
             self.en_oft = False #COTS ADC
         else:
-            print "P1 ADC in use"
+            print ("P1 ADC in use")
             self.en_oft = True #P1 ADC
         self.femb_meas.fe_adc_reg.COTSADC = self.COTSADC
         self.femb_meas.femb_config.COTSADC = self.COTSADC
@@ -426,7 +426,7 @@ class CE_RUNS:
             wib_ip = self.wib_ips[wib_addr]
             wib_pos = wib_addr
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
-            print "Start FEMBs of WIB(IP=%s) self-check"%(wib_ip)
+            print ("Start FEMBs of WIB(IP=%s) self-check"%(wib_ip))
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
@@ -435,14 +435,14 @@ class CE_RUNS:
                 ver_value = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x102)
                 ver_value = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x101)
                 ver_value = self.femb_meas.femb_config.femb.read_reg_femb(femb_addr, 0x101)
-                print "WIB%dFEMB%d firmware version: %X"%((wib_pos+1), femb_addr, ver_value )
+                print ("WIB%dFEMB%d firmware version: %X"%((wib_pos+1), femb_addr, ver_value ))
                 if ( (ver_value &0xFFF) > 0x400 ) and (ver_value != -1) :
-                    print "WIB%dFEMB%d is good"%((wib_pos+1), femb_addr)
+                    print ("WIB%dFEMB%d is good"%((wib_pos+1), femb_addr))
                     self.femb_mask[wib_pos][femb_addr]  = 0
                 else:
                     self.femb_mask[wib_pos][femb_addr]  = 1
                     mask_femb.append( "WIB%d(IP%s)FEMB%d is masked"%((wib_pos+1), wib_ip, femb_addr) )
-                    print "WIB%dFEMB%d version value(%x) is wrong , mask it"%((wib_pos+1), femb_addr, ver_value)
+                    print ("WIB%dFEMB%d version value(%x) is wrong , mask it"%((wib_pos+1), femb_addr, ver_value))
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 self.udp_err_np.append([wib_ip, wib_pos, femb_addr, udp_errcnt_post, udp_errcnt_pre, self.run_code] )
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
@@ -456,7 +456,7 @@ class CE_RUNS:
             wib_ip = self.wib_ips[wib_addr]
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             wib_pos = wib_addr
-            print "WIB%d (IP=%s) OFT running"%((wib_pos+1), wib_ip)
+            print ("WIB%d (IP=%s) OFT running"%((wib_pos+1), wib_ip))
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
             for femb_addr in femb_on_wib:
@@ -465,7 +465,7 @@ class CE_RUNS:
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 apaloc = wib_pos*4 + femb_addr
                 self.en_oft = False
-                print "Ingore oft (only for P1 ADC)"
+                print ("Ingore oft (only for P1 ADC)")
                 femb_addr, adc_oft_regs, yuv_bias_regs = self.femb_meas.femb_oft_set(femb_addr, en_oft = self.en_oft ) 
                 apa_oft_info[apaloc] = [wib_ip, femb_addr, copy.deepcopy(adc_oft_regs), copy.deepcopy(yuv_bias_regs)]
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
@@ -474,7 +474,7 @@ class CE_RUNS:
         timestampe =  datetime.now().strftime('%m%d%Y_%H%M%S')
         savefile = runpath +  "APA_ADC_OFT_" + timestampe + '.bin'
         if (os.path.isfile(savefile)): 
-            print "%s, file exist!!!"%savefile
+            print ("%s, file exist!!!"%savefile)
             sys.exit()
         else:
             with open(savefile, "wb") as fp:
@@ -504,8 +504,8 @@ class CE_RUNS:
                     femb_on_wib.append(femb_no)
             apa_fembs.append(femb_on_wib)
             i = i + 1
-        print "FEMBs alive: "
-        print apa_fembs
+        print ("FEMBs alive: ")
+        print (apa_fembs)
         self.alive_fembs = apa_fembs
 
     def save_setting(self,  run_code="0", val=100): 
@@ -581,7 +581,7 @@ class CE_RUNS:
                 udp_errcnt_pre = self.femb_meas.femb_config.femb.femb_wrerr_cnt
                 adc_oft_regs, yuv_bias_regs = self.femb_oft_bias_regs (apa_oft_info, wib_ip, femb_addr)
                 for sg in sgs:
-                    print "sg = %d"%sg
+                    print ("sg = %d"%sg)
                     for tp in tps:
                         step = "WIB" + format(wib_pos, '02d') + "step" + str(sg) + run_code
                         self.femb_meas.lar_cfg(runpath, step, femb_addr, sg, tp, adc_oft_regs, yuv_bias_regs, \
@@ -598,7 +598,7 @@ class CE_RUNS:
 #                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 #                        self.femb_meas.femb_config.femb.write_reg_wib (20, 0x00)
 
-		if datamode == 3:
+                if datamode == 3:
                     lar_fembno = (((wib_pos*4 + femb_addr)&0x0F)<<4) + datamode
                     self.femb_meas.femb_config.femb.write_reg_femb_checked (femb_addr, 42,lar_fembno )
                 udp_errcnt_post = self.femb_meas.femb_config.femb.femb_wrerr_cnt
@@ -656,7 +656,7 @@ class CE_RUNS:
                 for chip in range(8):
                     rawdata = ""
                     filename = savepath + step +"_FEMB" + str(femb_addr) + "CHIP" + str(chip) + "_"  + "_CFG_DATA"  + ".bin"
-                    print filename
+                    print (filename)
                     rawdata = self.femb_meas.femb_config.get_rawdata_packets_femb(femb_addr, chip, val)
                     if rawdata != None:
                         with open(filename,"wb") as f:
@@ -742,7 +742,7 @@ class CE_RUNS:
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
             wib_pos = wib_addr
-            print "WIB%d (IP=%s)"%((wib_pos+1), wib_ip)
+            print ("WIB%d (IP=%s)"%((wib_pos+1), wib_ip))
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
@@ -767,7 +767,7 @@ class CE_RUNS:
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
             wib_pos = wib_addr
-            print "WIB%d (IP=%s)"%((wib_pos+1), wib_ip)
+            print ("WIB%d (IP=%s)"%((wib_pos+1), wib_ip))
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
@@ -793,7 +793,7 @@ class CE_RUNS:
         for wib_addr in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_addr]
             wib_pos = wib_addr
-            print "WIB%d (IP=%s)"%((wib_pos+1), wib_ip)
+            print ("WIB%d (IP=%s)"%((wib_pos+1), wib_ip))
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
@@ -816,21 +816,21 @@ class CE_RUNS:
         run_code, val, runpath = self.save_setting(run_code="8", val=100) 
         for bbwib_pos in range(len(self.bbwib_ips)):
             wib_ip = self.bbwib_ips[bbwib_pos]
-            print "WIB%d (IP=%s)"%((bbwib_pos+1), wib_ip)
+            print ("WIB%d (IP=%s)"%((bbwib_pos+1), wib_ip))
             for wib_addr in range(len(self.wib_ips)):
                 if (wib_ip == self.wib_ips[wib_addr]):
                     break
             wib_pos = wib_addr
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
 
-#            self.femb_meas.femb_config.femb.write_reg_wib_checked (40, 1)
-#            self.femb_meas.femb_config.femb.write_reg_wib_checked (41, 6400)
+            #self.femb_meas.femb_config.femb.write_reg_wib_checked (40, 1)
+            #self.femb_meas.femb_config.femb.write_reg_wib_checked (41, 6400)
 
             self.femb_on_apa ()
             femb_on_wib = self.alive_fembs[wib_pos] 
-            #if (femb_on_wib != [0,1,2,3] ):
-            #    print "Brombreg mode asks for 4 FEMB on the same WIB,  anyway!!"
-                #sys.exit()
+            if (femb_on_wib != [0,1,2,3] ):
+                print ("Brombreg mode asks for 4 FEMB on the same WIB,  anyway!!")
+                sys.exit()
 
             adc_oft_regs_np = [[], [], [], []]
             yuv_bias_regs_np = [[], [], [], []]
@@ -858,7 +858,7 @@ class CE_RUNS:
         run_code, val, runpath = self.save_setting(run_code="9", val=100) 
         for tmpwib_pos in range(len(self.tmp_wib_ips)):
             wib_ip = self.tmp_wib_ips[tmpwib_pos]
-            print "WIB%d (IP=%s)"%((tmpwib_pos+1), wib_ip)
+            print ("WIB%d (IP=%s)"%((tmpwib_pos+1), wib_ip))
             for wib_addr in range(len(self.wib_ips)):
                 if (wib_ip == self.wib_ips[wib_addr]):
                     break
@@ -881,7 +881,7 @@ class CE_RUNS:
         resultpaths = []
         for wib_pos in range(len(self.wib_ips)):
             wib_ip = self.wib_ips[wib_pos]
-            print "WIB (IP=%s)"%(wib_ip)
+            print ("WIB (IP=%s)"%(wib_ip))
             for wib_addr in range(len(self.wib_ips)):
                 if (wib_ip == self.wib_ips[wib_addr]):
                     break
@@ -900,9 +900,9 @@ class CE_RUNS:
                 PD_CHKOUT (datapath, step, plot_en=0x3F,  avg_cycle=avg_cycle, jumbo_flag=self.jumbo_flag )
                 resultpaths.append(datapath)
             self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
-        print "Please check the pdf format files in the folder below: "
+        print ("Please check the pdf format files in the folder below: ")
         for onepath in resultpaths:
-            print onepath
+            print (onepath)
         self.run_code = run_code
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 

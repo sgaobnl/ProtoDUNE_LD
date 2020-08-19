@@ -26,7 +26,7 @@ class FEMB_CONFIG:
         elif (pls_cs == 3 ): #enable int and ext pls
             pls_cs_value = 0x0 
         self.femb.write_reg_femb_checked (femb_addr, 18, pls_cs_value)
-        print femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac 
+        print (femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac )
         time.sleep(0.1)
 
     def ext_clk_reg_wr_femb(self, femb_addr, reg_addr, addr_data):
@@ -119,7 +119,7 @@ class FEMB_CONFIG:
             else:
                 i = i + 1
         if i >= 10 :
-            print "readback value is different from written data, %d, %x, %x"%(reg, data, rdata)
+            print ("readback value is different from written data, %d, %x, %x"%(reg, data, rdata))
             sys.exit()
 
         i = 0
@@ -132,7 +132,7 @@ class FEMB_CONFIG:
             else:
                 i = i + 1
         if i >= 10 :
-            print "readback value is different from written data, %d, %x, %x"%(reg, data, rdata)
+            print ("readback value is different from written data, %d, %x, %x"%(reg, data, rdata))
             sys.exit()
 
         i = 0
@@ -145,7 +145,7 @@ class FEMB_CONFIG:
             else:
                 i = i + 1
         if i >= 10 :
-            print "readback value is different from written data, %d, %x, %x"%(reg, data, rdata)
+            print ("readback value is different from written data, %d, %x, %x"%(reg, data, rdata))
             sys.exit()
 
         i = 0
@@ -158,7 +158,7 @@ class FEMB_CONFIG:
             else:
                 i = i + 1
         if i >= 10 :
-            print "readback value is different from written data, %d, %x, %x"%(reg, data, rdata)
+            print ("readback value is different from written data, %d, %x, %x"%(reg, data, rdata))
             sys.exit()
 
     def femb_sync_chk(self, femb_addr ):
@@ -171,10 +171,10 @@ class FEMB_CONFIG:
             time.sleep(0.001)
             adc_fifo_sync = ( (self.femb.read_reg_femb (femb_addr,6))&0xffff0000 ) >> 16
             if (adc_fifo_sync == 0 ) :
-                print "FEMB%d: Successful SPI configuration and ADC FIFO synced"%femb_addr
+                print ("FEMB%d: Successful SPI configuration and ADC FIFO synced"%femb_addr)
                 break
             else:
-                print "ERROR: {0:16b}".format(adc_fifo_sync)
+                print ("ERROR: {0:16b}".format(adc_fifo_sync))
                 for i in range(8):
                     a = adc_fifo_sync & a_cs[i]
                     if ( a != 0 ) :
@@ -189,7 +189,7 @@ class FEMB_CONFIG:
                         elif (a_cnt[i] == 4):
                             self.REG_CLKPHASE_data1  = (( self.REG_CLKPHASE_data1 & a_mark[i] ) ^  a_mark[i] ) + (self.REG_CLKPHASE_data1 & a_mark_xor) 
                         elif (a_cnt[i] >= 5):
-                            print "ADC Sync failed, exit anyway"
+                            print ("ADC Sync failed, exit anyway")
                             sys.exit()
                     else:
                         pass
@@ -197,7 +197,7 @@ class FEMB_CONFIG:
 
     def cots_adc_sft(self, femb_addr ):
         self.default_set()
-        print "COTS Shift and Phase Setting starts..."
+        print ("COTS Shift and Phase Setting starts...")
 #ADC for FE1
         self.femb.write_reg_femb_checked (femb_addr, 21, self.fe1_sft )
         self.femb.write_reg_femb_checked (femb_addr, 29, self.fe1_pha )
@@ -300,24 +300,24 @@ class FEMB_CONFIG:
                         for i in range(len(fe_adc_regs)):
                             if fe_adc_regs[i] != fe_adc_rb_regs[i]:
                                 spi_err_flg = 1
-                                print "%dth, %8x,%8x"%(i, fe_adc_regs[i],fe_adc_rb_regs[i])
+                                print ("%dth, %8x,%8x"%(i, fe_adc_regs[i],fe_adc_rb_regs[i]))
                                 if ( i<= 9 ):
-                                    print "FE-ADC 0 SPI failed"
+                                    print ("FE-ADC 0 SPI failed")
                                 elif ( i<= 18 ):
-                                    print "FE-ADC 1 SPI failed"
+                                    print ("FE-ADC 1 SPI failed")
                                     #spi_err_flg = 0
                                 elif ( i<= 27 ):
-                                    print "FE-ADC 2 SPI failed"
+                                    print ("FE-ADC 2 SPI failed")
                                 elif ( i<= 36 ):
-                                    print "FE-ADC 3 SPI failed"
+                                    print ("FE-ADC 3 SPI failed")
                                 elif ( i<= 45 ):
-                                    print "FE-ADC 4 SPI failed"
+                                    print ("FE-ADC 4 SPI failed")
                                 elif ( i<= 54 ):
-                                    print "FE-ADC 5 SPI failed"
+                                    print ("FE-ADC 5 SPI failed")
                                 elif ( i<= 64 ):
-                                    print "FE-ADC 6 SPI failed"
+                                    print ("FE-ADC 6 SPI failed")
                                 elif ( i<= 72 ):
-                                    print "FE-ADC 7 SPI failed"
+                                    print ("FE-ADC 7 SPI failed")
                         if (spi_err_flg == 1 ):
                             j = j + 1
                         else:
@@ -342,9 +342,9 @@ class FEMB_CONFIG:
                         self.femb_sync_chk(femb_addr )
                     else:
                         if (adc_fifo_sync == 0 ):
-                            print "FEMB%d: Successful SPI configuration and ADC FIFO synced"%femb_addr
+                            print ("FEMB%d: Successful SPI configuration and ADC FIFO synced"%femb_addr)
                         else:
-                            print "ERROR: {0:16b}".format(adc_fifo_sync)
+                            print ("ERROR: {0:16b}".format(adc_fifo_sync))
                             sys.exit()
     
                 self.femb.write_reg_wib (20, 3)
@@ -428,24 +428,24 @@ class FEMB_CONFIG:
                         for i in range(len(fe_adc_regs)):
                             if fe_adc_regs[i] != fe_adc_rb_regs[i]:
                                 spi_err_flg = 1
-                                print "%dth, %8x,%8x"%(i, fe_adc_regs[i],fe_adc_rb_regs[i])
+                                print ("%dth, %8x,%8x"%(i, fe_adc_regs[i],fe_adc_rb_regs[i]))
                                 if ( i<= 9 ):
-                                    print "FE-ADC 0 SPI failed"
+                                    print ("FE-ADC 0 SPI failed")
                                     spi_err_flg = 0
                                 elif ( i<= 18 ):
-                                    print "FE-ADC 1 SPI failed"
+                                    print ("FE-ADC 1 SPI failed")
                                 elif ( i<= 27 ):
-                                    print "FE-ADC 2 SPI failed"
+                                    print ("FE-ADC 2 SPI failed")
                                 elif ( i<= 36 ):
-                                    print "FE-ADC 3 SPI failed"
+                                    print ("FE-ADC 3 SPI failed")
                                 elif ( i<= 45 ):
-                                    print "FE-ADC 4 SPI failed"
+                                    print ("FE-ADC 4 SPI failed")
                                 elif ( i<= 54 ):
-                                    print "FE-ADC 5 SPI failed"
+                                    print ("FE-ADC 5 SPI failed")
                                 elif ( i<= 64 ):
-                                    print "FE-ADC 6 SPI failed"
+                                    print ("FE-ADC 6 SPI failed")
                                 elif ( i<= 72 ):
-                                    print "FE-ADC 7 SPI failed"
+                                    print ("FE-ADC 7 SPI failed")
                         if (spi_err_flg == 1 ):
                             j = j + 1
                         else:
@@ -517,7 +517,7 @@ class FEMB_CONFIG:
 
     def default_set(self ):
         if (self.COTSADC == True):
-            print "COTS AM in use"
+            print ("COTS AM in use")
             self.fe1_sft =0x00000000 
             self.fe2_sft =0x00000000 
             self.fe3_sft =0x00000000 
@@ -536,7 +536,7 @@ class FEMB_CONFIG:
                 self.fe6_pha =0x00000000 
                 self.fe7_pha =0x00000000 
                 self.fe8_pha =0x00000000 
-                print hex(self.fe1_pha)
+                print (hex(self.fe1_pha))
             elif (self.phase_set == 2 ): 
                 self.fe1_pha =0xAAAAAAAA 
                 self.fe2_pha =0xAAAAAAAA 
@@ -546,7 +546,7 @@ class FEMB_CONFIG:
                 self.fe6_pha =0xAAAAAAAA 
                 self.fe7_pha =0xAAAAAAAA 
                 self.fe8_pha =0xAAAAAAAA 
-                print hex(self.fe1_pha)
+                print (hex(self.fe1_pha))
             elif (self.phase_set == 1 ): 
                 self.fe1_pha =0x55555555 
                 self.fe2_pha =0x55555555 
@@ -556,7 +556,7 @@ class FEMB_CONFIG:
                 self.fe6_pha =0x55555555 
                 self.fe7_pha =0x55555555 
                 self.fe8_pha =0x55555555 
-                print hex(self.fe1_pha)
+                print (hex(self.fe1_pha))
             elif (self.phase_set == 3 ) :
                 self.fe1_pha =0xFFFFFFFF 
                 self.fe2_pha =0xFFFFFFFF 
@@ -566,10 +566,10 @@ class FEMB_CONFIG:
                 self.fe6_pha =0xFFFFFFFF 
                 self.fe7_pha =0xFFFFFFFF 
                 self.fe8_pha =0xFFFFFFFF 
-                print hex(self.fe1_pha)
+                print (hex(self.fe1_pha))
 
             else:
-                print "phase value should be 0 to 3, exit anyway"
+                print ("phase value should be 0 to 3, exit anyway")
                 sys.exit()
     
         else:
@@ -623,7 +623,7 @@ class FEMB_CONFIG:
             self.d58_idl1_wdt = 20  // clk_period 
             self.d58_idl_inv  = 0       
     ####################external clokc phase for V323 firmware
-            print "femb_config.yp : FM firmware version = 323"
+            print ("femb_config.yp : FM firmware version = 323")
             self.d14_read_step = 11
             self.d14_read_ud   = 0
             self.d14_idxm_step = 9
