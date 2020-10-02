@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/12/2016 9:30:27 PM
-Last modified: 5/2/2020 1:28:45 AM
+Last modified: 5/2/2020 1:41:59 AM
 """
 
 #defaut setting for scientific caculation
@@ -796,7 +796,9 @@ class FEMB_MEAS: #for one FEMB
                                     plt.ylim ((0,2**14))
                                     plt.legend()
                                     plt.grid()
-                                    plt.savefig(runpath + "/%s_slk0%d_slk1%d_sdf%d_sg%d_tp%d_femb%d"%(monitor_out, slk0, slk1, sdf, sg, tp, femb_addr))
+                                    fn =  runpath + "/%s_slk0%d_slk1%d_sdf%d_sg%d_tp%d_femb%d"%(monitor_out, slk0, slk1, sdf, sg, tp, femb_addr)
+                                    print fn
+                                    plt.savefig(fn)
                                     plt.close()
 
 
