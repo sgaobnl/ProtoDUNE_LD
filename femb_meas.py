@@ -645,6 +645,143 @@ class FEMB_MEAS: #for one FEMB
         mondac_v = (tmp&0x0000FFFF) if rloc == 1 else ((tmp>>16)&0x0000FFFF)
         return mondac_v
 
+    def FEMB_MON_N(self,femb_addr=0, N=10000):
+        time.sleep(0.5)
+        vs =[]
+        for i in xrange(N):
+            self.femb_config.femb.write_reg_wib (38, 0)
+            self.femb_config.femb.write_reg_wib (38, 1)
+            self.femb_config.femb.write_reg_wib (38, 0)
+            self.femb_config.femb.write_reg_wib (38, 1)
+            self.femb_config.femb.write_reg_wib (38, 0)
+            self.femb_config.femb.write_reg_wib (38, 1)
+            self.femb_config.femb.write_reg_wib (38, 0)
+            rinc = int (femb_addr // 2)
+            rloc =  int (femb_addr % 2)
+            tmp = self.femb_config.femb.read_reg_wib (38+rinc)
+            mondac_v = (tmp&0x0000FFFF) if rloc == 1 else ((tmp>>16)&0x0000FFFF)
+            vs.append(mondac_v)
+        return vs
+
+
+    #for one WIB operation
+    def wib_monitor_spot(self, runpath, femb_on_wib=[1], fembchns = [14, 15, 16*3 + 4, 16*3 + 5]):
+        mon_paras = []
+        clk_cs = 1
+        adc_en_gr = 1
+
+        pls_cs = 1
+        dac_sel = 1
+
+        adc_oft = 0
+        fpga_dac = 0
+        asic_dac = 1
+        dac = 0x10
+        fembs_np = femb_on_wib #[0,1,2,3]
+        #fembs_np = [0]
+
+        for monitor_out in ["pulse"]:
+            tvalue_np = []
+            if (monitor_out == "pulse"):
+                chns = 16
+                sncs =[0,1] 
+            #    tps = [0,1,2,3] 
+                tps = [3] 
+            #    gs =[0,1,2,3]
+                gs =[1]
+            #    slk0s = [0,1]
+                slk0s = [0]
+            #    slk1s = [0,1]
+                slk1s = [0]
+            #    sdfs = [0,1]
+                sdfs = [0]
+            else:
+                chns = 1
+                sncs =[0] 
+                tps = [3] 
+                gs =[1]
+            #    slk0s = [0,1]
+                slk0s = [0]
+            #    slk1s = [0,1]
+                slk1s = [0]
+            #    sdfs = [0,1]
+                sdfs = [0]
+            for slk0 in slk0s:
+               for slk1 in slk1s:
+                   for sdf in sdfs:
+                        for sg in gs:
+                            for tp in tps:
+                                for femb_addr in fembs_np:
+                                    for snc in sncs:
+                                        fig = plt.figure(figsize=(12,8))
+                                        plt.rcParams.update({'font.size': 14})
+                                        for chip in range(8):
+                                            for chn in range(chns):
+                                                if (chip*16 + chn) in fembchns:
+                                                    val = 25 
+                                                    if (not(self.jumbo_flag)):
+                                                        self.femb_config.femb.write_reg_wib_checked (0x1F, 0x1FB)
+                                                        val = val*8
+                                                    else:
+                                                        self.femb_config.femb.write_reg_wib_checked (0x1F, 0xEFB)
+                                                    self.fe_reg.set_fe_board() # reset the registers value
+                    
+                                                    #set registers for FEMB
+                                                    self.fe_reg.set_fe_board(sg=sg, st=tp, sts=0, snc=snc, smn=0, sdf=sdf, slk0=slk0, slk1=slk1, swdac =1, dac=dac )
+                                                    #set global registers for FE
+                                                    if (monitor_out == "pulse" ):
+                                                        self.fe_reg.set_fechip_global(chip=chip, slk0=slk0, stb1 = 0, stb = 0, slk1=slk1, swdac=1, dac=dac)
+                                                    #set chn registers for FE
+                                                    self.fe_reg.set_fechn_reg(chip=chip, chn=chn, sts=1, snc=snc, sg=sg, st=tp, smn=1, sdf=sdf )
+                                                    #self.fe_reg.set_fechn_reg(chip=chip, chn=chn, sts=0, snc=snc, sg=sg, st=tp, smn=1, sdf=sdf )
+                                                    fe_regs = copy.deepcopy(self.fe_reg.REGS)
+                    
+                                                    self.adc_reg.set_adc_board(clk0=1,f0 =0) #external clk
+                                                    adc_clk_regs = copy.deepcopy(self.adc_reg.REGS)
+                                                    self.adc_reg.set_adc_board(d=adc_oft, engr=adc_en_gr)
+                                                    adc_engr_regs = copy.deepcopy(self.adc_reg.REGS)
+                                                    adc_regs = []
+                                                    for tmpi in range(len(adc_clk_regs)):
+                                                        adc_regs.append(adc_clk_regs[tmpi] | adc_engr_regs[tmpi])
+                                                    self.fe_adc_reg.set_board(fe_regs,adc_regs)
+                                                    fe_adc_regs = copy.deepcopy (self.fe_adc_reg.REGS)
+                    
+                                                    mon_cs = 1
+                                                    self.dly  = 10
+                                                    self.ampl = 0
+                                                    self.freq = 100
+                                                    self.reg_5_value = (self.reg_5_value&0xFFFFFF00) + (self.ampl&0xFF)
+                                                    self.reg_5_value = (self.reg_5_value&0xFFFF00FF) + ((self.dly<<8)&0xFF00)
+                                                    self.femb_config.femb.write_reg_femb_checked (femb_addr, 5, self.reg_5_value)
+                                                    self.femb_config.config_femb(femb_addr, fe_adc_regs, clk_cs, pls_cs, dac_sel, fpga_dac, asic_dac, mon_cs = mon_cs)
+                                                    self.femb_config.config_femb_mode(femb_addr,  pls_cs, dac_sel, fpga_dac, asic_dac, mon_cs=mon_cs)
+
+                                                    mondac_vs = self.FEMB_MON_N(femb_addr, N=10000)
+                                                    x = [fembchn]*len(mondac_vs)
+
+                                                    if (snc ==0 ):
+                                                        snc_str = "BL = 200 mV"
+                                                    else:
+                                                        snc_str = "BL = 900 mV"
+                                                    plt.scatter(x, mondac_vs, marker = '.', label = "FEMB%d_ASIC%d_CHN%d : "%(femb_addr, chip, chn) + snc_str )
+                                        plt.title("FEMB%d"%femb_addr + sg_str + tp_str + sdf_str + Leak_Cur)
+                                        plt.xlabel ("Channel no.")
+                                        plt.ylabel ("MONITOR ADC output / bit")
+                                        plt.ylim ((0,2**14))
+                                        plt.legend()
+                                        plt.grid()
+                                        plt.savefig(runpath + "/%s_slk0%d_slk1%d_sdf%d_sg%d_tp%d_femb%d_snc%d"%(monitor_out, slk0, slk1, sdf, sg, tp, femb_addr,snc))
+                                        plt.close()
+
+
+        runtime = int(time.time()) 
+        monfile = runpath + "/" + "mon_record_" + str(runtime) +".pickle"
+
+        with open(monfile, "wb") as fp:
+            pickle.dump(mon_paras, fp)
+        return None
+
+
     #for one WIB operation
     def wib_monitor(self, runpath, femb_on_wib):
         mon_paras = []
@@ -718,7 +855,14 @@ class FEMB_MEAS: #for one FEMB
                                                 else:
                                                     self.fe_reg.set_fechip_global(chip=chip, slk0=slk0, stb1 = 0, stb = 1, slk1=slk1, swdac=1, dac=dac)
                                                 #set chn registers for FE
-                                                self.fe_reg.set_fechn_reg(chip=chip, chn=chn, sts=0, snc=snc, sg=sg, st=tp, smn=1, sdf=sdf )
+                                                if (chip == femb_addr):
+                                                    if (snc == 0):
+                                                        self.fe_reg.set_fechn_reg(chip=chip, chn=chn, sts=0, snc=1, sg=sg, st=tp, smn=1, sdf=sdf )
+                                                    else:
+                                                        self.fe_reg.set_fechn_reg(chip=chip, chn=chn, sts=0, snc=0, sg=sg, st=tp, smn=1, sdf=sdf )
+                                                else:
+                                                    self.fe_reg.set_fechn_reg(chip=chip, chn=chn, sts=0, snc=snc, sg=sg, st=tp, smn=1, sdf=sdf )
+                                                #self.fe_reg.set_fechn_reg(chip=chip, chn=chn, sts=0, snc=snc, sg=sg, st=tp, smn=1, sdf=sdf )
                                                 fe_regs = copy.deepcopy(self.fe_reg.REGS)
                     
                                                 self.adc_reg.set_adc_board(clk0=1,f0 =0) #external clk

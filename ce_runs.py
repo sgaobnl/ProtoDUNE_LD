@@ -627,7 +627,7 @@ class CE_RUNS:
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
 
-    def monitor_run(self, temp_or_pluse = "temp", chn=0): 
+    def monitor_run(self): 
         #temp_or_pluse: temp, pulse, banggap
         run_code, val, runpath = self.save_setting(run_code="9", val=100) 
         for tmpwib_pos in range(len(self.tmp_wib_ips)):
@@ -645,6 +645,27 @@ class CE_RUNS:
         self.run_code = run_code
         self.runpath = runpath
         self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
+
+    def monitor_run_spot(self, femb_cs = [1], fembchn_cs =[14, 15, 16*3 + 4, 16*3 + 5]): 
+        #temp_or_pluse: temp, pulse, banggap
+        run_code, val, runpath = self.save_setting(run_code="9", val=100) 
+        for tmpwib_pos in range(len(self.tmp_wib_ips)):
+            wib_ip = self.tmp_wib_ips[tmpwib_pos]
+            print "WIB%d (IP=%s)"%((tmpwib_pos+1), wib_ip)
+            for wib_addr in range(len(self.wib_ips)):
+                if (wib_ip == self.wib_ips[wib_addr]):
+                    break
+            wib_pos = wib_addr
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = True)
+            self.femb_on_apa ()
+            femb_on_wib = self.alive_fembs[wib_pos] 
+            femb_on_wib = femb_cs
+            self.femb_meas.wib_monitor_spot(runpath, femb_on_wib=femb_cs, fembchns = fembchn_cs)
+            self.WIB_UDP_CTL(wib_ip, WIB_UDP_EN = False)
+        self.run_code = run_code
+        self.runpath = runpath
+        self.runtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
+
 
     def avg_run(self, val = 1600, avg_cycle=300): 
         
