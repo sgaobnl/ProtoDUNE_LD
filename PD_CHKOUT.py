@@ -5,7 +5,7 @@ Author: GSS
 Mail: gao.hillhill@gmail.com
 Description: 
 Created Time: 7/15/2016 11:47:39 AM
-Last modified: Sun Feb 25 20:01:01 2018
+Last modified: 4/22/2019 3:50:46 PM
 """
 import matplotlib
 matplotlib.use('Agg')
@@ -226,6 +226,15 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
         ylabel = "ADC output /bin"
         total_chn = len(chn_np)
         print "Pulse Amplitude--> %d channels in total"%(total_chn)
+
+        thr = 1000 #new added
+        badnum = 0 #new added
+        totalchn = len(chn_peakp_avg) #new added
+        for chn in range(totalchn): #new added
+            if chn_peakp_avg[chn] < 1000: #new added
+                badnum +=1 #new added
+        print "%d of %f channels are abnormal"%(badnum, totalchn) #new added
+       
         for i in range(2):
             if ( i == 0 ):
                 color = 'r'
@@ -249,7 +258,7 @@ def plots(plt, plot_en, apa_results, pp, cycle ):
         ax.ylim([-2000,3000])
         ax.ylabel(ylabel, fontsize=12 )
         ax.xlabel("APA Channel No.", fontsize=12 )
-        ax.title(title , fontsize=12 )
+        ax.title(title+ " There are %f channels dead"%((badnum*1.0)/total_chn), fontsize=12 ) #new added
         ax.grid()
         ax.tight_layout( rect=[0, 0.05, 1, 0.95])
         ax.savefig(pp, format='pdf')
